@@ -1,0 +1,6 @@
+@Rewards.Todoist.Api_HostAddress = http://localhost:5196
+
+GET {{Rewards.Todoist.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
