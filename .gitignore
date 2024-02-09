@@ -65,3 +65,4 @@ _ReSharper.Caches
 /TilesDashboard.WebApi/Properties/PublishProfiles
 tests/CodeCoverageReport*/*
 coverage.cobertura.xml
+/Rewards.Todoist.Api/appsettings.Development.json
