@@ -7,6 +7,7 @@ public static class ApiModule
 {
     public static IServiceCollection AddApiModule(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddCors(configuration);
         services.AddControllers();
         services.AddSwaggerGen(c =>
         {
@@ -19,9 +20,10 @@ public static class ApiModule
         return services;
     }
 
-    public static WebApplication UseApiModule(this WebApplication app)
+    public static WebApplication UseApiModule(this WebApplication app, IConfiguration configuration)
     {
         app.UseRouting();
+        app.UseDefaultCors();
         app.UseEndpoints(endpoints => endpoints.MapControllers());
 
         if (app.Environment.IsDevelopment())
@@ -31,6 +33,7 @@ public static class ApiModule
         }
 
         app.UseHttpsRedirection();
+
 
         return app;
     }
