@@ -18,7 +18,11 @@ function OverviewLatestCompletedTasks({ events }) {
           <ListItem key={task.id}>
             <ListItemText
               primary={task.extraData.content}
-              secondary={new Date(task.eventDate).toLocaleString("pl-PL")}
+              secondary={
+                new Date(task.eventDate).toLocaleTimeString("pl-PL") +
+                ", " +
+                new Date(task.eventDate).toLocaleDateString("pl-PL")
+              }
             />
           </ListItem>
         ))}

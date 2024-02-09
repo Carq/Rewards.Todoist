@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="TasksEndpoints\GetCompletedTasksEndpoint.Request.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Ardalis.ApiEndpoints" Version="4.1.0" />
     <PackageReference Include="Ardalis.ApiEndpoints.Swashbuckle" Version="4.1.0" />
     <PackageReference Include="MediatR" Version="12.2.0" />

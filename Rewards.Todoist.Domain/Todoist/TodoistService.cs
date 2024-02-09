@@ -31,24 +31,13 @@ public class TodoistService : ITodoistService
         return response;
     }
 
-    public async Task<ActivityResponse> GetCompletedTasksAsync(string projectId, DateOnly? day)
+    public async Task<ActivityResponse> GetCompletedTasksAsync(string projectId, int limit)
     {
-        var response = await _httpClient
+        return await _httpClient
           .Request("sync/v1/activity/get")
           .SetQueryParam("parent_project_id", projectId)
           .SetQueryParam("event_type", "completed")
+          .SetQueryParam("limit", limit)
           .GetJsonAsync<ActivityResponse>();
-
-        var filteredEvents = response
-            .Events
-            .Where(x => !day.HasValue || x.EventDate.DayOfYear == day.Value.DayOfYear)
-            .ToArray();
-
-
-        return response with
-        {
-            Events = filteredEvents,
-            Count = filteredEvents.Length
-        };
     }
 }
