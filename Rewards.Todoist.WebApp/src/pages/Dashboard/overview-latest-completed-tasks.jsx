@@ -5,23 +5,24 @@ import {
   List,
   ListItem,
   ListItemText,
+  Typography,
 } from "@mui/material";
 
 import PropTypes from "prop-types";
 
-function OverviewLatestCompletedTasks({ events }) {
+function OverviewLatestCompletedTasks({ title, completedTasks }) {
   return (
     <Card>
-      <CardHeader title="Ostatnio zakończone zadania"></CardHeader>
+      <CardHeader title={title}></CardHeader>
       <List>
-        {events.map((task) => (
+        {completedTasks?.map((task) => (
           <ListItem key={task.id}>
             <ListItemText
-              primary={task.extraData.content}
+              primary={task.name + " - " + task.projectName}
               secondary={
-                new Date(task.eventDate).toLocaleTimeString("pl-PL") +
-                ", " +
-                new Date(task.eventDate).toLocaleDateString("pl-PL")
+                new Date(task.completedDate).toLocaleTimeString("pl-PL") +
+                "," +
+                new Date(task.completedDate).toLocaleDateString("pl-PL")
               }
             />
           </ListItem>
@@ -33,7 +34,8 @@ function OverviewLatestCompletedTasks({ events }) {
 }
 
 OverviewLatestCompletedTasks.protoTypes = {
-  events: PropTypes.array.isRequired,
+  title: PropTypes.string.isRequired,
+  completedTasks: PropTypes.array.isRequired,
 };
 
 export default OverviewLatestCompletedTasks;

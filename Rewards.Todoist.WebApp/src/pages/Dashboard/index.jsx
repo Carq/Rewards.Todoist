@@ -13,12 +13,19 @@ const LayoutContainer = styled.div`
 
 export default function Dashboard() {
   const { isPending, error, data, isFetching } = useQuery({
-    queryKey: ["latestCompletedTasks"],
+    queryKey: ["completedTasks"],
     queryFn: () =>
-      fetch("https://localhost:7021/project/activity").then((res) =>
+      fetch("https://localhost:7021/project/completed-tasks").then((res) =>
         res.json()
       ),
   });
+
+  let completedTaskByL = data?.data.filter(
+    (task) => task.whoCompleted == "Łukasz"
+  );
+  let completedTaskByM = data?.data.filter(
+    (task) => task.whoCompleted == "Martyna"
+  );
 
   return (
     <LayoutContainer>
@@ -27,8 +34,14 @@ export default function Dashboard() {
         {error && <div>Error: {error.message}</div>}
         {!isPending && (
           <>
-            <OverviewLatestCompletedTasks events={data.events} />
-            <OverviewLatestCompletedTasks events={data.events} />
+            <OverviewLatestCompletedTasks
+              title={"Łukasz ukończył " + completedTaskByL.length + " zadań"}
+              completedTasks={completedTaskByL}
+            />
+            <OverviewLatestCompletedTasks
+              title={"Martyna ukończyła" + completedTaskByM.length + " zadań"}
+              completedTasks={completedTaskByM}
+            />
           </>
         )}
       </Stack>
