@@ -5,20 +5,28 @@ import {
   List,
   ListItem,
   ListItemText,
-  Typography,
+  ListItemIcon,
+  Avatar,
 } from "@mui/material";
+
+import { lightBlue } from "@mui/material/colors";
 
 import PropTypes from "prop-types";
 
-function OverviewLatestCompletedTasks({ title, completedTasks }) {
+function ListOfLatestCompletedTasks({ title, completedTasks }) {
   return (
     <Card>
       <CardHeader title={title}></CardHeader>
       <List>
         {completedTasks?.map((task) => (
           <ListItem key={task.id}>
+            <ListItemIcon>
+              <Avatar sx={{ bgcolor: lightBlue[100] }}>
+                {MapProjectNameToIcon(task.projectName)}
+              </Avatar>
+            </ListItemIcon>
             <ListItemText
-              primary={task.name + " - " + task.projectName}
+              primary={task.name}
               secondary={
                 new Date(task.completedDate).toLocaleTimeString("pl-PL") +
                 "," +
@@ -33,9 +41,22 @@ function OverviewLatestCompletedTasks({ title, completedTasks }) {
   );
 }
 
-OverviewLatestCompletedTasks.protoTypes = {
+function MapProjectNameToIcon(projectName) {
+  switch (projectName) {
+    case "Dom 🏡":
+      return "🏡";
+    case "Dzieci 👶":
+      return "👶";
+    case "Wykończenie domu":
+      return "🔨";
+    default:
+      return "❓";
+  }
+}
+
+ListOfLatestCompletedTasks.protoTypes = {
   title: PropTypes.string.isRequired,
   completedTasks: PropTypes.array.isRequired,
 };
 
-export default OverviewLatestCompletedTasks;
+export default ListOfLatestCompletedTasks;

@@ -1,7 +1,7 @@
-import { Stack } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
-import OverviewLatestCompletedTasks from "./overview-latest-completed-tasks";
 import styled from "@emotion/styled";
+import PersonalOverview from "./personal-overview";
+import { Stack } from "@mui/material";
 
 const LayoutContainer = styled.div`
   display: flex;
@@ -20,31 +20,27 @@ export default function Dashboard() {
       ),
   });
 
-  let completedTaskByL = data?.data.filter(
-    (task) => task.whoCompleted == "Łukasz"
-  );
-  let completedTaskByM = data?.data.filter(
-    (task) => task.whoCompleted == "Martyna"
-  );
+  let completedTaskByL = data?.userCompletedTasks.find(
+    (x) => x.userName == "Łukasz"
+  ).completedTasks;
+
+  let completedTaskByM = data?.userCompletedTasks.find(
+    (x) => x.userName == "Martyna"
+  ).completedTasks;
 
   return (
     <LayoutContainer>
-      <Stack spacing={2} direction="row">
-        {isPending && <div>Loading...</div>}
-        {error && <div>Error: {error.message}</div>}
-        {!isPending && (
-          <>
-            <OverviewLatestCompletedTasks
-              title={"Łukasz ukończył " + completedTaskByL.length + " zadań"}
-              completedTasks={completedTaskByL}
-            />
-            <OverviewLatestCompletedTasks
-              title={"Martyna ukończyła" + completedTaskByM.length + " zadań"}
-              completedTasks={completedTaskByM}
-            />
-          </>
-        )}
-      </Stack>
+      {isPending && <>Ładowanie danych...</>}
+      {error && <>Błąd: {error.message}</>}
+      {data && (
+        <Stack spacing={2} direction="row">
+          <PersonalOverview user={"Łukasz"} completedTasks={completedTaskByL} />
+          <PersonalOverview
+            user={"Martyna"}
+            completedTasks={completedTaskByM}
+          />
+        </Stack>
+      )}
     </LayoutContainer>
   );
 }
