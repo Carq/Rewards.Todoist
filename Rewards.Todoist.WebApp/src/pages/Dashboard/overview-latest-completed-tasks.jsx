@@ -9,7 +9,7 @@ import {
   Avatar,
 } from "@mui/material";
 
-import { lightBlue } from "@mui/material/colors";
+import { grey } from "@mui/material/colors";
 
 import PropTypes from "prop-types";
 
@@ -17,11 +17,11 @@ function ListOfLatestCompletedTasks({ title, completedTasks }) {
   return (
     <Card>
       <CardHeader title={title}></CardHeader>
-      <List>
+      <List dense>
         {completedTasks?.map((task) => (
           <ListItem key={task.id}>
             <ListItemIcon>
-              <Avatar sx={{ bgcolor: lightBlue[100] }}>
+              <Avatar sx={{ bgcolor: grey[100] }}>
                 {MapProjectNameToIcon(task.projectName)}
               </Avatar>
             </ListItemIcon>
@@ -49,6 +49,8 @@ function MapProjectNameToIcon(projectName) {
       return "👶";
     case "Wykończenie domu":
       return "🔨";
+    case "Życie ♥":
+      return "💖";
     default:
       return "❓";
   }

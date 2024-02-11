@@ -1,6 +1,13 @@
-import { Avatar, Card, Stack } from "@mui/material";
+import { Avatar, Card, CardContent, Stack, Typography } from "@mui/material";
 import ListOfLatestCompletedTasks from "./overview-latest-completed-tasks";
 import PropTypes from "prop-types";
+import SummaryOfCompletedTasks from "./summary-of-completed-tasks";
+
+import styled from "@emotion/styled";
+
+const Container = styled.div`
+  min-width: 360px;
+`;
 
 const PersonalOverview = ({ user, completedTasks }) => {
   let completedTasksByUser = completedTasks.filter(
@@ -8,23 +15,23 @@ const PersonalOverview = ({ user, completedTasks }) => {
   );
 
   return (
-    <Stack spacing={1}>
-      <Card>
-        <Stack
-          alignItems="center"
-          justifyContent="center"
-          spacing={2}
-          direction="row"
-        >
-          <h1>{user}</h1>
-          <Avatar>{user[0]}</Avatar>
-        </Stack>
-      </Card>
-      <ListOfLatestCompletedTasks
-        title={"Ukończone w ostatnich 24h"}
-        completedTasks={completedTasksByUser}
-      />
-    </Stack>
+    <Container>
+      <Stack spacing={1}>
+        <Card>
+          <CardContent>
+            <Stack direction="row" spacing={2}>
+              <Typography variant="h4">{user}</Typography>
+              <Avatar>{user[0]}</Avatar>
+            </Stack>
+          </CardContent>
+        </Card>
+        <SummaryOfCompletedTasks tasks={completedTasks} />
+        <ListOfLatestCompletedTasks
+          title={"Ukończone w ostatnich 24h"}
+          completedTasks={completedTasksByUser}
+        />
+      </Stack>
+    </Container>
   );
 };
 
