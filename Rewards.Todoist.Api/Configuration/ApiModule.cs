@@ -1,4 +1,5 @@
 ﻿using Microsoft.OpenApi.Models;
+using Rewards.Todoist.Domain.Configuration;
 using Rewards.Todoist.Domain.Todoist.Configuration;
 
 namespace Rewards.Todoist.Api.Configuration;
@@ -16,7 +17,7 @@ public static class ApiModule
         });
 
         services.AddSingleton(configuration);
-        services.AddTodoistModule();
+        services.AddDomainModule(configuration);
         return services;
     }
 

@@ -8,8 +8,6 @@ public static class Projects
         { "2326686968", "Wykończenie domu" },
         { "2234519083", "Dom 🏡" },
         { "2268068217", "Życie ♥" }
-
-
     };
 
     public static string[] GetAllProjectIds() => _projects.Keys.ToArray();
