@@ -10,7 +10,6 @@ import {
 } from "@mui/material";
 
 import { grey } from "@mui/material/colors";
-
 import PropTypes from "prop-types";
 
 function ListOfLatestCompletedTasks({ title, completedTasks }) {
@@ -18,7 +17,7 @@ function ListOfLatestCompletedTasks({ title, completedTasks }) {
     <Card>
       <CardHeader title={title}></CardHeader>
       <List dense>
-        {completedTasks?.map((task) => (
+        {completedTasks.map((task) => (
           <ListItem key={task.id}>
             <ListItemIcon>
               <Avatar sx={{ bgcolor: grey[100] }}>

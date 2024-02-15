@@ -40,4 +40,17 @@ public class TodoistService : ITodoistService
           .SetQueryParam("limit", limit)
           .GetJsonAsync<ActivityResponse>();
     }
+
+    public async Task<TaskDetailsDto[]> GetTasksDetailsAsync(string[] taskIds)
+    {
+        if (taskIds.Length == 0)
+        {
+            return Array.Empty<TaskDetailsDto>();
+        }
+
+        return await _httpClient
+            .Request("rest/v2/tasks")
+            .SetQueryParam("ids", string.Join(',', taskIds))
+            .GetJsonAsync<TaskDetailsDto[]>();
+    }
 }

@@ -9,4 +9,6 @@ public interface ITodoistService
     Task<ActivityResponse> GetActivityAsync(string projectId);
 
     Task<ActivityResponse> GetCompletedTasksAsync(string projectId, int recent);
+
+    Task<TaskDetailsDto[]> GetTasksDetailsAsync(string[] taskIds);
 }
