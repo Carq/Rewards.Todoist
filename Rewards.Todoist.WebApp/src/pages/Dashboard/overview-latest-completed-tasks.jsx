@@ -11,6 +11,7 @@ import {
 
 import { grey } from "@mui/material/colors";
 import PropTypes from "prop-types";
+import { calculateDateDiff } from "../../utils/date-utils";
 
 function ListOfLatestCompletedTasks({ title, completedTasks }) {
   return (
@@ -27,9 +28,8 @@ function ListOfLatestCompletedTasks({ title, completedTasks }) {
             <ListItemText
               primary={task.name}
               secondary={
-                new Date(task.completedDate).toLocaleTimeString("pl-PL") +
-                "," +
-                new Date(task.completedDate).toLocaleDateString("pl-PL")
+                calculateDateDiff(new Date(task.completedDate), new Date()) +
+                " temu"
               }
             />
           </ListItem>
