@@ -7,11 +7,14 @@ import {
   ListItemText,
   ListItemIcon,
   Avatar,
+  Chip,
+  Stack,
+  Typography,
 } from "@mui/material";
 
 import { grey } from "@mui/material/colors";
 import PropTypes from "prop-types";
-import { calculateDateDiff } from "../../utils/date-utils";
+import { howLongAgo } from "../../utils/date-utils";
 
 function ListOfLatestCompletedTasks({ title, completedTasks }) {
   return (
@@ -26,10 +29,21 @@ function ListOfLatestCompletedTasks({ title, completedTasks }) {
               </Avatar>
             </ListItemIcon>
             <ListItemText
-              primary={task.name}
+              primary={
+                <Stack direction="row" spacing={1}>
+                  <Typography>{task.name}</Typography>
+                  {task.labels.map((label) => (
+                    <Chip
+                      key={label}
+                      label={label}
+                      color="success"
+                      size="small"
+                    />
+                  ))}
+                </Stack>
+              }
               secondary={
-                calculateDateDiff(new Date(task.completedDate), new Date()) +
-                " temu"
+                <>{howLongAgo(new Date(task.completedDate), new Date())}</>
               }
             />
           </ListItem>

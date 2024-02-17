@@ -1,4 +1,5 @@
 ﻿using Flurl.Http;
+using Flurl.Util;
 using Rewards.Todoist.Domain.Todoist.Contract;
 
 namespace Rewards.Todoist.Domain.Todoist;
@@ -31,14 +32,18 @@ public class TodoistService : ITodoistService
         return response;
     }
 
-    public async Task<ActivityResponse> GetCompletedTasksAsync(string projectId, int limit)
+    public async Task<GetAllCompeltedResult> GetCompletedTasksAsync(string projectId, int limit, DateTimeOffset since)
     {
+        string sinceString = since.ToInvariantString();
+        string formattedSince = since.ToString("yyyy-M-dTH:mm:ss");
+
         return await _httpClient
-          .Request("sync/v1/activity/get")
-          .SetQueryParam("parent_project_id", projectId)
-          .SetQueryParam("event_type", "completed")
-          .SetQueryParam("limit", limit)
-          .GetJsonAsync<ActivityResponse>();
+            .Request("sync/v9/completed/get_all")
+            .SetQueryParam("project_id", projectId)
+            .SetQueryParam("since", formattedSince)
+            .SetQueryParam("limit", limit)
+            .SetQueryParam("annotate_items", true)
+            .GetJsonAsync<GetAllCompeltedResult>();
     }
 
     public async Task<TaskDetailsDto[]> GetTasksDetailsAsync(string[] taskIds)

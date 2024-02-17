@@ -8,4 +8,4 @@ public record CompletedTasksResult(IEnumerable<UserCompletedTasks> UserCompleted
 
 public record UserCompletedTasks(string UserName, IEnumerable<CompletedTask> CompletedTasks);
 
-public record CompletedTask(long Id, string Name, string ProjectName, DateTimeOffset CompletedDate);
+public record CompletedTask(long Id, string Name, string ProjectName, string[] Labels, DateTimeOffset CompletedDate);
