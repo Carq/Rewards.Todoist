@@ -32,13 +32,14 @@ public class TodoistService : ITodoistService
         return response;
     }
 
-    public async Task<GetAllCompeltedResult> GetCompletedTasksAsync(string projectId, int limit, DateTimeOffset since)
+    public async Task<GetAllCompeltedResult> GetCompletedTasksAsync(string projectId, int limit, DateTimeOffset since, string userAccessToken)
     {
         string sinceString = since.ToInvariantString();
         string formattedSince = since.ToString("yyyy-M-dTH:mm:ss");
 
         return await _httpClient
             .Request("sync/v9/completed/get_all")
+            .WithOAuthBearerToken(userAccessToken)
             .SetQueryParam("project_id", projectId)
             .SetQueryParam("since", formattedSince)
             .SetQueryParam("limit", limit)

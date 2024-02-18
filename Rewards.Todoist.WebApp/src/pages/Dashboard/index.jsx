@@ -21,7 +21,7 @@ export default function Dashboard() {
   });
 
   let completedTaskByL = data?.userCompletedTasks.find(
-    (x) => x.userName == "Łukasz"
+    (x) => x.userName == "Carq"
   ).completedTasks;
 
   let completedTaskByM = data?.userCompletedTasks.find(
@@ -34,7 +34,7 @@ export default function Dashboard() {
       {error && <>Błąd: {error.message}</>}
       {data && (
         <Stack spacing={2} direction="row">
-          <PersonalOverview user={"Łukasz"} completedTasks={completedTaskByL} />
+          <PersonalOverview user={"Carq"} completedTasks={completedTaskByL} />
           <PersonalOverview
             user={"Martyna"}
             completedTasks={completedTaskByM}

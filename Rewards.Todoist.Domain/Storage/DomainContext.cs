@@ -1,13 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Rewards.Todoist.Domain.Projects.Entities;
+using Rewards.Todoist.Domain.Users;
 
-namespace Rewards.Todoist.Domain.Projects.Storage;
+namespace Rewards.Todoist.Domain.Storage;
 
-public class ProjectContext : DbContext
+public class DomainContext : DbContext
 {
-    private readonly string _dbPath; 
+    private readonly string _dbPath;
 
-    public ProjectContext()
+    public DomainContext()
     {
         var folder = Environment.SpecialFolder.LocalApplicationData;
         var path = Environment.GetFolderPath(folder);
@@ -16,10 +17,12 @@ public class ProjectContext : DbContext
 
     public DbSet<TaskEntity> Tasks { get; set; }
 
+    public DbSet<User> Users { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlite($"Data Source={_dbPath}");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ProjectContext).Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(DomainContext).Assembly);
     }
 }

@@ -1,15 +1,21 @@
 ﻿namespace Rewards.Todoist.Domain.Users;
 
-public static class Users
+public class Users
 {
-    private static readonly IDictionary<string, string> _users = new Dictionary<string, string>
-    {
-        { "33983343", "Martyna" },
-        { "9238519", "Łukasz" }
-    };
+    private readonly IDictionary<string, User> _users = new Dictionary<string, User>();
 
-    public static string GetUserName(string initiatorId)
+    public Users(IEnumerable<User> users)
     {
-        return _users.TryGetValue(initiatorId, out var userName) ? userName : "Unknown";
+        foreach (var user in users)
+        {
+            _users.Add(user.Id.ToString(), user);
+        }
+    }   
+
+    public string GetUserName(string id)
+    {
+        return _users.TryGetValue(id, out var user) ? user.Name : "Unknown";
     }
+
+    public IEnumerable<User> All() => _users.Values;
 }

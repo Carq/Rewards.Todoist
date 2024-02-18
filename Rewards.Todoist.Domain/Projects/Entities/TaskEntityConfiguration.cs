@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Rewards.Todoist.Domain.Projects.Entities;
+using Rewards.Todoist.Domain.Storage;
 
-namespace Rewards.Todoist.Domain.Projects.Storage.EntityConfiguraiton;
+namespace Rewards.Todoist.Domain.Projects.Entities;
 
 public class TaskEntityConfiguration : IEntityTypeConfiguration<TaskEntity>
 {

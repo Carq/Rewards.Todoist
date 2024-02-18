@@ -38,8 +38,7 @@ public static class TodoistModule
                                 PropertyNameCaseInsensitive = false,
                                 PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower,
                             });
-                        })
-                        .WithOAuthBearerToken(provider.GetRequiredService<TodoistSettings>().BearerToken);
+                        });
                     }));
 
         services.AddScoped<ITodoistService, TodoistService>(

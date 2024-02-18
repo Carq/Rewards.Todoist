@@ -2,10 +2,10 @@
 
 #nullable disable
 
-namespace Rewards.Todoist.Domain.Projects.Storage.Migrations
+namespace Rewards.Todoist.Domain.Storage.Migrations
 {
     /// <inheritdoc />
-    public partial class TaskTable : Migration
+    public partial class TaskAndUserTable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -24,6 +24,20 @@ namespace Rewards.Todoist.Domain.Projects.Storage.Migrations
                 {
                     table.PrimaryKey("PK_Tasks", x => x.Id);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    TodoistAccessToken = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                });
         }
 
         /// <inheritdoc />
@@ -31,6 +45,9 @@ namespace Rewards.Todoist.Domain.Projects.Storage.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Tasks");
+
+            migrationBuilder.DropTable(
+                name: "Users");
         }
     }
 }
