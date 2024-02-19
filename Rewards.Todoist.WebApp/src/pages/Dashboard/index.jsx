@@ -28,6 +28,8 @@ export default function Dashboard() {
     (x) => x.userName == "Martyna"
   ).completedTasks;
 
+  console.log(completedTaskByL);
+
   return (
     <LayoutContainer>
       {isPending && <>Ładowanie danych...</>}

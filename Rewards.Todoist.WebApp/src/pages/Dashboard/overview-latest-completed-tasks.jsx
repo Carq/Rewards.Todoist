@@ -36,7 +36,7 @@ function ListOfLatestCompletedTasks({ title, completedTasks }) {
                     <Chip
                       key={label}
                       label={label}
-                      color="success"
+                      color="primary"
                       size="small"
                     />
                   ))}

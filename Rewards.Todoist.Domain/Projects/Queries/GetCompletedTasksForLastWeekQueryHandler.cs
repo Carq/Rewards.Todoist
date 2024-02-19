@@ -57,7 +57,7 @@ public class GetCompletedTasksForLastWeekQueryHandler : IRequestHandler<GetCompl
     {
         return x => new CompletedTask(
                         long.Parse(x.TaskId),
-                        x.Content,
+                        x.ItemObject.Content,
                         Projects.GetProjectName(x.ProjectId),
                         x.ItemObject.Labels,
                         x.CompletedAt);

@@ -2,6 +2,7 @@ import { Avatar, Card, CardContent, Stack, Typography } from "@mui/material";
 import ListOfLatestCompletedTasks from "./overview-latest-completed-tasks";
 import PropTypes from "prop-types";
 import SummaryOfCompletedTasks from "./summary-of-completed-tasks";
+import SummaryOfXP from "./summary-of-xp";
 
 import styled from "@emotion/styled";
 
@@ -25,6 +26,7 @@ const PersonalOverview = ({ user, completedTasks }) => {
             </Stack>
           </CardContent>
         </Card>
+        <SummaryOfXP tasks={completedTasks} />
         <SummaryOfCompletedTasks tasks={completedTasks} />
         <ListOfLatestCompletedTasks
           title={"Ukończone w ostatnich 24h"}
