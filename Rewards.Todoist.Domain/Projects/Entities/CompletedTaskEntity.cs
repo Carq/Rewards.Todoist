@@ -30,4 +30,31 @@ public class CompletedTaskEntity
     public DateTime CompletedAt { get; private set; }
 
     public User CompletedBy { get; private set; }
+
+    public string[] GetLabels()
+    {
+        if (string.IsNullOrWhiteSpace(Labels))
+        {
+            return [];
+        }
+
+        return Labels.Split(',');
+    }
+
+    public int GetExperience()
+    {
+        var labels = GetLabels();
+        if (labels.Length == 0)
+        {
+            return 0;
+        }
+
+        var experienceLabel = labels.Where(x => x.StartsWith("XP")).FirstOrDefault()?.Remove(0, 2);
+        if (experienceLabel == null)
+        {
+            return 0;
+        }
+
+        return int.TryParse(experienceLabel, out var exp) ? exp : 0;
+    }
 }
