@@ -1,20 +1,15 @@
 import { Avatar, Card, CardContent, Stack, Typography } from "@mui/material";
 import ListOfLatestCompletedTasks from "./overview-latest-completed-tasks";
 import PropTypes from "prop-types";
-import SummaryOfCompletedTasks from "./summary-of-completed-tasks";
 import SummaryOfXP from "./summary-of-xp";
 
 import styled from "@emotion/styled";
 
 const Container = styled.div`
-  min-width: 360px;
+  min-width: 460px;
 `;
 
-const PersonalOverview = ({ user, completedTasks }) => {
-  let completedTasksByUser = completedTasks.filter(
-    (x) => new Date(x.completedDate) > new Date() - 24 * 60 * 60 * 1000
-  );
-
+const PersonalOverview = ({ user, completedTasks, experianceOverview }) => {
   return (
     <Container>
       <Stack spacing={1}>
@@ -26,11 +21,10 @@ const PersonalOverview = ({ user, completedTasks }) => {
             </Stack>
           </CardContent>
         </Card>
-        <SummaryOfXP tasks={completedTasks} />
-        <SummaryOfCompletedTasks tasks={completedTasks} />
+        <SummaryOfXP experianceOverview={experianceOverview} />
         <ListOfLatestCompletedTasks
           title={"Ukończone w ostatnich 24h"}
-          completedTasks={completedTasksByUser}
+          completedTasks={completedTasks}
         />
       </Stack>
     </Container>

@@ -18,15 +18,13 @@ export default function Dashboard() {
       fetch("https://localhost:7021/dashboard").then((res) => res.json()),
   });
 
-  let completedTaskByL = data?.usersDashboardData.find(
+  let dashboardCarq = data?.usersDashboardData.find(
     (x) => x.userName == "Carq"
-  ).completedTasks;
+  );
 
-  let completedTaskByM = data?.usersDashboardData.find(
+  let dashboardMartyna = data?.usersDashboardData.find(
     (x) => x.userName == "Martyna"
-  ).completedTasks;
-
-  console.log(completedTaskByL);
+  );
 
   return (
     <LayoutContainer>
@@ -34,10 +32,15 @@ export default function Dashboard() {
       {error && <>Błąd: {error.message}</>}
       {data && (
         <Stack spacing={2} direction="row">
-          <PersonalOverview user={"Carq"} completedTasks={completedTaskByL} />
+          <PersonalOverview
+            user={"Carq"}
+            completedTasks={dashboardCarq.completedTasks}
+            experianceOverview={dashboardCarq.experianceOverview}
+          />
           <PersonalOverview
             user={"Martyna"}
-            completedTasks={completedTaskByM}
+            completedTasks={dashboardMartyna.completedTasks}
+            experianceOverview={dashboardMartyna.experianceOverview}
           />
         </Stack>
       )}

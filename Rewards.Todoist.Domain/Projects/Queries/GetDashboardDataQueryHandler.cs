@@ -56,7 +56,7 @@ public class GetDashboardDataQueryHandler : IRequestHandler<GetDashboardDataQuer
 
     private ExperianceSummary MapToExperianceSummary(IEnumerable<CompletedTaskEntity> completedTasks)
     {
-        return new ExperianceSummary(completedTasks.Count(), completedTasks.Sum(x => x.GetExperience()));
+        return new ExperianceSummary(completedTasks.Sum(x => x.GetExperience()), completedTasks.Count());
     }
 
     private static CompletedTask MapToCompleteTask(CompletedTaskEntity entity)
