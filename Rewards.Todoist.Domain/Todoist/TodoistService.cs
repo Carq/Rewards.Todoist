@@ -34,8 +34,7 @@ public class TodoistService : ITodoistService
 
     public async Task<GetAllCompeltedResult> GetCompletedTasksAsync(string projectId, int limit, DateTimeOffset since, string userAccessToken)
     {
-        string sinceString = since.ToInvariantString();
-        string formattedSince = since.ToString("yyyy-M-dTH:mm:ss");
+        string formattedSince = since.ToString("yyyy-MM-ddTHH:mm:ss");
 
         return await _httpClient
             .Request("sync/v9/completed/get_all")

@@ -29,7 +29,12 @@ public class SyncCompletedTasksCommandHandler : IRequestHandler<SyncCompletedTas
 
     public async Task Handle(SyncCompletedTasksCommand request, CancellationToken cancellationToken)
     {
-        var since = _clock.Now.AddDays(-21);
+        var since = _context.CompletedTasks.Max(x => x.CompletedAt).AddMinutes(1);
+        if (since.AddHours(1) < _clock.Now.UtcDateTime)
+        {
+            return;
+        }
+
         var users = await _userRepository.GetUsers(cancellationToken);
 
         var completedTasksToSync = new List<CompletedTaskEntity>();
@@ -39,6 +44,11 @@ public class SyncCompletedTasksCommandHandler : IRequestHandler<SyncCompletedTas
             {
                 completedTasksToSync.AddRange(await GetCompletedTasksForProject(user, projectId, since));
             }
+        }
+
+        if (completedTasksToSync.Count == 0)
+        {
+            return;
         }
 
         await _context.CompletedTasks.AddRangeAsync(completedTasksToSync);
