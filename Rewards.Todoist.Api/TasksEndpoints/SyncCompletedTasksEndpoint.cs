@@ -15,7 +15,7 @@ public class SyncCompletedTasksEndpoint : EndpointBaseAsync.WithoutRequest.Witho
         _mediator = mediator;
     }
 
-    [HttpGet("/tasks/sync-completed")]
+    [HttpPost("/tasks/sync-completed")]
     [SwaggerOperation(
                Summary = "Sync completed tasks",
                OperationId = "SyncCompletedTasks",

@@ -30,7 +30,7 @@ public class SyncCompletedTasksCommandHandler : IRequestHandler<SyncCompletedTas
     public async Task Handle(SyncCompletedTasksCommand request, CancellationToken cancellationToken)
     {
         var since = _context.CompletedTasks.Max(x => x.CompletedAt).AddMinutes(1);
-        if (since.AddHours(1) < _clock.Now.UtcDateTime)
+        if (since.AddHours(1) > _clock.Now.UtcDateTime)
         {
             return;
         }

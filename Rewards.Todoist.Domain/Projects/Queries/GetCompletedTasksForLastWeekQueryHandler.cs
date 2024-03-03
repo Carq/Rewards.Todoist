@@ -43,9 +43,9 @@ public class GetCompletedTasksForLastWeekQueryHandler : IRequestHandler<GetCompl
         return new CompletedTasksResult(taskByUsers);
     }
 
-    private static Func<CompletedTaskEntity, CompletedTask> MapToCompleteTask()
+    private static Func<CompletedTaskEntity, CompletedTaskV1> MapToCompleteTask()
     {
-        return x => new CompletedTask(
+        return x => new CompletedTaskV1(
                         x.Id,
                         x.Name,
                         Projects.GetProjectName(x.ProjectId),

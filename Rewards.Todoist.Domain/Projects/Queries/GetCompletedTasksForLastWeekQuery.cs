@@ -6,6 +6,6 @@ public record GetCompletedTasksForLastWeekQuery() : IRequest<CompletedTasksResul
 
 public record CompletedTasksResult(IEnumerable<UserCompletedTasks> UserCompletedTasks);
 
-public record UserCompletedTasks(string UserName, IEnumerable<CompletedTask> CompletedTasks);
+public record UserCompletedTasks(string UserName, IEnumerable<CompletedTaskV1> CompletedTasks);
 
-public record CompletedTask(long Id, string Name, string ProjectName, string[] Labels, DateTimeOffset CompletedDate);
+public record CompletedTaskV1(long Id, string Name, string ProjectName, string[] Labels, DateTimeOffset CompletedDate);

@@ -12,19 +12,17 @@ const LayoutContainer = styled.div`
 `;
 
 export default function Dashboard() {
-  const { isPending, error, data, isFetching } = useQuery({
+  const { isPending, error, data } = useQuery({
     queryKey: ["completedTasks"],
     queryFn: () =>
-      fetch("https://localhost:7021/project/completed-tasks").then((res) =>
-        res.json()
-      ),
+      fetch("https://localhost:7021/dashboard").then((res) => res.json()),
   });
 
-  let completedTaskByL = data?.userCompletedTasks.find(
+  let completedTaskByL = data?.usersDashboardData.find(
     (x) => x.userName == "Carq"
   ).completedTasks;
 
-  let completedTaskByM = data?.userCompletedTasks.find(
+  let completedTaskByM = data?.usersDashboardData.find(
     (x) => x.userName == "Martyna"
   ).completedTasks;
 
