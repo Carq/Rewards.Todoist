@@ -1,5 +1,7 @@
 ﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Rewards.Todoist.Domain.Projects.Entities;
+using Rewards.Todoist.Domain.Storage;
 using Rewards.Todoist.Domain.Todoist;
 using Rewards.Todoist.Domain.Todoist.Contract;
 using Rewards.Todoist.Domain.Users.Repository;
@@ -9,57 +11,45 @@ namespace Rewards.Todoist.Domain.Projects.Queries;
 
 public class GetCompletedTasksForLastWeekQueryHandler : IRequestHandler<GetCompletedTasksForLastWeekQuery, CompletedTasksResult>
 {
-    private readonly ITodoistService _todoistService;
-
     private readonly IUserRepository _userRepository;
 
     private readonly IClock _clock;
 
-    public GetCompletedTasksForLastWeekQueryHandler(ITodoistService todoistService, IClock clock, IUserRepository userRepository)
+    private readonly DomainContext _context;
+
+    public GetCompletedTasksForLastWeekQueryHandler(IClock clock, IUserRepository userRepository, DomainContext context)
     {
-        _todoistService = todoistService;
         _clock = clock;
         _userRepository = userRepository;
+        _context = context;
     }
 
     public async Task<CompletedTasksResult> Handle(GetCompletedTasksForLastWeekQuery request, CancellationToken cancellationToken)
     {
-        var since = _clock.Now.AddDays(-7);
+        var since = _clock.Now.AddDays(-7).DateTime;
         var users = await _userRepository.GetUsers(cancellationToken);
 
+        var completedTasks = await _context.CompletedTasks
+             .Where(x => x.CompletedAt >= since)
+             .ToListAsync();
 
-        var items = new List<ItemDto>();
-        foreach (var user in users.All())
-        {
-            foreach (var projectId in UserProjects.GetProjects(user.Id.ToString()))
-            {
-                items.AddRange(await GetCompletedTasksForProject(projectId, since, user.TodoistAccessToken));
-            }
-        }
-
-        var taskByUsers = items
+        var taskByUsers = completedTasks
                            .OrderByDescending(x => x.CompletedAt)
-                           .GroupBy(x => x.UserId)
+                           .GroupBy(x => x.CompletedBy.Id)
                            .Select(x => new UserCompletedTasks(
-                              users.GetUserName(x.Key),
+                               users.GetUserName(x.Key),
                                x.Select(MapToCompleteTask()))).ToList();
 
         return new CompletedTasksResult(taskByUsers);
     }
 
-    private async Task<ItemDto[]> GetCompletedTasksForProject(string projectId, DateTimeOffset since, string userAccessToken)
-    {
-        var completedTasks = await _todoistService.GetCompletedTasksAsync(projectId, 100, since, userAccessToken);
-        return completedTasks.Items;
-    }
-
-    private static Func<ItemDto, CompletedTask> MapToCompleteTask()
+    private static Func<CompletedTaskEntity, CompletedTask> MapToCompleteTask()
     {
         return x => new CompletedTask(
-                        long.Parse(x.TaskId),
-                        x.ItemObject.Content,
+                        x.Id,
+                        x.Name,
                         Projects.GetProjectName(x.ProjectId),
-                        x.ItemObject.Labels,
+                        x.Labels.Split(','),
                         x.CompletedAt);
     }
 }

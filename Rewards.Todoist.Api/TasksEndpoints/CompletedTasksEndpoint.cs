@@ -6,13 +6,13 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace Rewards.Todoist.Api.TasksEndpoints;
 
-public class CompletedTasks : EndpointBaseAsync
+public class CompletedTasksEndpoint : EndpointBaseAsync
                                 .WithRequest<CompletedTasksRequest>
                                 .WithResult<CompletedTasksResult>
 {
     private readonly IMediator _mediator;
 
-    public CompletedTasks(IMediator mediator)
+    public CompletedTasksEndpoint(IMediator mediator)
     {
         _mediator = mediator;
     }
@@ -24,7 +24,6 @@ public class CompletedTasks : EndpointBaseAsync
        Tags = new[] { "Project", "Tasks" })]
     public override async Task<CompletedTasksResult> HandleAsync([FromQuery] CompletedTasksRequest request, CancellationToken cancellationToken = default)
     {
-   
         return await _mediator.Send(new GetCompletedTasksForLastWeekQuery(), cancellationToken);
     }
 }

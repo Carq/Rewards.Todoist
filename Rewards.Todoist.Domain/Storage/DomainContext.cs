@@ -15,7 +15,7 @@ public class DomainContext : DbContext
         _dbPath = Path.Join(path, "Rewards.db");
     }
 
-    public DbSet<TaskEntity> Tasks { get; set; }
+    public DbSet<CompletedTaskEntity> CompletedTasks { get; set; }
 
     public DbSet<User> Users { get; set; }
 
