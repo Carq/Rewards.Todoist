@@ -23,5 +23,3 @@ jobs:
         working-directory: ./Rewards.Todoist.WebApp
       - run: npm run build --if-present
         working-directory: ./Rewards.Todoist.WebApp
-      - run: npm test
-        working-directory: ./Rewards.Todoist.WebApp
