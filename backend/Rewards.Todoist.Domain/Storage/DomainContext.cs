@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Rewards.Todoist.Domain.Configuration;
 using Rewards.Todoist.Domain.Projects.Entities;
 using Rewards.Todoist.Domain.Users;
 
@@ -6,13 +7,11 @@ namespace Rewards.Todoist.Domain.Storage;
 
 public class DomainContext : DbContext
 {
-    private readonly string _dbPath;
+    private readonly DomainSettings _settings;
 
-    public DomainContext()
+    public DomainContext(DomainSettings settings)
     {
-        var folder = Environment.SpecialFolder.LocalApplicationData;
-        var path = Environment.GetFolderPath(folder);
-        _dbPath = Path.Join(path, "Rewards.db");
+        _settings = settings;
     }
 
     public DbSet<CompletedTaskEntity> CompletedTasks { get; set; }
@@ -20,7 +19,7 @@ public class DomainContext : DbContext
     public DbSet<User> Users { get; set; }
 
     //protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlite($"Data Source=/home/site/wwwroot/App_Data/Rewards.db");
-    protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlite($"Data Source={_dbPath}");
+    protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlite(_settings.DbConnectionString);
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

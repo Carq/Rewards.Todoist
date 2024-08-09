@@ -21,6 +21,13 @@ public static class DomainModule
 
     public static IServiceCollection AddStorage(this IServiceCollection services)
     {
+        services.AddSingleton(x =>
+        {
+            var configuration = x.GetRequiredService<IConfiguration>()!;
+            return new DomainSettings(configuration.GetConnectionString("DomainDb")
+                ?? throw new ArgumentException("Missing ConnectionString for DomainDb"));
+        });
+
         services.AddScoped<DomainContext>();
         return services;
     }
