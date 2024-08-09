@@ -7,9 +7,6 @@
     <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="TasksEndpoints\GetCompletedTasksEndpoint.Request.cs" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Ardalis.ApiEndpoints" Version="4.1.0" />
@@ -26,6 +23,7 @@
 
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
+    <Content Update="appsettings.*.json" CopyToPublishDirectory="Never" />
   </ItemGroup>
 
   <ItemGroup>
