@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Rewards.Todoist.Domain.Configuration;
 using Rewards.Todoist.Domain.Projects.Entities;
+using Rewards.Todoist.Domain.Rewards.Entities;
 using Rewards.Todoist.Domain.Users;
 
 namespace Rewards.Todoist.Domain.Storage;
@@ -15,6 +16,8 @@ public class DomainContext : DbContext
     }
 
     public DbSet<CompletedTaskEntity> CompletedTasks { get; set; }
+
+    public DbSet<RewardEntity> Rewards { get; set; }
 
     public DbSet<User> Users { get; set; }
 
