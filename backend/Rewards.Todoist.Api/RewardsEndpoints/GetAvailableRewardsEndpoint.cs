@@ -1,18 +1,18 @@
 ﻿using Ardalis.ApiEndpoints;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Rewards.Todoist.Domain.Rewards.Queries;
+using Microsoft.EntityFrameworkCore;
+using Rewards.Todoist.Domain.Storage;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Rewards.Todoist.Api.RewardsEndpoints;
 
 public class GetAvailableRewardsEndpoint : EndpointBaseAsync.WithoutRequest.WithResult<GetAvailableRewardsResult>
 {
-    private readonly IMediator _mediator;
+    private readonly DomainContext _context;
 
-    public GetAvailableRewardsEndpoint(IMediator mediator)
+    public GetAvailableRewardsEndpoint(DomainContext context)
     {
-        _mediator = mediator;
+        _context = context;
     }
 
     [HttpGet("/rewards/available")]
@@ -22,6 +22,12 @@ public class GetAvailableRewardsEndpoint : EndpointBaseAsync.WithoutRequest.With
      Tags = ["Rewards"])]
     public override async Task<GetAvailableRewardsResult> HandleAsync(CancellationToken cancellationToken = default)
     {
-        return await _mediator.Send(new GetAvailableRewardsQuery(), cancellationToken);
+        var rewards = await _context.Rewards.ToListAsync();
+
+        return new GetAvailableRewardsResult(rewards.Select(x => new RewardDto(x.Id, x.Name, x.RequiredGold)).OrderBy(x => x.Id).ToArray());
     }
 }
+
+public record GetAvailableRewardsResult(RewardDto[] Rewards);
+
+public record RewardDto(int Id, string Name, int RequiredGold);

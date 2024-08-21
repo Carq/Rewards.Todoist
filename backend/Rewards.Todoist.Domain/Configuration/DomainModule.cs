@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Rewards.Todoist.Domain.Storage;
 using Rewards.Todoist.Domain.Todoist.Configuration;
 using Rewards.Todoist.Domain.Users.Repository;
+using Rewards.Todoist.Domain.UserStats.Repository;
 using Rewards.Todoist.Domain.Utils;
 
 namespace Rewards.Todoist.Domain.Configuration;
@@ -35,6 +36,7 @@ public static class DomainModule
     public static IServiceCollection AddUserModule(this IServiceCollection services)
     {
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<UserHistoryRepository>();
         return services;
     }
 

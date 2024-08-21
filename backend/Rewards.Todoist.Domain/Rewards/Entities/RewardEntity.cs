@@ -7,7 +7,7 @@ public class RewardEntity
     {
         Id = id;
         Name = name ?? throw new ArgumentNullException(nameof(name));
-        RequiredGold = requiredGold;
+        RequiredGold = ValidadateRequiredGold(requiredGold);
     }
 
     public int Id { get; private set; }
@@ -15,4 +15,14 @@ public class RewardEntity
     public string Name { get; private set; }
 
     public int RequiredGold { get; private set; }
+
+    private int ValidadateRequiredGold(int requiredGold)
+    {
+        if (requiredGold < 1)
+        {
+            throw new ArgumentException("Required Gold has to be greater than 0");
+        }
+
+        return requiredGold;
+    }
 }
