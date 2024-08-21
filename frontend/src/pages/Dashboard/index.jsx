@@ -1,15 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import styled from "@emotion/styled";
 import PersonalOverview from "./personal-overview";
-import { Stack } from "@mui/material";
-
-const LayoutContainer = styled.div`
-  display: flex;
-  width: 100%;
-  padding: 16px;
-  margin: auto;
-  justify-content: center;
-`;
+import { Grid, Box } from "@mui/material";
 
 export default function Dashboard() {
   const { isPending, error, data } = useQuery({
@@ -27,23 +18,34 @@ export default function Dashboard() {
   );
 
   return (
-    <LayoutContainer>
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      sx={{
+        m: "auto",
+      }}
+    >
       {isPending && <>Ładowanie danych...</>}
       {error && <>Błąd: {error.message}</>}
       {data && (
-        <Stack spacing={2} direction="row">
-          <PersonalOverview
-            user={"Carq"}
-            completedTasks={dashboardCarq.completedTasks}
-            experianceOverview={dashboardCarq.experianceOverview}
-          />
-          <PersonalOverview
-            user={"Martyna"}
-            completedTasks={dashboardMartyna.completedTasks}
-            experianceOverview={dashboardMartyna.experianceOverview}
-          />
-        </Stack>
+        <Grid justifyContent="center" container spacing={4} sx={{ p: 2 }}>
+          <Grid item>
+            <PersonalOverview
+              user={"Carq"}
+              completedTasks={dashboardCarq.completedTasks}
+              experianceOverview={dashboardCarq.experianceOverview}
+            />
+          </Grid>
+          <Grid item>
+            <PersonalOverview
+              user={"Martyna"}
+              completedTasks={dashboardMartyna.completedTasks}
+              experianceOverview={dashboardMartyna.experianceOverview}
+            />
+          </Grid>
+        </Grid>
       )}
-    </LayoutContainer>
+    </Box>
   );
 }

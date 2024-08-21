@@ -18,7 +18,7 @@ import { howLongAgo } from "../../utils/date-utils";
 
 function ListOfLatestCompletedTasks({ title, completedTasks }) {
   return (
-    <Card>
+    <Card variant="outlined">
       <CardHeader title={title}></CardHeader>
       <List dense>
         {completedTasks.map((task) => (

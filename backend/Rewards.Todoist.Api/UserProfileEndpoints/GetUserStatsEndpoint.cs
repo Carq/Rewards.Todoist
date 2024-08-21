@@ -29,7 +29,3 @@ public class GetUserStatsEndpoint : EndpointBaseAsync.WithoutRequest.WithResult<
             .ToArray());
     }
 }
-
-public record GetUserStatsResult(UserStats[] UsersStats);
-
-public record UserStats(long Id, string Name, int Experience, int Gold);

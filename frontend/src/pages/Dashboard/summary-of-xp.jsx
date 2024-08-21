@@ -27,7 +27,7 @@ const SummaryOfXP = ({ experianceOverview }) => {
   };
 
   return (
-    <Card>
+    <Card variant="outlined">
       <CardContent>
         <Typography variant="h5" gutterBottom>
           Podsumowanie XP
