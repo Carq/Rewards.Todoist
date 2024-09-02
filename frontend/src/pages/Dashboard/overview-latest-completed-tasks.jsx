@@ -31,7 +31,8 @@ function ListOfLatestCompletedTasks({ title, completedTasks }) {
             <ListItemText
               primary={
                 <Stack direction="row" spacing={1}>
-                  <Typography>{task.name}</Typography>
+                  <Typography variant="body1">{task.name}</Typography>
+
                   {task.labels.map((label) => (
                     <Chip
                       key={label}
@@ -43,7 +44,9 @@ function ListOfLatestCompletedTasks({ title, completedTasks }) {
                 </Stack>
               }
               secondary={
-                <>{howLongAgo(new Date(task.completedDate), new Date())}</>
+                <Typography variant="caption">
+                  {howLongAgo(new Date(task.completedDate), new Date())}
+                </Typography>
               }
             />
           </ListItem>

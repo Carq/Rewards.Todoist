@@ -1,41 +1,33 @@
-import {
-  Avatar,
-  Card,
-  CardContent,
-  Paper,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Paper, Stack } from "@mui/material";
 import ListOfLatestCompletedTasks from "./overview-latest-completed-tasks";
 import PropTypes from "prop-types";
 import SummaryOfXP from "./summary-of-xp";
 
 import styled from "@emotion/styled";
+import PersonalProfile from "./personal-profile";
 
 const Item = styled("div")(({ theme }) => ({
   padding: theme.spacing(2),
 }));
 
-const PersonalOverview = ({ user, completedTasks, experianceOverview }) => {
+const PersonalOverview = ({
+  user,
+  stats,
+  completedTasks,
+  experianceOverview,
+}) => {
   return (
     <Paper elevation={0}>
       <Stack>
         <Item>
-          <Card variant="outlined">
-            <CardContent>
-              <Stack direction="row" spacing={2}>
-                <Typography variant="h4">{user}</Typography>
-                <Avatar>{user[0]}</Avatar>
-              </Stack>
-            </CardContent>
-          </Card>
+          <PersonalProfile user={user} stats={stats} />
         </Item>
         <Item>
           <SummaryOfXP experianceOverview={experianceOverview} />
         </Item>
         <Item>
           <ListOfLatestCompletedTasks
-            title={"Ukończone w ostatnich 24h"}
+            title={"Ukończone od wczoraj"}
             completedTasks={completedTasks}
           />
         </Item>
@@ -44,9 +36,14 @@ const PersonalOverview = ({ user, completedTasks, experianceOverview }) => {
   );
 };
 
-PersonalOverview.protoTypes = {
+PersonalOverview.propTypes = {
   user: PropTypes.string.isRequired,
+  stats: PropTypes.shape({
+    experience: PropTypes.number.isRequired,
+    gold: PropTypes.number.isRequired,
+  }).isRequired,
   completedTasks: PropTypes.array.isRequired,
+  experianceOverview: PropTypes.object.isRequired,
 };
 
 export default PersonalOverview;

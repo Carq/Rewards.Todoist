@@ -52,6 +52,11 @@ const SummaryOfXP = ({ experianceOverview }) => {
               experianceOverview.today.totalTasksCompleted
             )}
             {DisplayExperiance(
+              "Wczoraj:",
+              experianceOverview.yesterday.totalExperience,
+              experianceOverview.yesterday.totalTasksCompleted
+            )}
+            {DisplayExperiance(
               "Ostatnie 7 dni:",
               experianceOverview.lastWeek.totalExperience,
               experianceOverview.lastWeek.totalTasksCompleted

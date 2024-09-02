@@ -2,22 +2,20 @@
 using Microsoft.EntityFrameworkCore;
 using Rewards.Todoist.Domain.Projects.Entities;
 using Rewards.Todoist.Domain.Storage;
-using Rewards.Todoist.Domain.Users;
-using Rewards.Todoist.Domain.Users.Repository;
+using Rewards.Todoist.Domain.UserStats.Repository;
 using Rewards.Todoist.Domain.Utils;
-using System.Linq;
 
 namespace Rewards.Todoist.Domain.Projects.Queries;
 
 public class GetDashboardDataQueryHandler : IRequestHandler<GetDashboardDataQuery, GetDashboardDataResult>
 {
-    private readonly IUserRepository _userRepository;
+    private readonly UserHistoryRepository _userRepository;
 
     private readonly IClock _clock;
 
     private readonly DomainContext _context;
 
-    public GetDashboardDataQueryHandler(IClock clock, IUserRepository userRepository, DomainContext context)
+    public GetDashboardDataQueryHandler(IClock clock, UserHistoryRepository userRepository, DomainContext context)
     {
         _clock = clock;
         _userRepository = userRepository;
@@ -26,6 +24,7 @@ public class GetDashboardDataQueryHandler : IRequestHandler<GetDashboardDataQuer
 
     public async Task<GetDashboardDataResult> Handle(GetDashboardDataQuery request, CancellationToken cancellationToken)
     {
+        var userHistories = await _userRepository.GetUserHistories(cancellationToken);
         var completedTasks = await _context.CompletedTasks.Include(x => x.CompletedBy).ToListAsync();
         var yesterday = _clock.Now.AddDays(-1).Date;
 
@@ -39,6 +38,9 @@ public class GetDashboardDataQueryHandler : IRequestHandler<GetDashboardDataQuer
             taskByUsers.Select(x => 
             new UserDashboardData(
                 x.Key,
+                new UserStats(
+                    userHistories.FirstOrDefault(y => y.Name == x.Key)?.GetExp() ?? 0,
+                    userHistories.FirstOrDefault(y => y.Name == x.Key)?.GetGold() ?? 0),
                 MapToUserExperianceOverview(x.Value),
                 x.Value.Where(x => x.CompletedAt >= yesterday).Select(y => MapToCompleteTask(y)))));
     }
@@ -47,11 +49,12 @@ public class GetDashboardDataQueryHandler : IRequestHandler<GetDashboardDataQuer
     {
         var total = MapToExperianceSummary(completedTasks);
         var today = MapToExperianceSummary(completedTasks.Where(today => today.CompletedAt.Date == _clock.Now.Date));
+        var yesterday = MapToExperianceSummary(completedTasks.Where(today => today.CompletedAt.Date == _clock.Now.Date.AddDays(-1).Date));
         var lastWeek = MapToExperianceSummary(completedTasks.Where(week => week.CompletedAt.Date >= _clock.Now.AddDays(-7).Date));
         var currentMonth = MapToExperianceSummary(completedTasks.Where(month => month.CompletedAt.Month == _clock.Now.Month));
         var lastMonth = MapToExperianceSummary(completedTasks.Where(month => month.CompletedAt.Month == _clock.Now.AddMonths(-1).Month));
 
-        return new UserExperianceOverview(total, today, lastWeek, currentMonth, lastMonth);
+        return new UserExperianceOverview(total, today, yesterday, lastWeek, currentMonth, lastMonth);
     }
 
     private ExperianceSummary MapToExperianceSummary(IEnumerable<CompletedTaskEntity> completedTasks)
