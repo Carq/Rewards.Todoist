@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Rewards.Todoist.Domain.Projects.Entities;
 using Rewards.Todoist.Domain.Storage;
-using Rewards.Todoist.Domain.UserStats.Repository;
+using Rewards.Todoist.Domain.UserEvents.Repository;
 using Rewards.Todoist.Domain.Utils;
 
 namespace Rewards.Todoist.Domain.Projects.Queries;

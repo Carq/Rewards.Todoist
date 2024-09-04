@@ -2,8 +2,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using Rewards.Todoist.Domain.Storage;
 using Rewards.Todoist.Domain.Todoist.Configuration;
+using Rewards.Todoist.Domain.UserEvents.Repository;
 using Rewards.Todoist.Domain.Users.Repository;
-using Rewards.Todoist.Domain.UserStats.Repository;
 using Rewards.Todoist.Domain.Utils;
 
 namespace Rewards.Todoist.Domain.Configuration;

@@ -1,6 +1,6 @@
 ﻿using Ardalis.ApiEndpoints;
 using Microsoft.AspNetCore.Mvc;
-using Rewards.Todoist.Domain.UserStats.Repository;
+using Rewards.Todoist.Domain.UserEvents.Repository;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Rewards.Todoist.Api.UserProfileEndpoints;

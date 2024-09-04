@@ -34,7 +34,8 @@ namespace Rewards.Todoist.Domain.Storage.Migrations
                     { 1, "Masaż - 10 minut", 2 },
                     { 2, "Masaż - 20 minut", 5 },
                     { 3, "Czas dla siebie - 1h", 6 },
-                    { 4, "Czas dla siebie - 2h", 14 }
+                    { 4, "Czas dla siebie - 2h", 14 },
+                    { 5, "Oglądanie filmu", 10 }
                 });
         }
 

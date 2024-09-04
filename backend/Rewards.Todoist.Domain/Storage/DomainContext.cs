@@ -21,6 +21,8 @@ public class DomainContext : DbContext
 
     public DbSet<User> Users { get; set; }
 
+    public DbSet<ClaimedReward> ClaimedRewards{ get; set; }
+
     //protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlite($"Data Source=/home/site/wwwroot/App_Data/Rewards.db");
     protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlite(_settings.DbConnectionString);
 
