@@ -30,4 +30,11 @@
     <ProjectReference Include="..\Rewards.Todoist.Domain\Rewards.Todoist.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="App_Data\Rewards.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

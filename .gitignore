@@ -11,7 +11,7 @@
 *.dbmdl
 *.jfm
 
-# Include dlls if they’re in the NuGet packages directory
+# Include dlls if theyï¿½re in the NuGet packages directory
 !/packages/*/lib/*.dll
 !/packages/*/lib/*/*.dll
 
@@ -67,4 +67,5 @@ tests/CodeCoverageReport*/*
 coverage.cobertura.xml
 /Rewards.Todoist.Api/appsettings.Development.json
 /backend/Rewards.Todoist.Api/Properties
+*.db
 *.bkp
