@@ -10,12 +10,7 @@ const Item = styled("div")(({ theme }) => ({
   padding: theme.spacing(2),
 }));
 
-const PersonalOverview = ({
-  user,
-  stats,
-  completedTasks,
-  experianceOverview,
-}) => {
+const PersonalOverview = ({ user, stats, activities, experianceOverview }) => {
   return (
     <Paper elevation={0}>
       <Stack>
@@ -28,7 +23,7 @@ const PersonalOverview = ({
         <Item>
           <ListOfLatestCompletedTasks
             title={"Ukończone od wczoraj"}
-            completedTasks={completedTasks}
+            activities={activities}
           />
         </Item>
       </Stack>
@@ -42,7 +37,7 @@ PersonalOverview.propTypes = {
     experience: PropTypes.number.isRequired,
     gold: PropTypes.number.isRequired,
   }).isRequired,
-  completedTasks: PropTypes.array.isRequired,
+  activities: PropTypes.array.isRequired,
   experianceOverview: PropTypes.object.isRequired,
 };
 

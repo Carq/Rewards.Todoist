@@ -15,7 +15,7 @@ public class GetDashboardDataEndpoint : EndpointBaseAsync.WithoutRequest.WithRes
         _mediator = mediator;
     }
 
-    [HttpGet("/dashboard-v2")]
+    [HttpGet("/dashboard")]
     [SwaggerOperation(
       Summary = "Get completed tasks",
       OperationId = "GetDashboard",
@@ -25,4 +25,3 @@ public class GetDashboardDataEndpoint : EndpointBaseAsync.WithoutRequest.WithRes
         return await _mediator.Send(new GetDashboardDataQuery(), cancellationToken);
     }
 }
-

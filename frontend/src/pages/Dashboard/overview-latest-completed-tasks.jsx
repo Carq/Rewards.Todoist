@@ -16,24 +16,24 @@ import { grey } from "@mui/material/colors";
 import PropTypes from "prop-types";
 import { howLongAgo } from "../../utils/date-utils";
 
-function ListOfLatestCompletedTasks({ title, completedTasks }) {
+function ListOfLatestCompletedTasks({ title, activities }) {
   return (
     <Card variant="outlined">
       <CardHeader title={title}></CardHeader>
       <List dense>
-        {completedTasks.map((task) => (
-          <ListItem key={task.id}>
+        {activities.map((activity) => (
+          <ListItem key={activity.id}>
             <ListItemIcon>
               <Avatar sx={{ bgcolor: grey[100] }}>
-                {MapProjectNameToIcon(task.projectName)}
+                {MapProjectNameToIcon(activity.activityArea)}
               </Avatar>
             </ListItemIcon>
             <ListItemText
               primary={
                 <Stack direction="row" spacing={1}>
-                  <Typography variant="body1">{task.name}</Typography>
+                  <Typography variant="body1">{activity.name}</Typography>
 
-                  {task.labels.map((label) => (
+                  {activity.tags.map((label) => (
                     <Chip
                       key={label}
                       label={label}
@@ -45,7 +45,7 @@ function ListOfLatestCompletedTasks({ title, completedTasks }) {
               }
               secondary={
                 <Typography variant="caption">
-                  {howLongAgo(new Date(task.completedDate), new Date())}
+                  {howLongAgo(new Date(activity.occurredOn), new Date())}
                 </Typography>
               }
             />
@@ -74,7 +74,7 @@ function MapProjectNameToIcon(projectName) {
 
 ListOfLatestCompletedTasks.protoTypes = {
   title: PropTypes.string.isRequired,
-  completedTasks: PropTypes.array.isRequired,
+  activities: PropTypes.array.isRequired,
 };
 
 export default ListOfLatestCompletedTasks;

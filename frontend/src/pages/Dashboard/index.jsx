@@ -9,13 +9,9 @@ export default function Dashboard() {
       fetch("https://localhost:7021/dashboard").then((res) => res.json()),
   });
 
-  let dashboardCarq = data?.usersDashboardData.find(
-    (x) => x.userName == "Carq"
-  );
+  let dashboardCarq = data?.users.find((x) => x.info.name == "Carq");
 
-  let dashboardMartyna = data?.usersDashboardData.find(
-    (x) => x.userName == "Martyna"
-  );
+  let dashboardMartyna = data?.users.find((x) => x.info.name == "Martyna");
 
   return (
     <Box
@@ -33,17 +29,17 @@ export default function Dashboard() {
           <Grid item sx={{ width: 420 }}>
             <PersonalOverview
               user={"Martyna"}
-              stats={dashboardMartyna.userStats}
-              completedTasks={dashboardMartyna.completedTasks}
-              experianceOverview={dashboardMartyna.experianceOverview}
+              stats={dashboardMartyna.stats}
+              activities={dashboardMartyna.activities}
+              experianceOverview={dashboardMartyna.overview}
             />
           </Grid>
           <Grid item sx={{ width: 420 }}>
             <PersonalOverview
               user={"Carq"}
-              stats={dashboardCarq.userStats}
-              completedTasks={dashboardCarq.completedTasks}
-              experianceOverview={dashboardCarq.experianceOverview}
+              stats={dashboardCarq.stats}
+              activities={dashboardCarq.activities}
+              experianceOverview={dashboardCarq.overview}
             />
           </Grid>
         </Grid>
