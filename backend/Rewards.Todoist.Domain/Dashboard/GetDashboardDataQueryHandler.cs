@@ -26,6 +26,7 @@ public class GetDashboardDataQueryHandler(UserActivityRepository UserActivityRep
                MapToUserExperianceOverview(x.Activities.Where(x => x.Type == ActivityType.TaskCompleted)),
                 x.Activities
                     .Where(y => y.OccurredOn >= yesterday)
+                    .OrderByDescending(y => y.OccurredOn)
                     .Select(y => 
                         new UserActivityRecordDto(y.Id, y.Name, y.ActivityArea, y.Tags, y.OccurredOn)).ToArray()))
             .ToArray());
