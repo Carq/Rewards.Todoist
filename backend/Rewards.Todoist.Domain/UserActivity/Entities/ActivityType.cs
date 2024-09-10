@@ -1,6 +1,6 @@
 ﻿namespace Rewards.Todoist.Domain.UserEvents.Entities;
 
-public enum EventType
+public enum ActivityType
 {
     Undefined,
     TaskCompleted,

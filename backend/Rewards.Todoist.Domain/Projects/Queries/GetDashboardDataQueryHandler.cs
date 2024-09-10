@@ -9,13 +9,13 @@ namespace Rewards.Todoist.Domain.Projects.Queries;
 
 public class GetDashboardDataQueryHandler : IRequestHandler<GetDashboardDataQuery, GetDashboardDataResult>
 {
-    private readonly UserHistoryRepository _userRepository;
+    private readonly UserActivityRepository _userRepository;
 
     private readonly IClock _clock;
 
     private readonly DomainContext _context;
 
-    public GetDashboardDataQueryHandler(IClock clock, UserHistoryRepository userRepository, DomainContext context)
+    public GetDashboardDataQueryHandler(IClock clock, UserActivityRepository userRepository, DomainContext context)
     {
         _clock = clock;
         _userRepository = userRepository;

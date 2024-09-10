@@ -36,7 +36,7 @@ public static class DomainModule
     public static IServiceCollection AddUserModule(this IServiceCollection services)
     {
         services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<UserHistoryRepository>();
+        services.AddScoped<UserActivityRepository>();
         return services;
     }
 

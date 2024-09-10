@@ -4,7 +4,7 @@ namespace Rewards.Todoist.Domain.UserEvents.Entities;
 
 public class UserEventEntity
 {
-    public UserEventEntity(int id, string name, int expImpact, int goldImpact, EventType type, DateTime occurredAt, User occurredFor)
+    public UserEventEntity(int id, string name, int expImpact, int goldImpact, ActivityType type, DateTime occurredAt, User occurredFor)
     {
         Id = id;
         Name = name ?? throw new ArgumentNullException(nameof(name));
@@ -23,7 +23,7 @@ public class UserEventEntity
 
     public int GoldImpact { get; private set; }
 
-    public EventType Type { get; private set; }
+    public ActivityType Type { get; private set; }
 
     public DateTime OccurredAt { get; private set; }
 

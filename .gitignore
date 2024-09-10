@@ -71,3 +71,4 @@ coverage.cobertura.xml
 *.db-wal
 *.db-shm
 *.bkp
+*.dtmp
