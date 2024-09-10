@@ -47,11 +47,11 @@ public class UserActivityRepository
     {
         var completedTaskRecords = completedTasks
             .Where(x => x.CompletedBy.Id == userId)
-            .Select(x => new ActivityLogRecord(x.Name, x.GetExperience(), 0, ActivityType.TaskCompleted, x.CompletedAt)).ToArray();
+            .Select(x => new ActivityLogRecord(x.Id, x.Name, x.GetProjectName(), x.GetExperience(), 0, x.GetLabels(), ActivityType.TaskCompleted, x.CompletedAt)).ToArray();
         
         var claimedRewardRecords = claimedRewards
             .Where(x => x.ClaimedBy.Id == userId)
-            .Select(x => new ActivityLogRecord(x.Name, 0, x.PaidGold, ActivityType.RewardClaimed, x.ClaimedOn)).ToArray();
+            .Select(x => new ActivityLogRecord(x.Id, x.Name, "Reward", 0, x.PaidGold, [$"Gold{x.PaidGold}"], ActivityType.RewardClaimed, x.ClaimedOn)).ToArray();
 
         return completedTaskRecords.Concat(claimedRewardRecords).ToArray();
     }

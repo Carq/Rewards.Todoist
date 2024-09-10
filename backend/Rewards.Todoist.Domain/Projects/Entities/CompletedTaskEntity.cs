@@ -57,4 +57,6 @@ public class CompletedTaskEntity
 
         return int.TryParse(experienceLabel, out var exp) ? exp : 0;
     }
+
+    public string GetProjectName() => Projects.GetProjectName(ProjectId);
 }

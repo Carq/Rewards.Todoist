@@ -67,7 +67,7 @@ public class GetDashboardDataQueryHandler : IRequestHandler<GetDashboardDataQuer
         return new CompletedTask(
                         entity.Id,
                         entity.Name,
-                        Projects.GetProjectName(entity.ProjectId),
+                        entity.GetProjectName(),
                         entity.GetLabels(),
                         entity.CompletedAt);
     }

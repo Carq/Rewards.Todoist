@@ -2,4 +2,4 @@
 
 namespace Rewards.Todoist.Domain.UserActivity.Entities;
 
-public record ActivityLogRecord(string Name, int ExpImpact, int GoldImpact, ActivityType Type, DateTime OccurredAt);
+public record ActivityLogRecord(long Id, string Name, string ActivityArea, int ExpImpact, int GoldImpact, string[] Tags, ActivityType Type, DateTime OccurredOn);
