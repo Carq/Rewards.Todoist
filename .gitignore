@@ -68,4 +68,6 @@ coverage.cobertura.xml
 /Rewards.Todoist.Api/appsettings.Development.json
 /backend/Rewards.Todoist.Api/Properties
 *.db
+*.db-wal
+*.db-shm
 *.bkp
