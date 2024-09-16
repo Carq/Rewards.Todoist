@@ -12,7 +12,7 @@ public class ClaimedRewardConfiguration : IEntityTypeConfiguration<ClaimedReward
         builder.HasKey(x => x.Id);
         builder.Property(x => x.Name).HasMaxLength(StorageConst.ShortNameLength).IsRequired();
         builder.Property(x => x.PaidGold).IsRequired();
-        builder.Property(x => x.ClaimedOn).IsRequired().HasColumnType("datetime");
+        builder.Property(x => x.ClaimedOn).IsRequired().HasColumnType("DATE");
         builder.HasOne(x => x.ClaimedBy).WithMany().IsRequired();
     }
 }

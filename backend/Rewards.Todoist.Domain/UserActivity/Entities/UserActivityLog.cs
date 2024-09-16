@@ -1,8 +1,9 @@
-﻿using Rewards.Todoist.Domain.Users;
+﻿using Rewards.Todoist.Domain.Rewards.Entities;
+using Rewards.Todoist.Domain.Users;
 
 namespace Rewards.Todoist.Domain.UserActivity.Entities;
 
-public class UserActivityLog
+public class UserActivityLog : IUserGold
 {
     public UserActivityLog(User user, IList<ActivityLogRecord> activities)
     {
@@ -33,5 +34,4 @@ public class UserActivityLog
     {
         return Activities.Sum(x => x.GoldImpact);
     }
-
 }

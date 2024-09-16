@@ -16,19 +16,20 @@ public class UserActivityRepository
         _dbContext = dbContext;
     }
 
-    public async Task<UserHistoryEntity[]> GetUserHistories(CancellationToken cancellationToken)
+    public async Task<UserActivityLog> GetUserActivityLog(long UserId, CancellationToken cancellationToken)
     {
-        var allCompletedTasks = await _dbContext.CompletedTasks.Include(x => x.CompletedBy).ToListAsync(cancellationToken);
-        var allRewards = await _dbContext.ClaimedRewards.ToListAsync(cancellationToken);
+        var user = await _dbContext.Users.FirstAsync(x => x.Id == UserId) ?? throw new ArgumentException($"User with id {UserId} not found");
+        var allCompletedTasks = await _dbContext
+                                        .CompletedTasks
+                                        .Where(x => x.CompletedBy.Id == UserId)
+                                        .ToArrayAsync(cancellationToken);
+        
+        var allRewards = await _dbContext
+                                .ClaimedRewards
+                                .Where(x =>x.ClaimedBy.Id == UserId)
+                                .ToArrayAsync(cancellationToken);
 
-        return allCompletedTasks
-            .GroupBy(x => x.CompletedBy.Id)
-            .Select(y => new UserHistoryEntity(
-                y.Key,
-                y.First().CompletedBy.Name,
-                y.ToArray(),
-                allRewards.Where(x => x.ClaimedBy.Id == y.Key).ToArray()))
-            .ToArray();
+        return new UserActivityLog(user, GetActivityLogRecords(user.Id, allCompletedTasks, allRewards));
     }
 
     public async Task<UserActivityLog[]> GetUserActivityLogs(CancellationToken cancellationToken)
@@ -51,7 +52,7 @@ public class UserActivityRepository
         
         var claimedRewardRecords = claimedRewards
             .Where(x => x.ClaimedBy.Id == userId)
-            .Select(x => new ActivityLogRecord(x.Id, x.Name, "Reward", 0, x.PaidGold, [$"Gold{x.PaidGold}"], ActivityType.RewardClaimed, x.ClaimedOn)).ToArray();
+            .Select(x => new ActivityLogRecord(x.Id, x.Name, "Reward", 0, x.PaidGold, [$"Gold{x.PaidGold}"], ActivityType.RewardClaimed, x.ClaimedOn.ToDateTime(TimeOnly.MinValue))).ToArray();
 
         return completedTaskRecords.Concat(claimedRewardRecords).ToArray();
     }

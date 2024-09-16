@@ -19,7 +19,9 @@ public class UserHistoryEntity
 
     public CompletedTaskEntity[] CompletedTasks { get; }
 
-    public ClaimedReward[] ClaimedRewards{ get; }
+    public ClaimedReward[] ClaimedRewards { get; }
+
+
 
     public int GetExp()
     {

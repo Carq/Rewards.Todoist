@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Rewards.Todoist.Domain.Rewards.Repositories;
 using Rewards.Todoist.Domain.Storage;
 using Rewards.Todoist.Domain.Todoist.Configuration;
 using Rewards.Todoist.Domain.UserEvents.Repository;
@@ -16,6 +17,7 @@ public static class DomainModule
         services.AddStorage();
         services.AddUtils();
         services.AddUserModule();
+        services.AddRewardsModule();
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(DomainModule).Assembly));
         return services;
     }
@@ -37,6 +39,12 @@ public static class DomainModule
     {
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<UserActivityRepository>();
+        return services;
+    }
+
+    public static IServiceCollection AddRewardsModule(this IServiceCollection services)
+    {
+        services.AddScoped<RewardsRepository>();
         return services;
     }
 

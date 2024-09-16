@@ -4,13 +4,13 @@ namespace Rewards.Todoist.Domain.Rewards.Entities;
 
 public class ClaimedReward
 {
-    public ClaimedReward(int id, string name, int paidGold, User claimedBy, DateTime claimedOn)
+    public ClaimedReward(int id, string name, int paidGold, User claimedBy, DateOnly claimedOn)
         : this(id, name, paidGold, claimedOn)
     {
         ClaimedBy = claimedBy ?? throw new ArgumentNullException(nameof(claimedBy));
     }
 
-    private ClaimedReward(int id, string name, int paidGold, DateTime claimedOn)
+    private ClaimedReward(int id, string name, int paidGold, DateOnly claimedOn)
     {
         Id = id;
         Name = name ?? throw new ArgumentNullException(nameof(name));
@@ -26,7 +26,7 @@ public class ClaimedReward
 
     public User ClaimedBy { get; private set; }
     
-    public DateTime ClaimedOn { get; private set; }
+    public DateOnly ClaimedOn { get; private set; }
 
     private int ValidadatePaidGold(int gold)
     {
