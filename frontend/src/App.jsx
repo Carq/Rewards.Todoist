@@ -1,5 +1,12 @@
-import Dashboard from "./pages/Dashboard";
+import { Box } from "@mui/material";
+import { Outlet } from "react-router-dom";
+import Menu from "./componets/Menu";
 
 export default function App() {
-  return <Dashboard />;
+  return (
+    <Box display="flex">
+      <Menu />
+      <Outlet />
+    </Box>
+  );
 }

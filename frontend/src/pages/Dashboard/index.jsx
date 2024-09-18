@@ -26,7 +26,7 @@ export default function Dashboard() {
       {error && <>Błąd: {error.message}</>}
       {data && (
         <Grid justifyContent="center" container spacing={4} sx={{ p: 2 }}>
-          <Grid item sx={{ width: 420 }}>
+          <Grid item sx={{ width: 450 }}>
             <PersonalOverview
               user={"Martyna"}
               stats={dashboardMartyna.stats}
@@ -34,7 +34,7 @@ export default function Dashboard() {
               experianceOverview={dashboardMartyna.overview}
             />
           </Grid>
-          <Grid item sx={{ width: 420 }}>
+          <Grid item sx={{ width: 450 }}>
             <PersonalOverview
               user={"Carq"}
               stats={dashboardCarq.stats}
