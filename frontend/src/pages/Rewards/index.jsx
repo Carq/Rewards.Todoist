@@ -1,22 +1,30 @@
-const rewards = [
-  { id: 1, name: "Reward 1", description: "Description for Reward 1" },
-  { id: 2, name: "Reward 2", description: "Description for Reward 2" },
-  { id: 3, name: "Reward 3", description: "Description for Reward 3" },
-];
+import { useQuery } from "@tanstack/react-query";
 
 const Rewards = () => {
+  const { isPending, error, data } = useQuery({
+    queryKey: ["rewards-available"],
+    queryFn: () =>
+      fetch("https://localhost:7021/rewards/available").then((res) =>
+        res.json()
+      ),
+  });
+
+  console.log(data);
+
   return (
-    <div>
-      <h1>Rewards</h1>
-      <ul>
-        {rewards.map((reward) => (
-          <li key={reward.id}>
-            <h2>{reward.name}</h2>
-            <p>{reward.description}</p>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <>
+      {isPending && <>Ładowanie danych...</>}
+      {error && <>Błąd: {error.message}</>}
+      {data && (
+        <ul>
+          {data.rewards.map((reward) => (
+            <li key={reward.id}>
+              {reward.name} - {reward.requiredGold} gold
+            </li>
+          ))}
+        </ul>
+      )}
+    </>
   );
 };
 

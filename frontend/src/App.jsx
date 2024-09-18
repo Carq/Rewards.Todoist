@@ -6,7 +6,16 @@ export default function App() {
   return (
     <Box display="flex">
       <Menu />
-      <Outlet />
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        sx={{
+          m: "auto",
+        }}
+      >
+        <Outlet />
+      </Box>
     </Box>
   );
 }

@@ -14,14 +14,7 @@ export default function Dashboard() {
   let dashboardMartyna = data?.users.find((x) => x.info.name == "Martyna");
 
   return (
-    <Box
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      sx={{
-        m: "auto",
-      }}
-    >
+    <>
       {isPending && <>Ładowanie danych...</>}
       {error && <>Błąd: {error.message}</>}
       {data && (
@@ -44,6 +37,6 @@ export default function Dashboard() {
           </Grid>
         </Grid>
       )}
-    </Box>
+    </>
   );
 }
