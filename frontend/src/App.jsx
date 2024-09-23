@@ -1,21 +1,34 @@
+import { useState } from "react";
 import { Box } from "@mui/material";
 import { Outlet } from "react-router-dom";
 import Menu from "./componets/Menu";
+import AppBarWithMenu from "./componets/AppBar";
 
 export default function App() {
+  const [isMenuOpened, setIsMenuOpened] = useState(false);
+
+  const toggleMenu = () => {
+    setIsMenuOpened(!isMenuOpened);
+  };
+
   return (
-    <Box display="flex">
-      <Menu />
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        sx={{
-          m: "auto",
-        }}
-      >
-        <Outlet />
+    <>
+      <Box display="flex">
+        <Menu isOpened={isMenuOpened} onClick={toggleMenu} />
+        <Box width="100%">
+          <AppBarWithMenu clicked={toggleMenu} />
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            sx={{
+              m: "auto",
+            }}
+          >
+            <Outlet />
+          </Box>
+        </Box>
       </Box>
-    </Box>
+    </>
   );
 }

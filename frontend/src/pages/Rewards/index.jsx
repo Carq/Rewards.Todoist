@@ -9,8 +9,6 @@ const Rewards = () => {
       ),
   });
 
-  console.log(data);
-
   return (
     <>
       {isPending && <>Ładowanie danych...</>}

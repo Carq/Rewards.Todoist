@@ -1,4 +1,3 @@
-import { useState } from "react";
 import Drawer from "@mui/material/Drawer";
 import {
   Box,
@@ -13,18 +12,16 @@ import { Link } from "react-router-dom";
 
 import routes from "../../routes";
 
-const Menu = () => {
-  const [open, setOpen] = useState(true);
-
+const Menu = ({ isOpened, onClick }) => {
   return (
-    <Box>
+    <Box onClick={() => onClick()}>
       <Drawer
-        sx={{ width: 250 }}
-        variant="persistent"
+        sx={{ width: 200 }}
+        variant="temporary"
         anchor="left"
-        open={open}
+        open={isOpened}
       >
-        <Box sx={{ width: 250 }}>
+        <Box sx={{ width: 200 }}>
           <List>
             {routes.map((route, index) => (
               <ListItem key={index} disablePadding>
