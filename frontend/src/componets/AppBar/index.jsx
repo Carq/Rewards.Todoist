@@ -4,11 +4,11 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import Typography from "@mui/material/Typography";
 
-const AppBarWithMenu = ({ clicked }) => {
+const AppBarWithMenu = ({ onClick }) => {
   return (
-    <AppBar position="static" color="background">
+    <AppBar position="static" color="white">
       <Toolbar>
-        <IconButton onClick={() => clicked()}>
+        <IconButton onClick={() => onClick()}>
           <MenuIcon />
         </IconButton>
         <Typography variant="h6">Todoist Rewards</Typography>

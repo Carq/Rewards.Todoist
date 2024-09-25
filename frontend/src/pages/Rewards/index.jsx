@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { config } from "../../config";
+import { List, ListItem, ListItemText, Paper, Typography } from "@mui/material";
 
 const Rewards = () => {
   const { isPending, error, data } = useQuery({
@@ -9,19 +10,29 @@ const Rewards = () => {
   });
 
   return (
-    <>
+    <Paper
+      elevation={1}
+      sx={{
+        p: 2,
+        width: 400,
+      }}
+    >
+      <Typography variant="h4">Nagrody</Typography>
       {isPending && <>Ładowanie danych...</>}
       {error && <>Błąd: {error.message}</>}
       {data && (
-        <ul>
+        <List>
           {data.rewards.map((reward) => (
-            <li key={reward.id}>
-              {reward.name} - {reward.requiredGold} gold
-            </li>
+            <ListItem
+              key={reward.id}
+              secondaryAction={<>{reward.requiredGold} gold</>}
+            >
+              <ListItemText primary={`${reward.name}`} />
+            </ListItem>
           ))}
-        </ul>
+        </List>
       )}
-    </>
+    </Paper>
   );
 };
 

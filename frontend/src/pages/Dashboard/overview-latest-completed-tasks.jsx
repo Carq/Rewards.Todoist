@@ -84,9 +84,17 @@ function MapTagToColor(tag) {
   }
 }
 
-ListOfLatestActivities.protoTypes = {
+ListOfLatestActivities.propTypes = {
   title: PropTypes.string.isRequired,
-  activities: PropTypes.array.isRequired,
+  activities: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      activityArea: PropTypes.string.isRequired,
+      tags: PropTypes.arrayOf(PropTypes.string).isRequired,
+      occurredOn: PropTypes.string.isRequired,
+    })
+  ).isRequired,
 };
 
 export default ListOfLatestActivities;

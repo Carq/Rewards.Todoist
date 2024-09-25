@@ -18,7 +18,7 @@ export default function Dashboard() {
       {isPending && <>Ładowanie danych...</>}
       {error && <>Błąd: {error.message}</>}
       {data && (
-        <Grid justifyContent="center" container spacing={4} sx={{ p: 2 }}>
+        <Grid justifyContent="center" container spacing={4}>
           <Grid item sx={{ width: 450 }}>
             <PersonalOverview
               user={"Martyna"}

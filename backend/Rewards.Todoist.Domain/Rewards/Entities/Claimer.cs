@@ -23,6 +23,6 @@ public class Claimer
             throw new InvalidOperationException("User does not have enough gold to claim this reward.");
         }
 
-        ClaimedRewards.Add(new ClaimedReward(reward.Id, reward.Name, reward.RequiredGold, User, claimedOn));
+        ClaimedRewards.Add(new ClaimedReward(reward.Name, reward.RequiredGold, User, claimedOn));
     }
 }

@@ -4,6 +4,11 @@ namespace Rewards.Todoist.Domain.Rewards.Entities;
 
 public class ClaimedReward
 {
+    public ClaimedReward(string name, int paidGold, User claimedBy, DateOnly claimedOn)
+      : this(0, name, paidGold, claimedBy, claimedOn)
+    {
+    }
+
     public ClaimedReward(int id, string name, int paidGold, User claimedBy, DateOnly claimedOn)
         : this(id, name, paidGold, claimedOn)
     {

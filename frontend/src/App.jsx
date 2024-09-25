@@ -16,13 +16,14 @@ export default function App() {
       <Box display="flex">
         <Menu isOpened={isMenuOpened} onClick={toggleMenu} />
         <Box width="100%">
-          <AppBarWithMenu clicked={toggleMenu} />
+          <AppBarWithMenu onClick={toggleMenu} />
           <Box
             display="flex"
             justifyContent="center"
             alignItems="center"
             sx={{
               m: "auto",
+              p: 2,
             }}
           >
             <Outlet />
