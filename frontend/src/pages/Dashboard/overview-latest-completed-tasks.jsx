@@ -16,7 +16,7 @@ import { grey } from "@mui/material/colors";
 import PropTypes from "prop-types";
 import { howLongAgo } from "../../utils/date-utils";
 
-function ListOfLatestCompletedTasks({ title, activities }) {
+function ListOfLatestActivities({ title, activities }) {
   return (
     <Card variant="outlined">
       <CardHeader title={title}></CardHeader>
@@ -37,7 +37,7 @@ function ListOfLatestCompletedTasks({ title, activities }) {
                     <Chip
                       key={label}
                       label={label}
-                      color="primary"
+                      color={MapTagToColor(label)}
                       size="small"
                     />
                   ))}
@@ -67,14 +67,26 @@ function MapProjectNameToIcon(projectName) {
       return "🔨";
     case "Życie ♥":
       return "💖";
+    case "Reward":
+      return "🎁";
     default:
       return "❓";
   }
 }
 
-ListOfLatestCompletedTasks.protoTypes = {
+function MapTagToColor(tag) {
+  if (tag.startsWith("XP")) {
+    return "primary";
+  } else if (tag.startsWith("Gold")) {
+    return "gold";
+  } else {
+    return "default";
+  }
+}
+
+ListOfLatestActivities.protoTypes = {
   title: PropTypes.string.isRequired,
   activities: PropTypes.array.isRequired,
 };
 
-export default ListOfLatestCompletedTasks;
+export default ListOfLatestActivities;

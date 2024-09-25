@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import PersonalOverview from "./personal-overview";
 import { Grid } from "@mui/material";
+import { config } from "../../config";
 
 export default function Dashboard() {
   const { isPending, error, data } = useQuery({
-    queryKey: ["completedTasks"],
-    queryFn: () =>
-      fetch("https://localhost:7021/dashboard").then((res) => res.json()),
+    queryKey: ["dashboard"],
+    queryFn: () => fetch(`${config.apiUrl}dashboard`).then((res) => res.json()),
   });
 
   let dashboardCarq = data?.users.find((x) => x.info.name == "Carq");
@@ -23,7 +23,8 @@ export default function Dashboard() {
             <PersonalOverview
               user={"Martyna"}
               stats={dashboardMartyna.stats}
-              activities={dashboardMartyna.activities}
+              recentCompletedTasks={dashboardMartyna.recentCompletedTasks}
+              recentClaimedRewards={dashboardMartyna.recentClaimedRewards}
               experianceOverview={dashboardMartyna.overview}
             />
           </Grid>
@@ -31,7 +32,8 @@ export default function Dashboard() {
             <PersonalOverview
               user={"Carq"}
               stats={dashboardCarq.stats}
-              activities={dashboardCarq.activities}
+              recentCompletedTasks={dashboardCarq.recentCompletedTasks}
+              recentClaimedRewards={dashboardCarq.recentClaimedRewards}
               experianceOverview={dashboardCarq.overview}
             />
           </Grid>

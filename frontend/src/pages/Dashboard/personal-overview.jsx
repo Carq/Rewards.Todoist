@@ -1,5 +1,5 @@
 import { Paper, Stack } from "@mui/material";
-import ListOfLatestCompletedTasks from "./overview-latest-completed-tasks";
+import ListOfLatestActivities from "./overview-latest-completed-tasks";
 import PropTypes from "prop-types";
 import SummaryOfXP from "./summary-of-xp";
 
@@ -10,7 +10,13 @@ const Item = styled("div")(({ theme }) => ({
   padding: theme.spacing(2),
 }));
 
-const PersonalOverview = ({ user, stats, activities, experianceOverview }) => {
+const PersonalOverview = ({
+  user,
+  stats,
+  recentCompletedTasks,
+  recentClaimedRewards,
+  experianceOverview,
+}) => {
   return (
     <Paper elevation={0}>
       <Stack>
@@ -21,9 +27,15 @@ const PersonalOverview = ({ user, stats, activities, experianceOverview }) => {
           <SummaryOfXP experianceOverview={experianceOverview} />
         </Item>
         <Item>
-          <ListOfLatestCompletedTasks
-            title={"Ukończone od wczoraj"}
-            activities={activities}
+          <ListOfLatestActivities
+            title={"Ostatnie ukończone zadania"}
+            activities={recentCompletedTasks}
+          />
+        </Item>
+        <Item>
+          <ListOfLatestActivities
+            title={"Ostatnie nagrody"}
+            activities={recentClaimedRewards}
           />
         </Item>
       </Stack>
@@ -37,7 +49,8 @@ PersonalOverview.propTypes = {
     experience: PropTypes.number.isRequired,
     gold: PropTypes.number.isRequired,
   }).isRequired,
-  activities: PropTypes.array.isRequired,
+  recentCompletedTasks: PropTypes.array.isRequired,
+  recentClaimedRewards: PropTypes.array.isRequired,
   experianceOverview: PropTypes.object.isRequired,
 };
 

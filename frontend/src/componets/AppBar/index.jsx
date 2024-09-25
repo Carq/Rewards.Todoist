@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 
 const AppBarWithMenu = ({ clicked }) => {
   return (
-    <AppBar position="static">
+    <AppBar position="static" color="background">
       <Toolbar>
         <IconButton onClick={() => clicked()}>
           <MenuIcon />

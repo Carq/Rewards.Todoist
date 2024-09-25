@@ -1,12 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
+import { config } from "../../config";
 
 const Rewards = () => {
   const { isPending, error, data } = useQuery({
     queryKey: ["rewards-available"],
     queryFn: () =>
-      fetch("https://localhost:7021/rewards/available").then((res) =>
-        res.json()
-      ),
+      fetch(`${config.apiUrl}rewards/available`).then((res) => res.json()),
   });
 
   return (

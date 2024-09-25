@@ -10,6 +10,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Dashboard from "./pages/Dashboard/index.jsx";
 import Rewards from "./pages/Rewards/index.jsx";
+import { config } from "./config.js";
 
 const router = createBrowserRouter(
   [
@@ -33,7 +34,7 @@ const router = createBrowserRouter(
     },
   ],
   {
-    basename: "/",
+    basename: config.routerBasePath,
   }
 );
 
