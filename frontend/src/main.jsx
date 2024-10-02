@@ -11,6 +11,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Dashboard from "./pages/Dashboard/index.jsx";
 import Rewards from "./pages/Rewards/index.jsx";
 import { config } from "./config.js";
+import Token from "./pages/Token/index.jsx";
 
 const router = createBrowserRouter(
   [
@@ -29,6 +30,10 @@ const router = createBrowserRouter(
         {
           path: "/rewards",
           element: <Rewards />,
+        },
+        {
+          path: "/token",
+          element: <Token />,
         },
       ],
     },
