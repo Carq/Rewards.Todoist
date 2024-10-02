@@ -17,6 +17,7 @@ public class CompletedTaskEntity
         Labels = labels ?? throw new ArgumentNullException(nameof(labels));
         ProjectId = projectId;
         CompletedAt = completedAt;
+        CompletedBy = null!; // Initialize with a non-null value to satisfy the compiler
     }
 
     public long Id { get; private set; }
@@ -35,7 +36,7 @@ public class CompletedTaskEntity
     {
         if (string.IsNullOrWhiteSpace(Labels))
         {
-            return [];
+            return Array.Empty<string>();
         }
 
         return Labels.Split(',');

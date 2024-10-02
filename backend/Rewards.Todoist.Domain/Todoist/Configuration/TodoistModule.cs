@@ -19,7 +19,7 @@ public static class TodoistModule
         services.AddSingleton(x =>
         {
             var configuration = x.GetRequiredService<IConfiguration>()!;
-            return new TodoistSettings(configuration["TodoistService:BaseUrl"], configuration["TodoistService:BearerToken"]);
+            return new TodoistSettings(configuration["TodoistService:BaseUrl"]);
 
         });
 

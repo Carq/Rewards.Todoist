@@ -21,6 +21,7 @@ public class ClaimedReward
         Name = name ?? throw new ArgumentNullException(nameof(name));
         PaidGold = ValidadatePaidGold(paidGold);
         ClaimedOn = claimedOn;
+        ClaimedBy = null!; // Initialize with a non-null value to satisfy the compiler
     }
 
     public int Id { get; private set; }
