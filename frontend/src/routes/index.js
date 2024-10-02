@@ -7,6 +7,10 @@ export const routes = [
     name: "Nagrody",
     link: "/rewards",
   },
+  {
+    name: "Token",
+    link: "/token",
+  },
 ];
 
 export default routes;

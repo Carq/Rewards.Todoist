@@ -48,7 +48,7 @@ const Rewards = () => {
             <ListItem
               key={reward.id}
               secondaryAction={
-                <Stack direction="row" spacing={2}>
+                <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
                   <Button
                     size="small"
                     variant="outlined"
