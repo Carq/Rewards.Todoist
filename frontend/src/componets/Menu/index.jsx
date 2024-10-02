@@ -7,9 +7,11 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import MailIcon from "@mui/icons-material/Mail";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import GradeIcon from "@mui/icons-material/Grade";
 import { Link } from "react-router-dom";
 
+import PropTypes from "prop-types";
 import routes from "../../routes";
 
 const Menu = ({ isOpened, onClick }) => {
@@ -27,7 +29,11 @@ const Menu = ({ isOpened, onClick }) => {
               <ListItem key={index} disablePadding>
                 <ListItemButton component={Link} to={route.link}>
                   <ListItemIcon>
-                    <MailIcon />
+                    {route.name === "Dashboard" ? (
+                      <DashboardIcon />
+                    ) : (
+                      <GradeIcon />
+                    )}
                   </ListItemIcon>
                   <ListItemText primary={route.name} />
                 </ListItemButton>
@@ -38,6 +44,10 @@ const Menu = ({ isOpened, onClick }) => {
       </Drawer>
     </Box>
   );
+};
+Menu.propTypes = {
+  isOpened: PropTypes.bool.isRequired,
+  onClick: PropTypes.func.isRequired,
 };
 
 export default Menu;
