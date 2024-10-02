@@ -15,6 +15,7 @@ import {
 import { grey } from "@mui/material/colors";
 import PropTypes from "prop-types";
 import { howLongAgo } from "../../utils/date-utils";
+import BlurredText from "../../componets/BlurredText";
 
 function ListOfLatestActivities({ title, activities }) {
   return (
@@ -31,7 +32,9 @@ function ListOfLatestActivities({ title, activities }) {
             <ListItemText
               primary={
                 <Stack direction="row" spacing={1}>
-                  <Typography variant="body1">{activity.name}</Typography>
+                  <Typography variant="body1">
+                    <BlurredText>{activity.name}</BlurredText>
+                  </Typography>
 
                   {activity.tags.map((label) => (
                     <Chip
@@ -88,7 +91,7 @@ ListOfLatestActivities.propTypes = {
   title: PropTypes.string.isRequired,
   activities: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.string.isRequired,
+      id: PropTypes.number.isRequired,
       name: PropTypes.string.isRequired,
       activityArea: PropTypes.string.isRequired,
       tags: PropTypes.arrayOf(PropTypes.string).isRequired,

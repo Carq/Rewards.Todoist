@@ -6,20 +6,17 @@ using Rewards.Todoist.Domain.Utils;
 
 namespace Rewards.Todoist.Domain.Dashboard;
 
-public class GetDashboardDataQueryHandler(UserActivityRepository UserActivityRepository, IClock Clock) 
+public class GetDashboardDataQueryHandler(UserActivityRepository UserActivityRepository, IClock Clock, AuthContext AuthContext) 
     : IRequestHandler<GetDashboardDataQuery, GetDashboardDataResult>
 {
-
     public async Task<GetDashboardDataResult> Handle(GetDashboardDataQuery request, CancellationToken cancellationToken)
     {
         var userActivityLogs = await UserActivityRepository.GetUserActivityLogs(cancellationToken);
         var yesterday = Clock.Now.AddDays(-1).Date;
-
-
         return new GetDashboardDataResult(
             userActivityLogs.Select(x =>
             new UserDashboardDataDto(
-                new UserInfoDto(x.User.Id, x.User.Name),
+                new UserInfoDto(x.User.Id, HideSensitiveData(x.User.Name)),
                 new UserStatsDto(x.GetExp(), x.GetGold()),
                MapToUserExperianceOverview(x.Activities.Where(x => x.Type == ActivityType.TaskCompleted)),
                GetRecentCompletedTasks(x),
@@ -27,22 +24,22 @@ public class GetDashboardDataQueryHandler(UserActivityRepository UserActivityRep
             .ToArray());
     }
 
-    private static UserActivityRecordDto[] GetRecentCompletedTasks(UserActivityLog x)
+    private UserActivityRecordDto[] GetRecentCompletedTasks(UserActivityLog x)
     {
         return x.Activities
                     .Where(x => x.Type == ActivityType.TaskCompleted)
                     .OrderByDescending(y => y.OccurredOn)
                     .Take(5)
-                    .Select(y => new UserActivityRecordDto(y.Id, y.Name, y.ActivityArea, y.Tags, y.OccurredOn)).ToArray();
+                    .Select(y => new UserActivityRecordDto(y.Id, HideSensitiveData(y.Name), y.ActivityArea, y.Tags, y.OccurredOn)).ToArray();
     }
 
-    private static UserActivityRecordDto[] GetRecentClaimedRewards(UserActivityLog x)
+    private UserActivityRecordDto[] GetRecentClaimedRewards(UserActivityLog x)
     {
         return x.Activities
                     .Where(x => x.Type == ActivityType.RewardClaimed)
                     .OrderByDescending(y => y.OccurredOn)
                     .Take(5)
-                    .Select(y => new UserActivityRecordDto(y.Id, y.Name, y.ActivityArea, y.Tags, y.OccurredOn)).ToArray();
+                    .Select(y => new UserActivityRecordDto(y.Id, HideSensitiveData(y.Name), y.ActivityArea, HideSensitiveData(y.Tags), y.OccurredOn)).ToArray();
     }
 
     private IDictionary<DateOnly, ExperianceSummary> MapToUserExperianceOverview(IEnumerable<ActivityLogRecord> activityLogRecords)
@@ -74,5 +71,28 @@ public class GetDashboardDataQueryHandler(UserActivityRepository UserActivityRep
     private ExperianceSummary MapToExperianceSummary(IEnumerable<ActivityLogRecord> activityLogRecords)
     {
         return new ExperianceSummary(activityLogRecords.Sum(x => x.ExpImpact), activityLogRecords.Count());
+    }
+    
+    private string HideSensitiveData(string data)
+    {
+        if (AuthContext.IsAuthorized)
+        {
+            return data;
+        }
+
+        return new string('˟', Math.Min(data.Length, 20));
+        
+    }
+
+    
+
+    private string[] HideSensitiveData(string[] data)
+    {
+        if (AuthContext.IsAuthorized)
+        {
+            return data;
+        }
+
+        return data.Select(x => new string(x.Where(c => !char.IsDigit(c)).ToArray())).ToArray();
     }
 }

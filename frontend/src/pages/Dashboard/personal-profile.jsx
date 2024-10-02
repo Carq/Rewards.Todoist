@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import LocalFloristIcon from "@mui/icons-material/LocalFlorist";
 import { blue, green } from "@mui/material/colors";
+import BlurredText from "../../componets/BlurredText";
 
 const PersonalProfile = ({ user, stats }) => {
   var avatarColor = user == "Carq" ? blue[500] : green[500];
@@ -14,7 +15,9 @@ const PersonalProfile = ({ user, stats }) => {
       <CardContent>
         <Stack justifyContent="center" direction="row" spacing={2}>
           <Avatar sx={{ bgcolor: avatarColor }}>{avatarIcon}</Avatar>
-          <Typography variant="h4">{user}</Typography>
+          <Typography variant="h4">
+            <BlurredText>{user}</BlurredText>
+          </Typography>
         </Stack>
         <Stack
           mt={2}

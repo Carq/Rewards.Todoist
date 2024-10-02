@@ -7,7 +7,7 @@ export function howLongAgo(date1, date2) {
 
   const diffInHours = Math.floor(diffInMinutes / 60);
   if (diffInHours === 1) return `godzinę temu`;
-  if (diffInHours <= 24) return `${diffInHours} godziny temu`;
+  if (diffInHours < 24) return `${diffInHours} godziny temu`;
 
   const diffInDays = Math.floor(diffInHours / 24);
   if (diffInDays === 1) return `wczoraj`;

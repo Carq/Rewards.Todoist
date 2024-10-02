@@ -6,12 +6,17 @@ import { config } from "../../config";
 export default function Dashboard() {
   const { isPending, error, data } = useQuery({
     queryKey: ["dashboard"],
-    queryFn: () => fetch(`${config.apiUrl}dashboard`).then((res) => res.json()),
+    queryFn: () =>
+      fetch(`${config.apiUrl}dashboard`, {
+        headers: {
+          Authorization: `${localStorage.getItem("AuthToken")}`,
+        },
+      }).then((res) => res.json()),
   });
 
-  let dashboardCarq = data?.users.find((x) => x.info.name == "Carq");
+  let dashboardCarq = data?.users.find((x) => x.info.id == "9238519");
 
-  let dashboardMartyna = data?.users.find((x) => x.info.name == "Martyna");
+  let dashboardMartyna = data?.users.find((x) => x.info.id == "33983343");
 
   return (
     <>
@@ -21,7 +26,7 @@ export default function Dashboard() {
         <Grid justifyContent="center" container spacing={4}>
           <Grid item sx={{ width: 450 }}>
             <PersonalOverview
-              user={"Martyna"}
+              user={dashboardMartyna.info.name}
               stats={dashboardMartyna.stats}
               recentCompletedTasks={dashboardMartyna.recentCompletedTasks}
               recentClaimedRewards={dashboardMartyna.recentClaimedRewards}
@@ -30,7 +35,7 @@ export default function Dashboard() {
           </Grid>
           <Grid item sx={{ width: 450 }}>
             <PersonalOverview
-              user={"Carq"}
+              user={dashboardCarq.info.name}
               stats={dashboardCarq.stats}
               recentCompletedTasks={dashboardCarq.recentCompletedTasks}
               recentClaimedRewards={dashboardCarq.recentClaimedRewards}

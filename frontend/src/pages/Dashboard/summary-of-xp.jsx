@@ -6,8 +6,6 @@ const SummaryOfXP = ({ experianceOverview }) => {
     {
       scaleType: "band",
       data: Object.keys(experianceOverview),
-      max: 20,
-      min: 0,
     },
   ];
   const yAxis = [
@@ -26,7 +24,14 @@ const SummaryOfXP = ({ experianceOverview }) => {
         <BarChart
           height={230}
           xAxis={xAxis}
+          yAxis={[
+            {
+              max: 15,
+              min: 0,
+            },
+          ]}
           series={yAxis}
+          margin={{ top: 15, bottom: 20 }}
           slotProps={{ legend: { hidden: true } }}
         />
       </CardContent>
