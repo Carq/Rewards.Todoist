@@ -35,7 +35,13 @@ public class UserActivityRepository
     public async Task<UserActivityLog[]> GetUserActivityLogs(CancellationToken cancellationToken)
     {
         var users = await _dbContext.Users.ToListAsync(cancellationToken);
-        var allCompletedTasks = await _dbContext.CompletedTasks.Include(x => x.CompletedBy).ToArrayAsync(cancellationToken);
+        var allCompletedTasks = 
+            await _dbContext
+                .CompletedTasks
+                .Include(x => x.CompletedBy)
+                .Where(x => !string.IsNullOrEmpty(x.Labels))
+                .ToArrayAsync(cancellationToken);
+
         var allRewards = await _dbContext.ClaimedRewards.ToArrayAsync(cancellationToken);
 
         return users
