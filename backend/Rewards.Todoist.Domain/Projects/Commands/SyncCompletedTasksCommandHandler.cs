@@ -46,6 +46,7 @@ public class SyncCompletedTasksCommandHandler : IRequestHandler<SyncCompletedTas
             }
         }
 
+        completedTasksToSync = completedTasksToSync.Where(x => x.CompletedAt >= since).ToList();
         if (completedTasksToSync.Count == 0)
         {
             return;
