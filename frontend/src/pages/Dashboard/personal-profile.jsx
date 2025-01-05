@@ -1,4 +1,11 @@
-import { Avatar, Card, CardContent, Stack, Typography } from "@mui/material";
+import {
+  Avatar,
+  Card,
+  CardContent,
+  Stack,
+  Typography,
+  LinearProgress,
+} from "@mui/material";
 import PropTypes from "prop-types";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import LocalFloristIcon from "@mui/icons-material/LocalFlorist";
@@ -24,6 +31,7 @@ const PersonalProfile = ({ user, stats }) => {
   };
 
   const { level, expForNextLevel, expLeft } = calculateLevel(stats.experience);
+  const progress = ((expForNextLevel - expLeft) / expForNextLevel) * 100;
 
   return (
     <Card variant="outlined">
@@ -43,20 +51,30 @@ const PersonalProfile = ({ user, stats }) => {
           <Stack alignItems="center">
             <Typography variant="h5">🕹️</Typography>
             <Typography variant="h5">{level}</Typography>
-            <Typography variant="caption">Level</Typography>
+            <Typography variant="caption">Poziom</Typography>
           </Stack>
 
-          <Stack alignItems="center">
+          {/* <Stack alignItems="center">
             <Typography variant="h5">🔷</Typography>
             <Typography variant="h5">{stats.experience}</Typography>
             <Typography variant="caption">Exp</Typography>
-          </Stack>
+          </Stack> */}
 
           <Stack alignItems="center">
             <Typography variant="h5">💛</Typography>
             <Typography variant="h5">{stats.gold}</Typography>
             <Typography variant="caption">Złoto</Typography>
           </Stack>
+        </Stack>
+        <Stack mt={3} spacing={1}>
+          <LinearProgress
+            variant="determinate"
+            value={progress}
+            sx={{ height: 10, borderRadius: 5 }}
+          />
+          <Typography variant="caption" align="center" color="textSecondary">
+            Następny poziom: {expLeft} / {expForNextLevel}
+          </Typography>
         </Stack>
       </CardContent>
     </Card>
