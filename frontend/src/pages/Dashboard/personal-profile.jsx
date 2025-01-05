@@ -10,6 +10,21 @@ const PersonalProfile = ({ user, stats }) => {
   var avatarIcon =
     user == "Carq" ? <FitnessCenterIcon /> : <LocalFloristIcon />;
 
+  const calculateLevel = (experience) => {
+    let level = 1;
+    let expForNextLevel = 50;
+
+    while (experience >= expForNextLevel) {
+      experience -= expForNextLevel;
+      level++;
+      expForNextLevel = Math.floor(expForNextLevel * 1.05);
+    }
+
+    return { level, expForNextLevel, expLeft: expForNextLevel - experience };
+  };
+
+  const { level, expForNextLevel, expLeft } = calculateLevel(stats.experience);
+
   return (
     <Card variant="outlined">
       <CardContent>
@@ -25,6 +40,12 @@ const PersonalProfile = ({ user, stats }) => {
           justifyContent="space-evenly"
           alignItems="center"
         >
+          <Stack alignItems="center">
+            <Typography variant="h5">🕹️</Typography>
+            <Typography variant="h5">{level}</Typography>
+            <Typography variant="caption">Level</Typography>
+          </Stack>
+
           <Stack alignItems="center">
             <Typography variant="h5">🔷</Typography>
             <Typography variant="h5">{stats.experience}</Typography>
