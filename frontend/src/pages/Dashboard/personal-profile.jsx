@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   Avatar,
   Card,
@@ -13,6 +14,8 @@ import { blue, green } from "@mui/material/colors";
 import BlurredText from "../../componets/BlurredText";
 
 const PersonalProfile = ({ user, stats }) => {
+  const [progress, setProgress] = useState(0);
+
   var avatarColor = user == "Carq" ? blue[500] : green[500];
   var avatarIcon =
     user == "Carq" ? <FitnessCenterIcon /> : <LocalFloristIcon />;
@@ -31,7 +34,14 @@ const PersonalProfile = ({ user, stats }) => {
   };
 
   const { level, expForNextLevel, expLeft } = calculateLevel(stats.experience);
-  const progress = ((expForNextLevel - expLeft) / expForNextLevel) * 100;
+  const targetProgress = ((expForNextLevel - expLeft) / expForNextLevel) * 100;
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setProgress(targetProgress);
+    }, 250);
+    return () => clearTimeout(timer);
+  }, [targetProgress]);
 
   return (
     <Card variant="outlined">
@@ -53,12 +63,6 @@ const PersonalProfile = ({ user, stats }) => {
             <Typography variant="h5">{level}</Typography>
             <Typography variant="caption">Poziom</Typography>
           </Stack>
-
-          {/* <Stack alignItems="center">
-            <Typography variant="h5">🔷</Typography>
-            <Typography variant="h5">{stats.experience}</Typography>
-            <Typography variant="caption">Exp</Typography>
-          </Stack> */}
 
           <Stack alignItems="center">
             <Typography variant="h5">💛</Typography>
