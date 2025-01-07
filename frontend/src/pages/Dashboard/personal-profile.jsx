@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import {
   Avatar,
+  Box,
   Card,
   CardContent,
   Stack,
@@ -71,14 +72,21 @@ const PersonalProfile = ({ user, stats }) => {
           </Stack>
         </Stack>
         <Stack mt={3} spacing={1}>
-          <LinearProgress
-            variant="determinate"
-            value={progress}
-            sx={{ height: 10, borderRadius: 5 }}
-          />
-          <Typography variant="caption" align="center" color="textSecondary">
-            Następny poziom: {expLeft} / {expForNextLevel}
-          </Typography>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <Box sx={{ width: "100%", mr: 1 }}>
+              <LinearProgress
+                variant="determinate"
+                value={progress}
+                sx={{ height: 10, borderRadius: 5 }}
+              />
+            </Box>
+            <Box sx={{ minWidth: 35 }}>
+              <Typography
+                variant="body2"
+                sx={{ color: "text.secondary" }}
+              >{`${expLeft}/${expForNextLevel}`}</Typography>
+            </Box>
+          </Box>
         </Stack>
       </CardContent>
     </Card>
