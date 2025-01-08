@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { config } from "../../config";
 import {
@@ -13,6 +14,7 @@ import {
 } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import axios from "axios";
+import confetti from "canvas-confetti";
 
 const Rewards = () => {
   const { isPending, error, data } = useQuery({
@@ -30,6 +32,28 @@ const Rewards = () => {
       });
     },
   });
+
+  useEffect(() => {
+    if (claimReward.isSuccess) {
+      confetti({
+        particleCount: 70,
+        scalar: 1.2,
+        spread: 360,
+        shapes: ["star"],
+        colors: ["FFE400", "FFBD00", "E89400", "FFCA6C", "FDFFB8"],
+      });
+
+      const timer = setTimeout(() => {
+        confetti({
+          particleCount: 25,
+          scalar: 0.75,
+          spread: 300,
+          shapes: ["star"],
+        });
+      }, 250);
+      return () => clearTimeout(timer);
+    }
+  }, [claimReward.isSuccess]);
 
   return (
     <Paper
