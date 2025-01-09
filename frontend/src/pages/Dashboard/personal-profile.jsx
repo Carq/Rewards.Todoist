@@ -81,9 +81,10 @@ const PersonalProfile = ({ user, stats }) => {
               />
             </Box>
             <Box sx={{ minWidth: 35 }}>
-              <Typography variant="body2" sx={{ color: "text.secondary" }}>{`${
-                expForNextLevel - expLeft
-              }/${expForNextLevel}`}</Typography>
+              <Typography
+                variant="body2"
+                sx={{ color: "text.secondary" }}
+              >{`${expLeft}XP`}</Typography>
             </Box>
           </Box>
         </Stack>
