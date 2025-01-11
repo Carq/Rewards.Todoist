@@ -15,12 +15,10 @@ export default function Dashboard() {
   });
 
   let dashboardCarq = data?.users.find((x) => x.info.id == "9238519");
-
   let dashboardMartyna = data?.users.find((x) => x.info.id == "33983343");
 
   return (
     <>
-      {isPending && <>Ładowanie danych...</>}
       {error && <>Błąd: {error.message}</>}
       {data && (
         <Grid justifyContent="center" container spacing={4}>
@@ -31,6 +29,7 @@ export default function Dashboard() {
               recentCompletedTasks={dashboardMartyna.recentCompletedTasks}
               recentClaimedRewards={dashboardMartyna.recentClaimedRewards}
               experianceOverview={dashboardMartyna.overview}
+              isLoading={isPending}
             />
           </Grid>
           <Grid item sx={{ width: 450 }}>
@@ -40,6 +39,7 @@ export default function Dashboard() {
               recentCompletedTasks={dashboardCarq.recentCompletedTasks}
               recentClaimedRewards={dashboardCarq.recentClaimedRewards}
               experianceOverview={dashboardCarq.overview}
+              isLoading={isPending}
             />
           </Grid>
         </Grid>
