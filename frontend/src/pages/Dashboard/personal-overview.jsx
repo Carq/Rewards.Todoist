@@ -66,15 +66,15 @@ const PersonalOverview = ({
 };
 
 PersonalOverview.propTypes = {
-  user: PropTypes.string.isRequired,
+  user: PropTypes.string,
   stats: PropTypes.shape({
     experience: PropTypes.number.isRequired,
     gold: PropTypes.number.isRequired,
-  }).isRequired,
-  recentCompletedTasks: PropTypes.array.isRequired,
-  recentClaimedRewards: PropTypes.array.isRequired,
-  experianceOverview: PropTypes.object.isRequired,
-  isLoading: PropTypes.bool.isRequired,
+  }),
+  recentCompletedTasks: PropTypes.array,
+  recentClaimedRewards: PropTypes.array,
+  experianceOverview: PropTypes.object,
+  isLoading: PropTypes.bool,
 };
 
 export default PersonalOverview;

@@ -8,10 +8,12 @@ import "./index.css";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Dashboard from "./pages/Dashboard/index.jsx";
-import Rewards from "./pages/Rewards/index.jsx";
+import loadable from "@loadable/component";
 import { config } from "./config.js";
-import Token from "./pages/Token/index.jsx";
+
+const Dashboard = loadable(() => import("./pages/Dashboard/index.jsx"));
+const Rewards = loadable(() => import("./pages/Rewards/index.jsx"));
+const Token = loadable(() => import("./pages/Token/index.jsx"));
 
 const router = createBrowserRouter(
   [
