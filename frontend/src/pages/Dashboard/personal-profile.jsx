@@ -7,6 +7,7 @@ import {
   Stack,
   Typography,
   LinearProgress,
+  Alert,
 } from "@mui/material";
 import PropTypes from "prop-types";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
@@ -47,6 +48,13 @@ const PersonalProfile = ({ user, stats }) => {
   return (
     <Card variant="outlined">
       <CardContent>
+        {targetProgress < 6 && (
+          <Stack justifyContent="center" spacing={2} mb={2}>
+            <Alert severity="success" variant="filled">
+              Nowy poziom {level}! Gratulacje! 🎉
+            </Alert>
+          </Stack>
+        )}
         <Stack justifyContent="center" direction="row" spacing={2}>
           <Avatar sx={{ bgcolor: avatarColor }}>{avatarIcon}</Avatar>
           <Typography variant="h4">
