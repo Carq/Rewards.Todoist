@@ -1,19 +1,20 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import {
-  Avatar,
-  Box,
   Card,
   CardContent,
-  Stack,
   Typography,
+  Stack,
+  Box,
   LinearProgress,
+  Avatar,
   Alert,
 } from "@mui/material";
-import PropTypes from "prop-types";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import LocalFloristIcon from "@mui/icons-material/LocalFlorist";
-import { blue, green } from "@mui/material/colors";
 import BlurredText from "../../componets/BlurredText";
+import { blue, green } from "@mui/material/colors";
+import { getMotivationMessage } from "../../utils/getMotivationMessage";
 
 const PersonalProfile = ({ user, stats }) => {
   const [progress, setProgress] = useState(0);
@@ -45,14 +46,14 @@ const PersonalProfile = ({ user, stats }) => {
     return () => clearTimeout(timer);
   }, [targetProgress]);
 
+  const progressThresholdForDisplayingLevelUp = 15;
+
   return (
     <Card variant="outlined">
       <CardContent>
-        {targetProgress < 6 && (
+        {targetProgress <= progressThresholdForDisplayingLevelUp && (
           <Stack justifyContent="center" spacing={2} mb={2}>
-            <Alert severity="success" variant="filled">
-              Nowy poziom {level}! Gratulacje! 🎉
-            </Alert>
+            <Alert severity="success">{getMotivationMessage()} 🎉</Alert>
           </Stack>
         )}
         <Stack justifyContent="center" direction="row" spacing={2}>
