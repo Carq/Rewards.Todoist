@@ -3,7 +3,6 @@ using Rewards.Todoist.Domain.UserActivity.Entities;
 using Rewards.Todoist.Domain.UserEvents.Entities;
 using Rewards.Todoist.Domain.UserEvents.Repository;
 using Rewards.Todoist.Domain.Utils;
-using System.Globalization;
 
 namespace Rewards.Todoist.Domain.Dashboard;
 
@@ -45,22 +44,20 @@ public class GetDashboardDataQueryHandler(UserActivityRepository UserActivityRep
 
     private IDictionary<DateOnly, ExperianceSummary> MapToUserExperianceOverview(IEnumerable<ActivityLogRecord> activityLogRecords)
     {
-        var startDate = DateOnly.FromDateTime(Clock.Now.AddDays(-21).Date);
-        var endDate = DateOnly.FromDateTime(Clock.Now.Date);
-        var dateRange = Enumerable.Range(0, (int)(endDate.ToDateTime(TimeOnly.MinValue) - startDate.ToDateTime(TimeOnly.MinValue)).TotalDays + 1)
+        var startDate = Clock.Now.AddDays(-14).Date;
+        var endDate = Clock.Now.Date;
+        var dateRange = Enumerable.Range(0, (int)(endDate - startDate).TotalDays + 1)
                                   .Select(offset => startDate.AddDays(offset));
 
-        var experianceOverview = dateRange.GroupBy(date => GetFirstDayOfWeek(date))
-                                          .ToDictionary(g => g.Key, _ => new ExperianceSummary(0, 0));
+        var experianceOverview = dateRange.ToDictionary(date => DateOnly.FromDateTime(date), _ => new ExperianceSummary(0, 0));
 
         foreach (var activityLogRecord in activityLogRecords)
         {
             var occurredOnDate = DateOnly.FromDateTime(activityLogRecord.OccurredOn.Date);
-            var firstDayOfWeek = GetFirstDayOfWeek(occurredOnDate);
-            if (experianceOverview.ContainsKey(firstDayOfWeek))
+            if (experianceOverview.ContainsKey(occurredOnDate))
             {
-                var summary = experianceOverview[firstDayOfWeek];
-                experianceOverview[firstDayOfWeek] = summary with
+                var summary = experianceOverview[occurredOnDate];
+                experianceOverview[occurredOnDate] = summary with
                 {
                     TotalExperience = summary.TotalExperience + activityLogRecord.ExpImpact,
                     TotalTasksCompleted = summary.TotalTasksCompleted + 1
@@ -69,13 +66,6 @@ public class GetDashboardDataQueryHandler(UserActivityRepository UserActivityRep
         }
 
         return experianceOverview;
-    }
-
-    private DateOnly GetFirstDayOfWeek(DateOnly date)
-    {
-        var dayOfWeek = (int)date.DayOfWeek;
-        var offset = (dayOfWeek == 0 ? 6 : dayOfWeek - 1);
-        return date.AddDays(-offset);
     }
 
     private ExperianceSummary MapToExperianceSummary(IEnumerable<ActivityLogRecord> activityLogRecords)

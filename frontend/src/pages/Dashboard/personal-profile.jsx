@@ -46,7 +46,7 @@ const PersonalProfile = ({ user, stats }) => {
     return () => clearTimeout(timer);
   }, [targetProgress]);
 
-  const progressThresholdForDisplayingLevelUp = 15;
+  const progressThresholdForDisplayingLevelUp = 10;
 
   return (
     <Card variant="outlined">
