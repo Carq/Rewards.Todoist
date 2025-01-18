@@ -15,12 +15,17 @@ import {
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import axios from "axios";
 import confetti from "canvas-confetti";
+import BlurredText from "../../componets/BlurredText";
 
 const Rewards = () => {
   const { isPending, error, data } = useQuery({
     queryKey: ["rewards-available"],
     queryFn: () =>
-      fetch(`${config.apiUrl}rewards/available`).then((res) => res.json()),
+      fetch(`${config.apiUrl}rewards/available`, {
+        headers: {
+          Authorization: `${localStorage.getItem("AuthToken")}`,
+        },
+      }).then((res) => res.json()),
   });
 
   const claimReward = useMutation({
@@ -107,7 +112,7 @@ const Rewards = () => {
               }
             >
               <ListItemText
-                primary={reward.name}
+                primary={<BlurredText>{reward.name}</BlurredText>}
                 secondary={
                   <Chip
                     label={`Gold${reward.requiredGold}`}

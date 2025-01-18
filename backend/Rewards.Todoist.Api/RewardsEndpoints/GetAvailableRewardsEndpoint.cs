@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Rewards.Todoist.Domain.Storage;
+using Rewards.Todoist.Domain.Utils;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Rewards.Todoist.Api.RewardsEndpoints;
@@ -10,9 +11,12 @@ public class GetAvailableRewardsEndpoint : EndpointBaseAsync.WithoutRequest.With
 {
     private readonly DomainContext _context;
 
-    public GetAvailableRewardsEndpoint(DomainContext context)
+    private readonly AuthContext _authContext;
+
+    public GetAvailableRewardsEndpoint(DomainContext context, AuthContext authContext)
     {
         _context = context;
+        _authContext = authContext;
     }
 
     [HttpGet("/rewards/available")]
@@ -24,7 +28,7 @@ public class GetAvailableRewardsEndpoint : EndpointBaseAsync.WithoutRequest.With
     {
         var rewards = await _context.Rewards.ToListAsync();
 
-        return new GetAvailableRewardsResult(rewards.Select(x => new RewardDto(x.Id, x.Name, x.RequiredGold)).OrderBy(x => x.Id).ToArray());
+        return new GetAvailableRewardsResult(rewards.Select(x => new RewardDto(x.Id, _authContext.HideSensitiveData(x.Name), x.RequiredGold)).OrderBy(x => x.Id).ToArray());
     }
 }
 

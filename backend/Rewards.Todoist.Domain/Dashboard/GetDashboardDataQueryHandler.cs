@@ -16,7 +16,7 @@ public class GetDashboardDataQueryHandler(UserActivityRepository UserActivityRep
         return new GetDashboardDataResult(
             userActivityLogs.Select(x =>
             new UserDashboardDataDto(
-                new UserInfoDto(x.User.Id, HideSensitiveData(x.User.Name)),
+                new UserInfoDto(x.User.Id, AuthContext.HideSensitiveData(x.User.Name)),
                 new UserStatsDto(x.GetExp(), x.GetGold()),
                MapToUserExperianceOverview(x.Activities.Where(x => x.Type == ActivityType.TaskCompleted)),
                GetRecentCompletedTasks(x),
@@ -30,7 +30,7 @@ public class GetDashboardDataQueryHandler(UserActivityRepository UserActivityRep
                     .Where(x => x.Type == ActivityType.TaskCompleted)
                     .OrderByDescending(y => y.OccurredOn)
                     .Take(5)
-                    .Select(y => new UserActivityRecordDto(y.Id, HideSensitiveData(y.Name), y.ActivityArea, y.Tags, y.OccurredOn)).ToArray();
+                    .Select(y => new UserActivityRecordDto(y.Id, AuthContext.HideSensitiveData(y.Name), y.ActivityArea, y.Tags, y.OccurredOn)).ToArray();
     }
 
     private UserActivityRecordDto[] GetRecentClaimedRewards(UserActivityLog x)
@@ -39,7 +39,7 @@ public class GetDashboardDataQueryHandler(UserActivityRepository UserActivityRep
                     .Where(x => x.Type == ActivityType.RewardClaimed)
                     .OrderByDescending(y => y.OccurredOn)
                     .Take(5)
-                    .Select(y => new UserActivityRecordDto(y.Id, HideSensitiveData(y.Name), y.ActivityArea, HideSensitiveData(y.Tags), y.OccurredOn)).ToArray();
+                    .Select(y => new UserActivityRecordDto(y.Id, AuthContext.HideSensitiveData(y.Name), y.ActivityArea, AuthContext.HideSensitiveData(y.Tags), y.OccurredOn)).ToArray();
     }
 
     private IDictionary<DateOnly, ExperianceSummary> MapToUserExperianceOverview(IEnumerable<ActivityLogRecord> activityLogRecords)
@@ -66,33 +66,5 @@ public class GetDashboardDataQueryHandler(UserActivityRepository UserActivityRep
         }
 
         return experianceOverview;
-    }
-
-    private ExperianceSummary MapToExperianceSummary(IEnumerable<ActivityLogRecord> activityLogRecords)
-    {
-        return new ExperianceSummary(activityLogRecords.Sum(x => x.ExpImpact), activityLogRecords.Count());
-    }
-    
-    private string HideSensitiveData(string data)
-    {
-        if (AuthContext.IsAuthorized)
-        {
-            return data;
-        }
-
-        return new string('˟', Math.Min(data.Length, 20));
-        
-    }
-
-    
-
-    private string[] HideSensitiveData(string[] data)
-    {
-        if (AuthContext.IsAuthorized)
-        {
-            return data;
-        }
-
-        return data.Select(x => new string(x.Where(c => !char.IsDigit(c)).ToArray())).ToArray();
     }
 }
