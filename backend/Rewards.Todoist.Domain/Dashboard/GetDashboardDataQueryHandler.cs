@@ -36,7 +36,7 @@ public class GetDashboardDataQueryHandler(UserActivityRepository UserActivityRep
     private UserActivityRecordDto[] GetRecentClaimedRewards(UserActivityLog x)
     {
         return x.Activities
-                    .Where(x => x.Type == ActivityType.RewardClaimed)
+                    .Where(x => x.Type == ActivityType.RewardClaimed && x.OccurredOn > Clock.Now.AddMonths(-1))
                     .OrderByDescending(y => y.OccurredOn)
                     .Take(5)
                     .Select(y => new UserActivityRecordDto(y.Id, AuthContext.HideSensitiveData(y.Name), y.ActivityArea, AuthContext.HideSensitiveData(y.Tags), y.OccurredOn)).ToArray();
