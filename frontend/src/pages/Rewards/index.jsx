@@ -11,6 +11,7 @@ import {
   Paper,
   Stack,
   Typography,
+  Divider,
 } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import axios from "axios";
@@ -74,54 +75,58 @@ const Rewards = () => {
       {data && (
         <List>
           {data.rewards.map((reward) => (
-            <ListItem
-              key={reward.id}
-              secondaryAction={
-                <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    startIcon={<ShoppingCartIcon />}
-                    disabled={claimReward.isPending || claimReward.isError}
-                    onClick={() =>
-                      claimReward.mutate({
-                        rewardId: reward.id,
-                        userId: 9238519,
-                        claimedOn: new Date().toISOString().split("T")[0],
-                      })
-                    }
-                  >
-                    Carq
-                  </Button>
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    startIcon={<ShoppingCartIcon />}
-                    disabled={claimReward.isPending || claimReward.isError}
-                    onClick={() =>
-                      claimReward.mutate({
-                        rewardId: reward.id,
-                        userId: 33983343,
-                        claimedOn: new Date().toISOString().split("T")[0],
-                      })
-                    }
-                  >
-                    Martyna
-                  </Button>
-                </Stack>
-              }
-            >
-              <ListItemText
-                primary={<BlurredText>{reward.name}</BlurredText>}
-                secondary={
-                  <Chip
-                    label={`Gold${reward.requiredGold}`}
-                    color="gold"
-                    size="small"
-                  />
+            <>
+              <ListItem
+                key={reward.id}
+                secondaryAction={
+                  <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      startIcon={<ShoppingCartIcon />}
+                      disabled={claimReward.isPending || claimReward.isError}
+                      onClick={() =>
+                        claimReward.mutate({
+                          rewardId: reward.id,
+                          userId: 9238519,
+                          claimedOn: new Date().toISOString().split("T")[0],
+                        })
+                      }
+                    >
+                      Carq
+                    </Button>
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      color="success"
+                      startIcon={<ShoppingCartIcon />}
+                      disabled={claimReward.isPending || claimReward.isError}
+                      onClick={() =>
+                        claimReward.mutate({
+                          rewardId: reward.id,
+                          userId: 33983343,
+                          claimedOn: new Date().toISOString().split("T")[0],
+                        })
+                      }
+                    >
+                      Martyna
+                    </Button>
+                  </Stack>
                 }
-              />
-            </ListItem>
+              >
+                <ListItemText
+                  primary={<BlurredText>{reward.name}</BlurredText>}
+                  secondary={
+                    <Chip
+                      label={`Gold${reward.requiredGold}`}
+                      color="gold"
+                      size="small"
+                    />
+                  }
+                />
+              </ListItem>
+              <Divider component="li" />
+            </>
           ))}
         </List>
       )}
