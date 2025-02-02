@@ -45,13 +45,13 @@ const PersonalOverview = ({
             <PersonalProfile user={user} stats={stats} />
           </Item>
           <Item>
-            <SummaryOfXP experianceOverview={experianceOverview} />
-          </Item>
-          <Item>
             <ListOfLatestActivities
               title={"Ostatnie ukończone zadania"}
               activities={recentCompletedTasks}
             />
+          </Item>
+          <Item>
+            <SummaryOfXP experianceOverview={experianceOverview} />
           </Item>
           <Item>
             <ListOfLatestActivities
