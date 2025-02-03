@@ -1,5 +1,6 @@
 import { Card, CardContent, Typography, Stack } from "@mui/material";
 import { BarChart } from "@mui/x-charts/BarChart";
+import PropTypes from "prop-types";
 
 const SummaryOfXP = ({ experianceOverview }) => {
   const dates = Object.keys(experianceOverview).sort(
@@ -82,6 +83,9 @@ const SummaryOfXP = ({ experianceOverview }) => {
       </CardContent>
     </Card>
   );
+};
+SummaryOfXP.propTypes = {
+  experianceOverview: PropTypes.object.isRequired,
 };
 
 export default SummaryOfXP;
