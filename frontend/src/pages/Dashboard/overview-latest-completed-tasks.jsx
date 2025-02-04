@@ -26,7 +26,7 @@ function ListOfLatestActivities({ title, activities }) {
           <ListItem key={activity.id}>
             <ListItemIcon>
               <Avatar sx={{ bgcolor: grey[100] }}>
-                {MapProjectNameToIcon(activity.activityArea)}
+                {MapProjectNameToIcon(activity.activityArea, activity.name)}
               </Avatar>
             </ListItemIcon>
             <ListItemText
@@ -60,7 +60,7 @@ function ListOfLatestActivities({ title, activities }) {
   );
 }
 
-function MapProjectNameToIcon(projectName) {
+function MapProjectNameToIcon(projectName, activityName) {
   switch (projectName) {
     case "Dom 🏡":
       return "🏡";
@@ -71,9 +71,23 @@ function MapProjectNameToIcon(projectName) {
     case "Życie ♥":
       return "💖";
     case "Reward":
-      return "🎁";
+      return MapRewardNameToIcon(activityName);
     default:
       return "❓";
+  }
+}
+
+function MapRewardNameToIcon(rewardName) {
+  switch (rewardName) {
+    case "Słodycze":
+      return "🍬";
+    case "Słone przekąski":
+      return "🍿";
+    case "Czas dla siebie - 1h":
+    case "Czas dla siebie - 2h":
+      return "🕒";
+    default:
+      return "🎁";
   }
 }
 
