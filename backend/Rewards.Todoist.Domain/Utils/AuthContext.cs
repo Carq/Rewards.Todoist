@@ -20,4 +20,6 @@ public class AuthContext
     }
 
     public bool IsAuthorized { get; }
+
+    public bool IsNotAuthorized => !IsAuthorized;
 }

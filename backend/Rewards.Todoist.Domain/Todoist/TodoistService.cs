@@ -1,5 +1,4 @@
 ﻿using Flurl.Http;
-using Flurl.Util;
 using Rewards.Todoist.Domain.Todoist.Contract;
 
 namespace Rewards.Todoist.Domain.Todoist;
@@ -46,16 +45,12 @@ public class TodoistService : ITodoistService
             .GetJsonAsync<GetAllCompeltedResult>();
     }
 
-    public async Task<TaskDetailsDto[]> GetTasksDetailsAsync(string[] taskIds)
+    public async Task<TaskDetailsDto[]> GetActiveTasksForToday(string userAccessToken)
     {
-        if (taskIds.Length == 0)
-        {
-            return Array.Empty<TaskDetailsDto>();
-        }
-
         return await _httpClient
             .Request("rest/v2/tasks")
-            .SetQueryParam("ids", string.Join(',', taskIds))
+            .WithOAuthBearerToken(userAccessToken)
+            .SetQueryParam("filter", "date before: tomorrow")
             .GetJsonAsync<TaskDetailsDto[]>();
     }
 }
