@@ -39,8 +39,9 @@ internal class GetTodaysTasksQueryHandler : IRequestHandler<GetTodaysTasksQuery,
         return new GetTodaysTasksQueryResult(
             tasks
             .Where(x => Projects.GetAllProjectIds().Contains(x.ProjectId))
-            .Select(x => new Task(x.Id, x.Content))
+            .Select(x => new Task(x.Id, x.Content, Projects.GetProjectName(x.ProjectId), x.Labels))
             .DistinctBy(x => x.Name)
+            .OrderByDescending(x => x.Tags.FirstOrDefault())
             .ToArray());
     }
 }

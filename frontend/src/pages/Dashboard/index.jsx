@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import PersonalOverview from "./personal-overview";
+import ListOfTasks from "./list-of-tasks";
 import { Grid } from "@mui/material";
 import { config } from "../../config";
 
@@ -14,6 +15,16 @@ export default function Dashboard() {
       }).then((res) => res.json()),
   });
 
+  const { isPending: isPendingActiveTask, data: dataActiveTask } = useQuery({
+    queryKey: ["active-tasks"],
+    queryFn: () =>
+      fetch(`${config.apiUrl}projects/active-tasks`, {
+        headers: {
+          Authorization: `${localStorage.getItem("AuthToken")}`,
+        },
+      }).then((res) => res.json()),
+  });
+
   let dashboardCarq = data?.users.find((x) => x.info.id == "9238519");
   let dashboardMartyna = data?.users.find((x) => x.info.id == "33983343");
 
@@ -21,8 +32,8 @@ export default function Dashboard() {
     <>
       {error && <>Błąd: {error.message}</>}
       {(data || isPending) && (
-        <Grid justifyContent="center" container spacing={4}>
-          <Grid item sx={{ width: 450 }}>
+        <Grid justifyContent="center" container spacing={3}>
+          <Grid item sx={{ width: 425 }}>
             <PersonalOverview
               user={dashboardMartyna?.info?.name}
               stats={dashboardMartyna?.stats}
@@ -32,7 +43,7 @@ export default function Dashboard() {
               isLoading={isPending}
             />
           </Grid>
-          <Grid item sx={{ width: 450 }}>
+          <Grid item sx={{ width: 425 }}>
             <PersonalOverview
               user={dashboardCarq?.info?.name}
               stats={dashboardCarq?.stats}
@@ -40,6 +51,12 @@ export default function Dashboard() {
               recentClaimedRewards={dashboardCarq?.recentClaimedRewards}
               experianceOverview={dashboardCarq?.overview}
               isLoading={isPending}
+            />
+          </Grid>
+          <Grid item sx={{ width: 425 }}>
+            <ListOfTasks
+              listOfTasks={dataActiveTask?.tasks}
+              isLoading={isPendingActiveTask}
             />
           </Grid>
         </Grid>

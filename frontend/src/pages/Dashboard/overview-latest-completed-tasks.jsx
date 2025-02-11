@@ -47,9 +47,11 @@ function ListOfLatestActivities({ title, activities }) {
                 </Stack>
               }
               secondary={
-                <Typography variant="caption">
-                  {howLongAgo(new Date(activity.occurredOn), new Date())}
-                </Typography>
+                activity.occurredOn && (
+                  <Typography variant="caption">
+                    {howLongAgo(new Date(activity.occurredOn), new Date())}
+                  </Typography>
+                )
               }
             />
           </ListItem>

@@ -6,5 +6,5 @@ public record GetTodaysTasksQuery : IRequest<GetTodaysTasksQueryResult>;
 
 public record GetTodaysTasksQueryResult(Task[] Tasks);
 
-public record Task(string Id, string Name);
+public record Task(string Id, string Name, string ActivityArea, string[] Tags);
 
