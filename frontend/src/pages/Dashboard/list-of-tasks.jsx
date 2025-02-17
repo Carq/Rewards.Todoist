@@ -1,5 +1,6 @@
 import { Paper, Stack, Skeleton } from "@mui/material";
 import ListOfLatestActivities from "./overview-latest-completed-tasks";
+import LinearProgress from "@mui/material/LinearProgress";
 import PropTypes from "prop-types";
 import styled from "@emotion/styled";
 
@@ -7,7 +8,7 @@ const Item = styled("div")(({ theme }) => ({
   padding: theme.spacing(2),
 }));
 
-const ListOfTasks = ({ listOfTasks, isLoading }) => {
+const ListOfTasks = ({ listOfTasks, isLoading, isReloading }) => {
   var loadingSkeleton = (
     <Stack spacing={2}>
       <Item>
@@ -27,6 +28,7 @@ const ListOfTasks = ({ listOfTasks, isLoading }) => {
               title={"Zadania na dziś"}
               activities={listOfTasks}
             />
+            {isReloading && <LinearProgress />}
           </Item>
         </Stack>
       )}
@@ -37,6 +39,7 @@ const ListOfTasks = ({ listOfTasks, isLoading }) => {
 ListOfTasks.propTypes = {
   listOfTasks: PropTypes.array,
   isLoading: PropTypes.bool,
+  isReloading: PropTypes.bool,
 };
 
 export default ListOfTasks;

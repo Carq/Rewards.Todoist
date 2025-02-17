@@ -15,7 +15,11 @@ export default function Dashboard() {
       }).then((res) => res.json()),
   });
 
-  const { isPending: isPendingActiveTask, data: dataActiveTask } = useQuery({
+  const {
+    isPending: isPendingActiveTask,
+    isRefetching: isRefetchingActiveTask,
+    data: dataActiveTask,
+  } = useQuery({
     queryKey: ["active-tasks"],
     queryFn: () =>
       fetch(`${config.apiUrl}projects/active-tasks`, {
@@ -57,6 +61,7 @@ export default function Dashboard() {
             <ListOfTasks
               listOfTasks={dataActiveTask?.tasks}
               isLoading={isPendingActiveTask}
+              isReloading={isRefetchingActiveTask}
             />
           </Grid>
         </Grid>
