@@ -57,7 +57,7 @@ export default function Dashboard() {
               isLoading={isPending}
             />
           </Grid>
-          <Grid item sx={{ width: 425 }}>
+          <Grid item sx={{ width: 420 }}>
             <ListOfTasks
               listOfTasks={dataActiveTask?.tasks}
               isLoading={isPendingActiveTask}
