@@ -50,11 +50,11 @@ public class CompleteTaskEndpoint : EndpointBaseAsync
             TaskId = request.TaskId
         };
 
-        var result = await _mediator.Send(command, cancellationToken);
+        // Send command without expecting a boolean return
+        await _mediator.Send(command, cancellationToken);
 
-        return result
-            ? Ok(new CompleteTaskResponse { Success = true, Message = "Task completed successfully" })
-            : BadRequest(new CompleteTaskResponse { Success = false, Message = "Failed to complete task" });
+        // If no exception was thrown, the operation is considered successful
+        return Ok(new CompleteTaskResponse { Success = true, Message = "Task completed successfully" });
     }
 
     private static bool IsValidRequest(CompleteTaskRequest request, out CompleteTaskResponse errorResponse)

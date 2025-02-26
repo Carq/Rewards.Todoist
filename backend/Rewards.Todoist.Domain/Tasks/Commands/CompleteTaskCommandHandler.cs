@@ -5,7 +5,7 @@ using Rewards.Todoist.Domain.Utils;
 
 namespace Rewards.Todoist.Domain.Tasks.Commands;
 
-public class CompleteTaskCommandHandler : IRequestHandler<CompleteTaskCommand, bool>
+public class CompleteTaskCommandHandler : IRequestHandler<CompleteTaskCommand>
 {
     private readonly ITodoistService _todoistService;
 
@@ -23,19 +23,19 @@ public class CompleteTaskCommandHandler : IRequestHandler<CompleteTaskCommand, b
         _authContext = authContext;
     }
 
-    public async Task<bool> Handle(CompleteTaskCommand request, CancellationToken cancellationToken)
+    public async Task Handle(CompleteTaskCommand request, CancellationToken cancellationToken)
     {
         if (_authContext.IsNotAuthorized)
         {
-            return false;
+            throw new UnauthorizedAccessException();
         }
 
         var user = await _userRepository.GetUserById(request.UserId, cancellationToken);
         if (user == null)
         {
-            return false;
+            throw new KeyNotFoundException();
         }
 
-        return await _todoistService.CompleteTaskAsync(request.TaskId, user.TodoistAccessToken);
+        await _todoistService.CompleteTaskAsync(request.TaskId, user.TodoistAccessToken);
     }
 }

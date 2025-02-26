@@ -2,7 +2,7 @@ using MediatR;
 
 namespace Rewards.Todoist.Domain.Tasks.Commands;
 
-public class CompleteTaskCommand : IRequest<bool>
+public record CompleteTaskCommand : IRequest
 {
     public long UserId { get; set; }
 

@@ -54,20 +54,11 @@ public class TodoistService : ITodoistService
             .GetJsonAsync<TaskDetailsDto[]>();
     }
 
-    public async Task<bool> CompleteTaskAsync(string taskId, string userAccessToken)
+    public async Task CompleteTaskAsync(string taskId, string userAccessToken)
     {
-        try
-        {
-            var response = await _httpClient
-                .Request($"rest/v2/tasks/{taskId}/close")
-                .WithOAuthBearerToken(userAccessToken)
-                .PostAsync();
-
-            return response.StatusCode == 204;
-        }
-        catch (FlurlHttpException)
-        {
-            return false;
-        }
+        await _httpClient
+            .Request($"rest/v2/tasks/{taskId}/close")
+            .WithOAuthBearerToken(userAccessToken)
+            .PostAsync();
     }
 }
