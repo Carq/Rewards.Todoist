@@ -7,6 +7,7 @@ import {
   DialogContent,
   DialogTitle,
   Button,
+  Typography,
 } from "@mui/material";
 import ListOfLatestActivities from "./overview-latest-completed-tasks";
 import LinearProgress from "@mui/material/LinearProgress";
@@ -20,13 +21,16 @@ const Item = styled("div")(({ theme }) => ({
 
 const ListOfTasks = ({ listOfTasks, isLoading, isReloading }) => {
   const [open, setOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
 
-  const handleClickOpen = () => {
+  const handleClickOpen = (task) => {
+    setSelectedTask(task);
     setOpen(true);
   };
 
   const handleClose = () => {
     setOpen(false);
+    setSelectedTask(null);
   };
 
   var loadingSkeleton = (
@@ -43,18 +47,21 @@ const ListOfTasks = ({ listOfTasks, isLoading, isReloading }) => {
         loadingSkeleton
       ) : (
         <Stack>
-          <Item onClick={handleClickOpen}>
+          <Item>
             <ListOfLatestActivities
               title={"Zadania na dziś"}
               activities={listOfTasks}
+              onItemClick={handleClickOpen}
             />
             {isReloading && <LinearProgress />}
           </Item>
         </Stack>
       )}
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Task Details</DialogTitle>
-        <DialogContent>{/* Add content here if needed */}</DialogContent>
+        <DialogTitle>
+          {selectedTask && <Typography>{selectedTask.name}</Typography>}
+        </DialogTitle>
+        <DialogContent>Kto go ukończył?</DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
             Button 1

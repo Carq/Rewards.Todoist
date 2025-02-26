@@ -17,13 +17,13 @@ import PropTypes from "prop-types";
 import { howLongAgo } from "../../utils/date-utils";
 import BlurredText from "../../componets/BlurredText";
 
-function ListOfLatestActivities({ title, activities }) {
+function ListOfLatestActivities({ title, activities, onItemClick }) {
   return (
     <Card variant="outlined">
       <CardHeader title={title}></CardHeader>
       <List dense>
         {activities.map((activity) => (
-          <ListItem key={activity.id}>
+          <ListItem key={activity.id} onClick={() => onItemClick(activity)}>
             <ListItemIcon>
               <Avatar sx={{ bgcolor: grey[100] }}>
                 {MapProjectNameToIcon(activity.activityArea, activity.name)}
