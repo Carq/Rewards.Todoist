@@ -16,4 +16,10 @@ public class UserRepository : IUserRepository
     {
         return new Users(await _domainContext.Users.ToArrayAsync(cancellationToken));
     }
+
+    public async Task<User?> GetUserById(long userId, CancellationToken cancellationToken)
+    {
+        return await _domainContext.Users
+            .FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
+    }
 }

@@ -11,4 +11,6 @@ public interface ITodoistService
     Task<GetAllCompeltedResult> GetCompletedTasksAsync(string projectId, int limit, DateTimeOffset since, string userAccessToken);
 
     Task<TaskDetailsDto[]> GetActiveTasksForToday(string userAccessToken);
+
+    Task<bool> CompleteTaskAsync(string taskId, string userAccessToken);
 }
