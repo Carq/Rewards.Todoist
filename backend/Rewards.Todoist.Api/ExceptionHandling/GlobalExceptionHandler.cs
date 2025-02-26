@@ -1,57 +1,53 @@
 using System.Net;
 using System.Text.Json;
-using Microsoft.AspNetCore.Mvc;
 using Flurl.Http;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Rewards.Todoist.Api.Middlewares;
+namespace Rewards.Todoist.Api.ExceptionHandling;
 
-public class ExceptionMiddleware
+public class GlobalExceptionHandler : IExceptionHandler
 {
-    private readonly RequestDelegate _next;
-    private readonly ILogger<ExceptionMiddleware> _logger;
+    private readonly ILogger<GlobalExceptionHandler> _logger;
+
     private readonly IHostEnvironment _environment;
 
-    public ExceptionMiddleware(
-        RequestDelegate next,
-        ILogger<ExceptionMiddleware> logger,
-        IHostEnvironment environment)
+    public GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger, IHostEnvironment environment)
     {
-        _next = next;
         _logger = logger;
         _environment = environment;
     }
 
-    public async Task InvokeAsync(HttpContext context)
+    public async ValueTask<bool> TryHandleAsync(
+        HttpContext httpContext,
+        Exception exception,
+        CancellationToken cancellationToken)
     {
-        try
-        {
-            await _next(context);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "An unhandled exception occurred");
-            await HandleExceptionAsync(context, ex);
-        }
-    }
+        _logger.LogError(exception, "An unhandled exception occurred");
 
-    private Task HandleExceptionAsync(HttpContext context, Exception exception)
-    {
-        context.Response.ContentType = "application/problem+json";
+        httpContext.Response.ContentType = "application/problem+json";
 
         var statusCode = GetStatusCode(exception);
-        context.Response.StatusCode = statusCode;
+        httpContext.Response.StatusCode = statusCode;
 
         var problemDetails = new ProblemDetails
         {
             Status = statusCode,
             Title = GetTitle(exception),
             Detail = GetDetail(exception),
-            Instance = context.Request.Path
+            Instance = httpContext.Request.Path
         };
 
         if (exception is FlurlHttpException flurlEx && flurlEx.StatusCode.HasValue)
         {
-            problemDetails.Extensions["responseBody"] = flurlEx.GetResponseStringAsync().GetAwaiter().GetResult();
+            try
+            {
+                problemDetails.Extensions["responseBody"] = await flurlEx.GetResponseStringAsync();
+            }
+            catch
+            {
+                // Ignore errors trying to read the response body
+            }
         }
 
         var options = new JsonSerializerOptions
@@ -60,8 +56,9 @@ public class ExceptionMiddleware
         };
 
         var json = JsonSerializer.Serialize(problemDetails, options);
+        await httpContext.Response.WriteAsync(json, cancellationToken);
 
-        return context.Response.WriteAsync(json);
+        return true;
     }
 
     private string GetDetail(Exception exception)
