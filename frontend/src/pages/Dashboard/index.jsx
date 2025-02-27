@@ -19,6 +19,7 @@ export default function Dashboard() {
     isPending: isPendingActiveTask,
     isRefetching: isRefetchingActiveTask,
     data: dataActiveTask,
+    refetch: refetchActiveTasks,
   } = useQuery({
     queryKey: ["active-tasks"],
     queryFn: () =>
@@ -62,6 +63,7 @@ export default function Dashboard() {
               listOfTasks={dataActiveTask?.tasks}
               isLoading={isPendingActiveTask}
               isReloading={isRefetchingActiveTask}
+              refetchTasks={refetchActiveTasks}
             />
           </Grid>
         </Grid>

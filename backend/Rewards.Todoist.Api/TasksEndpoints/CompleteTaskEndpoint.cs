@@ -44,16 +44,8 @@ public class CompleteTaskEndpoint : EndpointBaseAsync
             return BadRequest(errorResponse);
         }
 
-        var command = new CompleteTaskCommand
-        {
-            UserId = request.UserId,
-            TaskId = request.TaskId
-        };
-
-        // Send command without expecting a boolean return
+        var command = new CompleteTaskCommand(request.UserId, request.TaskId);
         await _mediator.Send(command, cancellationToken);
-
-        // If no exception was thrown, the operation is considered successful
         return Ok(new CompleteTaskResponse { Success = true, Message = "Task completed successfully" });
     }
 

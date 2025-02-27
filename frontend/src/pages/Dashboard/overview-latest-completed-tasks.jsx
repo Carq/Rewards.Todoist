@@ -17,13 +17,27 @@ import PropTypes from "prop-types";
 import { howLongAgo } from "../../utils/date-utils";
 import BlurredText from "../../componets/BlurredText";
 
-function ListOfLatestActivities({ title, activities, onItemClick }) {
+function ListOfLatestActivities({
+  title,
+  activities,
+  onItemClick,
+  disabled = false,
+}) {
   return (
     <Card variant="outlined">
       <CardHeader title={title}></CardHeader>
       <List dense>
         {activities.map((activity) => (
-          <ListItem key={activity.id} onClick={() => onItemClick(activity)}>
+          <ListItem
+            key={activity.id}
+            onClick={disabled ? undefined : () => onItemClick(activity)}
+            disabled={disabled}
+            sx={{
+              cursor: disabled ? "not-allowed" : "pointer",
+              opacity: disabled ? 0.7 : 1,
+            }}
+            button
+          >
             <ListItemIcon>
               <Avatar sx={{ bgcolor: grey[100] }}>
                 {MapProjectNameToIcon(activity.activityArea, activity.name)}
@@ -114,6 +128,8 @@ ListOfLatestActivities.propTypes = {
       occurredOn: PropTypes.string.isRequired,
     })
   ).isRequired,
+  onItemClick: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
 };
 
 export default ListOfLatestActivities;
