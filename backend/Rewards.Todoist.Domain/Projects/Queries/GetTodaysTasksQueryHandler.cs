@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Flurl.Util;
+using MediatR;
 using Rewards.Todoist.Domain.Todoist;
 using Rewards.Todoist.Domain.Todoist.Contract;
 using Rewards.Todoist.Domain.Users.Repository;
@@ -33,13 +34,19 @@ internal class GetTodaysTasksQueryHandler : IRequestHandler<GetTodaysTasksQuery,
 
         foreach (var user in users.All())
         {
-             tasks.AddRange(await _todoistService.GetActiveTasksForToday(user.TodoistAccessToken));
+             tasks.AddRange((await _todoistService.GetActiveTasksForToday(user.TodoistAccessToken)).Select(x => x with { UserId = user.Id }));
         }
 
         return new GetTodaysTasksQueryResult(
             tasks
             .Where(x => Projects.GetAllProjectIds().Contains(x.ProjectId))
-            .Select(x => new Task(x.Id, x.Content, Projects.GetProjectName(x.ProjectId), x.Labels))
+            .GroupBy(x => x.Content)
+            .Select(x => new Task(
+                x.First().Id,
+                x.First().Content,
+                Projects.GetProjectName(x.First().ProjectId),
+                x.First().Labels,
+                x.Select(y => new IdForUser(y.UserId!.Value, y.Id)).ToArray()))
             .DistinctBy(x => x.Name)
             .OrderByDescending(x => x.Tags.FirstOrDefault())
             .ToArray());
