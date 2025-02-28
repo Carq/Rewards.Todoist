@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import {
-  Card,
-  CardContent,
   Typography,
   Stack,
   Box,
@@ -20,12 +18,6 @@ import { getMotivationMessage } from "../../utils/getMotivationMessage";
 
 // Style constants for consistent theming
 const styles = {
-  card: {
-    borderRadius: 3,
-    background: `linear-gradient(145deg, ${grey[100]}, ${grey[50]})`,
-    boxShadow: "0 8px 16px rgba(0,0,0,0.05)",
-    overflow: "visible",
-  },
   statsPanel: (color, lightColor) => ({
     p: 1.5,
     borderRadius: 2,
@@ -297,36 +289,33 @@ const PersonalProfile = ({ user, stats }) => {
   }, [progressPercentage]);
 
   return (
-    <Card variant="outlined" sx={styles.card}>
-      <CardContent sx={{ p: 3 }}>
-        {/* Level up notification */}
-        <LevelUpAlert
-          visible={showLevelUpAlert}
-          message={getMotivationMessage()}
-        />
+    <>
+      {/* Level up notification */}
+      <LevelUpAlert
+        visible={showLevelUpAlert}
+        message={getMotivationMessage()}
+      />
 
-        {/* User avatar and name */}
-        <UserAvatar
-          user={user}
-          avatarColor={avatarColor}
-          avatarIcon={avatarIcon}
-        />
+      {/* User avatar and name */}
+      <UserAvatar
+        user={user}
+        avatarColor={avatarColor}
+        avatarIcon={avatarIcon}
+      />
 
-        <Divider sx={{ my: 2, opacity: 0.7 }} />
+      <Divider sx={{ my: 2, opacity: 0.7 }} />
 
-        {/* Stats panels (level and gold) */}
-        <Fade in={animateStats} timeout={800}>
-          <div>
-            {" "}
-            {/* Wrapper div needed for Fade to work with custom components */}
-            <StatsPanels level={levelInfo.level} gold={stats.gold} />
-          </div>
-        </Fade>
+      {/* Stats panels (level and gold) */}
+      <Fade in={animateStats} timeout={800}>
+        <div>
+          {/* Wrapper div needed for Fade to work with custom components */}
+          <StatsPanels level={levelInfo.level} gold={stats.gold} />
+        </div>
+      </Fade>
 
-        {/* Experience progress bar */}
-        <ExperienceProgressBar levelInfo={levelInfo} progress={progress} />
-      </CardContent>
-    </Card>
+      {/* Experience progress bar */}
+      <ExperienceProgressBar levelInfo={levelInfo} progress={progress} />
+    </>
   );
 };
 

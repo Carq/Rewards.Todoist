@@ -1,17 +1,6 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import {
-  Card,
-  CardContent,
-  Typography,
-  Grid,
-  Box,
-  Divider,
-  LinearProgress,
-  Fade,
-  Chip,
-  Paper,
-} from "@mui/material";
+import { Box, Typography, Grid, Fade, Chip } from "@mui/material";
 import { blue, green, red, yellow, grey, purple } from "@mui/material/colors";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import TrendingDownIcon from "@mui/icons-material/TrendingDown";
@@ -22,20 +11,6 @@ import TodayIcon from "@mui/icons-material/Today";
 
 // Style constants for consistent theming
 const styles = {
-  card: {
-    borderRadius: 3,
-    background: `linear-gradient(145deg, ${grey[100]}, ${grey[50]})`,
-    boxShadow: "0 8px 16px rgba(0,0,0,0.05)",
-    overflow: "visible",
-  },
-  title: {
-    fontWeight: 600,
-    color: grey[800],
-    fontSize: "1.1rem",
-    mb: 2,
-    pb: 1,
-    borderBottom: `1px solid ${grey[200]}`,
-  },
   statBox: {
     p: 1.5,
     borderRadius: 2,
@@ -280,189 +255,158 @@ const SummaryOfXP = ({ experianceOverview }) => {
   };
 
   return (
-    <Card variant="outlined" sx={styles.card}>
-      <CardContent sx={{ p: 3 }}>
-        <Fade in={animateIn} timeout={800}>
+    <Fade in={animateIn} timeout={800}>
+      <Box>
+        {/* Weekly summary */}
+        <Box sx={styles.weekContainer}>
           <Box>
-            {/* Title with trend */}
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
+            <Typography variant="body2" color={blue[800]} fontWeight={500}>
+              Ten tydzień
+            </Typography>
+            <Typography
+              variant="h5"
+              sx={{ fontWeight: "bold", color: blue[900], mt: 0.5 }}
             >
-              <Typography variant="h6" sx={styles.title}>
-                Statystyki XP
-              </Typography>
-            </Box>
+              {stats.currentWeek.xp} XP
+            </Typography>
+            <Typography variant="caption" color={blue[700]}>
+              {stats.currentWeek.xp > stats.previousWeek.xp ? "+" : ""}
+              {stats.currentWeek.xp - stats.previousWeek.xp} XP vs zeszły
+              tydzień
+            </Typography>
+          </Box>
 
-            {/* Weekly summary */}
-            <Box sx={styles.weekContainer}>
-              <Box>
-                <Typography variant="body2" color={blue[800]} fontWeight={500}>
-                  Ten tydzień
+          <Box sx={{ textAlign: "right" }}>
+            <Typography variant="body2" color={blue[800]} fontWeight={500}>
+              Poprzedni tydzień
+            </Typography>
+            <Typography variant="h6" sx={{ color: blue[700], mt: 0.5 }}>
+              {stats.previousWeek.xp} XP
+            </Typography>
+            <Typography variant="caption" color={blue[700]}>
+              Śr. {stats.previousWeek.avg} XP/dzień
+            </Typography>
+          </Box>
+        </Box>
+
+        {/* Statistics grid - now with 3 panels */}
+        <Grid container spacing={2} sx={{ mt: 1 }}>
+          {/* Today's XP */}
+          <Grid item xs={12} sm={4}>
+            <Box sx={styles.statBox}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  mb: 1,
+                }}
+              >
+                <Typography variant="body2" color={grey[700]} fontWeight={500}>
+                  Dzisiaj
                 </Typography>
+                <Box
+                  sx={{
+                    ...styles.icon,
+                    bgcolor: purple[50],
+                  }}
+                >
+                  <TodayIcon sx={{ fontSize: "1rem", color: purple[600] }} />
+                </Box>
+              </Box>
+              <Box>
                 <Typography
                   variant="h5"
-                  sx={{ fontWeight: "bold", color: blue[900], mt: 0.5 }}
+                  sx={{
+                    fontWeight: "bold",
+                    color: stats.today.xp > 0 ? purple[700] : grey[600],
+                  }}
                 >
-                  {stats.currentWeek.xp} XP
+                  {stats.today.xp}
                 </Typography>
-                <Typography variant="caption" color={blue[700]}>
-                  {stats.currentWeek.xp > stats.previousWeek.xp ? "+" : ""}
-                  {stats.currentWeek.xp - stats.previousWeek.xp} XP vs zeszły
-                  tydzień
-                </Typography>
-              </Box>
-
-              <Box sx={{ textAlign: "right" }}>
-                <Typography variant="body2" color={blue[800]} fontWeight={500}>
-                  Poprzedni tydzień
-                </Typography>
-                <Typography variant="h6" sx={{ color: blue[700], mt: 0.5 }}>
-                  {stats.previousWeek.xp} XP
-                </Typography>
-                <Typography variant="caption" color={blue[700]}>
-                  Śr. {stats.previousWeek.avg} XP/dzień
+                <Typography variant="caption" color={grey[600]}>
+                  {stats.today.xp > 0
+                    ? `${stats.today.comparedToAvg}% średniej`
+                    : "Czeka na zdobycie"}
                 </Typography>
               </Box>
             </Box>
+          </Grid>
 
-            {/* Statistics grid - now with 3 panels */}
-            <Grid container spacing={2} sx={{ mt: 1 }}>
-              {/* Today's XP */}
-              <Grid item xs={12} sm={4}>
-                <Box sx={styles.statBox}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      mb: 1,
-                    }}
-                  >
-                    <Typography
-                      variant="body2"
-                      color={grey[700]}
-                      fontWeight={500}
-                    >
-                      Dzisiaj
-                    </Typography>
-                    <Box
-                      sx={{
-                        ...styles.icon,
-                        bgcolor: purple[50],
-                      }}
-                    >
-                      <TodayIcon
-                        sx={{ fontSize: "1rem", color: purple[600] }}
-                      />
-                    </Box>
-                  </Box>
-                  <Box>
-                    <Typography
-                      variant="h5"
-                      sx={{
-                        fontWeight: "bold",
-                        color: stats.today.xp > 0 ? purple[700] : grey[600],
-                      }}
-                    >
-                      {stats.today.xp}
-                    </Typography>
-                    <Typography variant="caption" color={grey[600]}>
-                      {stats.today.xp > 0
-                        ? `${stats.today.comparedToAvg}% średniej`
-                        : "Czeka na zdobycie"}
-                    </Typography>
-                  </Box>
+          {/* Best day */}
+          <Grid item xs={6} sm={4}>
+            <Box sx={styles.statBox}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  mb: 1,
+                }}
+              >
+                <Typography variant="body2" color={grey[700]} fontWeight={500}>
+                  Najlepszy dzień
+                </Typography>
+                <Box
+                  sx={{
+                    ...styles.icon,
+                    bgcolor: yellow[50],
+                  }}
+                >
+                  <EmojiEventsIcon
+                    sx={{ fontSize: "1rem", color: yellow[700] }}
+                  />
                 </Box>
-              </Grid>
+              </Box>
+              <Box>
+                <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+                  {stats.bestDay.xp}
+                </Typography>
+                <Typography variant="caption" color={grey[600]}>
+                  {stats.bestDay.name}
+                </Typography>
+              </Box>
+            </Box>
+          </Grid>
 
-              {/* Best day */}
-              <Grid item xs={6} sm={4}>
-                <Box sx={styles.statBox}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      mb: 1,
-                    }}
-                  >
-                    <Typography
-                      variant="body2"
-                      color={grey[700]}
-                      fontWeight={500}
-                    >
-                      Najlepszy dzień
-                    </Typography>
-                    <Box
-                      sx={{
-                        ...styles.icon,
-                        bgcolor: yellow[50],
-                      }}
-                    >
-                      <EmojiEventsIcon
-                        sx={{ fontSize: "1rem", color: yellow[700] }}
-                      />
-                    </Box>
-                  </Box>
-                  <Box>
-                    <Typography variant="h5" sx={{ fontWeight: "bold" }}>
-                      {stats.bestDay.xp}
-                    </Typography>
-                    <Typography variant="caption" color={grey[600]}>
-                      {stats.bestDay.name}
-                    </Typography>
-                  </Box>
+          {/* Daily average */}
+          <Grid item xs={6} sm={4}>
+            <Box sx={styles.statBox}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  mb: 1,
+                }}
+              >
+                <Typography variant="body2" color={grey[700]} fontWeight={500}>
+                  Średnia dzienna
+                </Typography>
+                <Box
+                  sx={{
+                    ...styles.icon,
+                    bgcolor: green[50],
+                  }}
+                >
+                  <CalendarMonthIcon
+                    sx={{ fontSize: "1rem", color: green[500] }}
+                  />
                 </Box>
-              </Grid>
-
-              {/* Daily average */}
-              <Grid item xs={6} sm={4}>
-                <Box sx={styles.statBox}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      mb: 1,
-                    }}
-                  >
-                    <Typography
-                      variant="body2"
-                      color={grey[700]}
-                      fontWeight={500}
-                    >
-                      Średnia dzienna
-                    </Typography>
-                    <Box
-                      sx={{
-                        ...styles.icon,
-                        bgcolor: green[50],
-                      }}
-                    >
-                      <CalendarMonthIcon
-                        sx={{ fontSize: "1rem", color: green[500] }}
-                      />
-                    </Box>
-                  </Box>
-                  <Box>
-                    <Typography variant="h5" sx={{ fontWeight: "bold" }}>
-                      {stats.currentWeek.avg}
-                    </Typography>
-                    <Typography variant="caption" color={grey[600]}>
-                      XP / dzień
-                    </Typography>
-                  </Box>
-                </Box>
-              </Grid>
-            </Grid>
-          </Box>
-        </Fade>
-      </CardContent>
-    </Card>
+              </Box>
+              <Box>
+                <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+                  {stats.currentWeek.avg}
+                </Typography>
+                <Typography variant="caption" color={grey[600]}>
+                  XP / dzień
+                </Typography>
+              </Box>
+            </Box>
+          </Grid>
+        </Grid>
+      </Box>
+    </Fade>
   );
 };
 

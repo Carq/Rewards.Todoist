@@ -1,7 +1,17 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Paper, Stack, Box, Fade, Divider } from "@mui/material";
-import { grey } from "@mui/material/colors";
+import {
+  Paper,
+  Stack,
+  Box,
+  Fade,
+  Divider,
+  LinearProgress,
+  Typography,
+  Card,
+  CardContent,
+} from "@mui/material";
+import { grey, blue } from "@mui/material/colors";
 import styled from "@emotion/styled";
 import { themeColors } from "../../theme";
 
@@ -14,36 +24,44 @@ import LoadingSkeleton from "../../components/ui/LoadingSkeleton";
 const styles = {
   container: {
     borderRadius: 3,
-    background: themeColors.background.gradient,
-    boxShadow: "0 10px 30px rgba(0,0,0,0.03), 0 1px 8px rgba(0,0,0,0.02)",
+    background: `linear-gradient(145deg, ${grey[100]}, ${grey[50]})`,
+    boxShadow: "0 8px 16px rgba(0,0,0,0.05)",
+    overflow: "visible",
     position: "relative",
-    overflow: "hidden",
-    "&::after": {
-      content: '""',
-      position: "absolute",
-      top: 0,
-      left: 0,
-      right: 0,
-      height: "100%",
-      backgroundImage: `
-        radial-gradient(at 20% 0%, rgba(255, 255, 255, 0.3) 0%, transparent 50%),
-        radial-gradient(at 80% 90%, rgba(240, 240, 240, 0.2) 0%, transparent 30%)
-      `,
-      pointerEvents: "none",
-    },
+  },
+  card: {
+    borderRadius: 3,
+    background: "transparent",
+    boxShadow: "none",
+    overflow: "visible",
+  },
+  header: {
+    mb: 2,
+    pb: 1,
+    borderBottom: `1px solid ${grey[200]}`,
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  progressContainer: {
+    position: "relative",
+    height: 4,
+    marginTop: -4,
+    zIndex: 2,
+  },
+  progressBar: {
+    height: 4,
+    borderBottomLeftRadius: 3,
+    borderBottomRightRadius: 3,
+    background: `linear-gradient(to right, ${blue[600]}, ${blue[400]})`,
   },
   sectionWrapper: {
-    transition: "opacity 0.3s ease-in-out, transform 0.3s ease-in-out",
-    position: "relative",
-    zIndex: 1,
+    mb: 3,
+    "&:last-child": {
+      mb: 0,
+    },
   },
 };
-
-// Styled component for section wrapper
-const SectionWrapper = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(2),
-  marginBottom: theme.spacing(2),
-}));
 
 /**
  * Main PersonalOverview component
@@ -55,6 +73,7 @@ const PersonalOverview = ({
   recentClaimedRewards,
   experianceOverview,
   isLoading,
+  isReloading,
 }) => {
   const [animateSections, setAnimateSections] = useState(false);
 
@@ -70,7 +89,7 @@ const PersonalOverview = ({
 
   if (isLoading) {
     return (
-      <Paper elevation={0} sx={styles.container}>
+      <Paper elevation={1} sx={styles.container}>
         <LoadingSkeleton
           itemCount={4}
           heightMultipliers={[1, 1.13, 1.27, 1.27]}
@@ -80,33 +99,81 @@ const PersonalOverview = ({
   }
 
   return (
-    <Paper elevation={0} sx={styles.container}>
-      <Fade in={animateSections} timeout={800}>
-        <Stack>
-          <SectionWrapper>
-            <PersonalProfile user={user} stats={stats} />
-          </SectionWrapper>
+    <Paper elevation={1} sx={styles.container}>
+      <Card variant="outlined" sx={styles.card}>
+        <CardContent sx={{ p: 3 }}>
+          <Fade in={animateSections} timeout={800}>
+            <Stack>
+              <Box sx={styles.sectionWrapper}>
+                <PersonalProfile user={user} stats={stats} />
+              </Box>
 
-          <SectionWrapper>
-            <SummaryOfXP experianceOverview={experianceOverview} />
-          </SectionWrapper>
+              <Box sx={styles.sectionWrapper}>
+                <Box sx={styles.header}>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontWeight: 600,
+                      color: grey[800],
+                      fontSize: "1.1rem",
+                    }}
+                  >
+                    Statystyka XP
+                  </Typography>
+                </Box>
+                <SummaryOfXP experianceOverview={experianceOverview} />
+              </Box>
 
-          {/* Recent completed tasks section */}
-          <SectionWrapper>
-            <ListOfLatestActivities
-              title={"Ostatnie ukończone zadania"}
-              activities={recentCompletedTasks}
-            />
-          </SectionWrapper>
+              <Box sx={styles.sectionWrapper}>
+                <Box sx={styles.header}>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontWeight: 600,
+                      color: grey[800],
+                      fontSize: "1.1rem",
+                    }}
+                  >
+                    Ostatnie ukończone zadania
+                  </Typography>
+                </Box>
+                <ListOfLatestActivities
+                  hideTitle={true}
+                  activities={recentCompletedTasks}
+                />
+              </Box>
 
-          <SectionWrapper>
-            <ListOfLatestActivities
-              title={"Ostatnie nagrody"}
-              activities={recentClaimedRewards}
-            />
-          </SectionWrapper>
-        </Stack>
-      </Fade>
+              <Box sx={styles.sectionWrapper}>
+                <Box sx={styles.header}>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontWeight: 600,
+                      color: grey[800],
+                      fontSize: "1.1rem",
+                    }}
+                  >
+                    Ostatnie nagrody
+                  </Typography>
+                </Box>
+                <ListOfLatestActivities
+                  hideTitle={true}
+                  activities={recentClaimedRewards}
+                />
+              </Box>
+            </Stack>
+          </Fade>
+        </CardContent>
+      </Card>
+
+      {/* Reloading indicator */}
+      {isReloading && (
+        <Fade in={isReloading} timeout={300}>
+          <Box sx={styles.progressContainer}>
+            <LinearProgress sx={styles.progressBar} />
+          </Box>
+        </Fade>
+      )}
     </Paper>
   );
 };
@@ -122,6 +189,7 @@ PersonalOverview.propTypes = {
   recentClaimedRewards: PropTypes.array,
   experianceOverview: PropTypes.object,
   isLoading: PropTypes.bool,
+  isReloading: PropTypes.bool,
 };
 
 export default PersonalOverview;
