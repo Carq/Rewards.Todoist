@@ -1,15 +1,53 @@
-import { Paper, Stack, Skeleton } from "@mui/material";
-import ListOfLatestActivities from "./overview-latest-completed-tasks";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import SummaryOfXP from "./summary-of-xp";
-
+import { Paper, Stack, Box, Fade, Divider } from "@mui/material";
+import { grey } from "@mui/material/colors";
 import styled from "@emotion/styled";
-import PersonalProfile from "./personal-profile";
+import { themeColors } from "../../theme";
 
-const Item = styled("div")(({ theme }) => ({
+import ListOfLatestActivities from "./overview-latest-completed-tasks";
+import SummaryOfXP from "./summary-of-xp";
+import PersonalProfile from "./personal-profile";
+import LoadingSkeleton from "../../components/ui/LoadingSkeleton";
+
+// Style constants for consistent theming
+const styles = {
+  container: {
+    borderRadius: 3,
+    background: themeColors.background.gradient,
+    boxShadow: "0 10px 30px rgba(0,0,0,0.03), 0 1px 8px rgba(0,0,0,0.02)",
+    position: "relative",
+    overflow: "hidden",
+    "&::after": {
+      content: '""',
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      height: "100%",
+      backgroundImage: `
+        radial-gradient(at 20% 0%, rgba(255, 255, 255, 0.3) 0%, transparent 50%),
+        radial-gradient(at 80% 90%, rgba(240, 240, 240, 0.2) 0%, transparent 30%)
+      `,
+      pointerEvents: "none",
+    },
+  },
+  sectionWrapper: {
+    transition: "opacity 0.3s ease-in-out, transform 0.3s ease-in-out",
+    position: "relative",
+    zIndex: 1,
+  },
+};
+
+// Styled component for section wrapper
+const SectionWrapper = styled(Box)(({ theme }) => ({
   padding: theme.spacing(2),
+  marginBottom: theme.spacing(2),
 }));
 
+/**
+ * Main PersonalOverview component
+ */
 const PersonalOverview = ({
   user,
   stats,
@@ -18,53 +56,65 @@ const PersonalOverview = ({
   experianceOverview,
   isLoading,
 }) => {
-  var loadingSkeleton = (
-    <Stack spacing={2}>
-      <Item>
-        <Skeleton variant="rounded" width="100%" height={220} />
-      </Item>
-      <Item>
-        <Skeleton variant="rounded" width="100%" height={250} />
-      </Item>
-      <Item>
-        <Skeleton variant="rounded" width="100%" height={280} />
-      </Item>
-      <Item>
-        <Skeleton variant="rounded" width="100%" height={280} />
-      </Item>
-    </Stack>
-  );
+  const [animateSections, setAnimateSections] = useState(false);
+
+  // Animate sections with a slight delay after loading
+  useEffect(() => {
+    if (!isLoading) {
+      const timer = setTimeout(() => {
+        setAnimateSections(true);
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading]);
+
+  if (isLoading) {
+    return (
+      <Paper elevation={0} sx={styles.container}>
+        <LoadingSkeleton
+          itemCount={4}
+          heightMultipliers={[1, 1.13, 1.27, 1.27]}
+        />
+      </Paper>
+    );
+  }
 
   return (
-    <Paper elevation={0}>
-      {isLoading ? (
-        loadingSkeleton
-      ) : (
+    <Paper elevation={0} sx={styles.container}>
+      <Fade in={animateSections} timeout={800}>
         <Stack>
-          <Item>
+          {/* User profile section */}
+          <SectionWrapper>
             <PersonalProfile user={user} stats={stats} />
-          </Item>
-          <Item>
+          </SectionWrapper>
+
+          {/* Recent completed tasks section */}
+          <SectionWrapper>
             <ListOfLatestActivities
               title={"Ostatnie ukończone zadania"}
               activities={recentCompletedTasks}
             />
-          </Item>
-          <Item>
+          </SectionWrapper>
+
+          {/* Experience summary section */}
+          <SectionWrapper>
             <SummaryOfXP experianceOverview={experianceOverview} />
-          </Item>
-          <Item>
+          </SectionWrapper>
+
+          {/* Recent rewards section */}
+          <SectionWrapper>
             <ListOfLatestActivities
               title={"Ostatnie nagrody"}
               activities={recentClaimedRewards}
             />
-          </Item>
+          </SectionWrapper>
         </Stack>
-      )}
+      </Fade>
     </Paper>
   );
 };
 
+// PropTypes validation
 PersonalOverview.propTypes = {
   user: PropTypes.string,
   stats: PropTypes.shape({

@@ -1,35 +1,83 @@
-import {
-  Paper,
-  Stack,
-  Skeleton,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Button,
+import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import { 
+  Paper, 
+  Stack, 
+  Box, 
+  Fade, 
+  LinearProgress, 
+  Typography,
+  Card,
+  CardContent 
 } from "@mui/material";
+import { grey, blue } from "@mui/material/colors";
+import styled from "@emotion/styled";
+import axios from "axios";
+import { useMutation } from "@tanstack/react-query";
+import { themeColors } from "../../theme";
+
 import { config } from "../../config";
 import ListOfLatestActivities from "./overview-latest-completed-tasks";
 import TasksCompleteMessage from "./tasks-complete-message";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import LinearProgress from "@mui/material/LinearProgress";
-import PropTypes from "prop-types";
-import styled from "@emotion/styled";
-import axios from "axios";
-import { useState, useEffect } from "react";
-import { useMutation } from "@tanstack/react-query";
+import LoadingSkeleton from "../../components/ui/LoadingSkeleton";
+import TaskCompletionDialog from "../../components/dialogs/TaskCompletionDialog";
 
-const Item = styled("div")(({ theme }) => ({
+// Style constants for consistent theming - matching personal-profile
+const styles = {
+  container: {
+    borderRadius: 3,
+    background: `linear-gradient(145deg, ${grey[100]}, ${grey[50]})`,
+    boxShadow: "0 8px 16px rgba(0,0,0,0.05)",
+    overflow: "visible",
+    position: "relative",
+  },
+  card: {
+    borderRadius: 3,
+    background: "transparent",
+    boxShadow: "none",
+    overflow: "visible",
+  },
+  header: {
+    mb: 2,
+    pb: 1,
+    borderBottom: `1px solid ${grey[200]}`,
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  progressContainer: {
+    position: "relative",
+    height: 4,
+    marginTop: -4,
+    zIndex: 2,
+  },
+  progressBar: {
+    height: 4,
+    borderBottomLeftRadius: 3,
+    borderBottomRightRadius: 3,
+    background: `linear-gradient(to right, ${blue[600]}, ${blue[400]})`,
+  },
+};
+
+// Styled component for section wrapper with cleaner approach
+const SectionWrapper = styled(Box)(({ theme }) => ({
   padding: theme.spacing(2),
+  position: "relative",
+  zIndex: 1,
 }));
 
+/**
+ * Main ListOfTasks component
+ */
 const ListOfTasks = ({ listOfTasks, isLoading, isReloading, refetchTasks }) => {
+  // State management
   const [open, setOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
+  const [animateSections, setAnimateSections] = useState(false);
 
+  // Dialog handlers
   const handleClickOpen = (task) => {
     if (isLoading || isReloading) return;
-
     setSelectedTask(task);
     setOpen(true);
   };
@@ -39,6 +87,7 @@ const ListOfTasks = ({ listOfTasks, isLoading, isReloading, refetchTasks }) => {
     setSelectedTask(null);
   };
 
+  // Task completion mutation
   const completeTask = useMutation({
     mutationFn: (claimRewardDto) => {
       return axios.post(`${config.apiUrl}tasks/complete`, claimRewardDto, {
@@ -49,7 +98,9 @@ const ListOfTasks = ({ listOfTasks, isLoading, isReloading, refetchTasks }) => {
     },
   });
 
+  // Effects
   useEffect(() => {
+    // Handle successful completion
     if (completeTask.isSuccess) {
       handleClose();
       if (refetchTasks) {
@@ -58,96 +109,87 @@ const ListOfTasks = ({ listOfTasks, isLoading, isReloading, refetchTasks }) => {
     }
   }, [completeTask.isSuccess, refetchTasks]);
 
-  var loadingSkeleton = (
-    <Stack spacing={2}>
-      <Item>
-        <Skeleton variant="rounded" width="100%" height={220} />
-      </Item>
-    </Stack>
-  );
+  useEffect(() => {
+    // Animate sections with a slight delay after loading
+    if (!isLoading) {
+      const timer = setTimeout(() => {
+        setAnimateSections(true);
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading]);
+
+  // Render loading skeleton
+  if (isLoading) {
+    return (
+      <Paper elevation={1} sx={styles.container}>
+        <LoadingSkeleton itemCount={1} />
+      </Paper>
+    );
+  }
 
   return (
-    <Paper elevation={1}>
-      {isLoading ? (
-        loadingSkeleton
-      ) : (
-        <Stack>
-          <Item>
-            {listOfTasks && listOfTasks.length > 0 ? (
-              <>
-                <ListOfLatestActivities
-                  title={"Zadania na dziś"}
-                  activities={listOfTasks}
-                  onItemClick={handleClickOpen}
-                  disabled={isLoading || isReloading}
-                />
-                {isReloading && <LinearProgress />}
-              </>
-            ) : (
-              <TasksCompleteMessage />
-            )}
-          </Item>
-        </Stack>
+    <Paper elevation={1} sx={styles.container}>
+      <Card variant="outlined" sx={styles.card}>
+        <CardContent sx={{ p: 3 }}>
+          <Fade in={animateSections} timeout={800}>
+            <Stack>
+              {/* Header section with title */}
+              <Box sx={styles.header}>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    fontWeight: 600,
+                    color: grey[800],
+                    fontSize: "1.1rem",
+                  }}
+                >
+                  Zadania na dziś
+                </Typography>
+              </Box>
+
+              {/* Task list or completion message */}
+              <Box>
+                {listOfTasks && listOfTasks.length > 0 ? (
+                  <ListOfLatestActivities
+                    hideTitle={true}
+                    activities={listOfTasks}
+                    onItemClick={handleClickOpen}
+                    disabled={isLoading || isReloading}
+                    sx={{ mt: 0 }}
+                  />
+                ) : (
+                  <TasksCompleteMessage />
+                )}
+              </Box>
+            </Stack>
+          </Fade>
+        </CardContent>
+      </Card>
+
+      {/* Reloading indicator */}
+      {isReloading && (
+        <Fade in={isReloading} timeout={300}>
+          <Box sx={styles.progressContainer}>
+            <LinearProgress sx={styles.progressBar} />
+          </Box>
+        </Fade>
       )}
-      <Dialog fullWidth={true} maxWidth="xs" open={open} onClose={handleClose}>
-        <DialogTitle>{selectedTask && selectedTask.name}</DialogTitle>
-        <DialogContent>Kto go ukończył?</DialogContent>
-        <DialogActions sx={{ justifyContent: "center", px: 2, pb: 2 }}>
-          <Button
-            size="medium"
-            variant="contained"
-            startIcon={<CheckCircleIcon />}
-            loading={completeTask.isPending}
-            loadingPosition="start"
-            disabled={completeTask.isPending || completeTask.isError}
-            onClick={() =>
-              completeTask.mutate({
-                taskId: selectedTask.idForUsers.find(
-                  (idForUser) => idForUser.userId === 9238519
-                ).taskId,
-                userId: 9238519,
-              })
-            }
-            sx={{
-              flex: 1,
-              maxWidth: 140,
-              minWidth: 120,
-              mx: 1,
-            }}
-          >
-            Carq
-          </Button>
-          <Button
-            size="medium"
-            variant="contained"
-            color="success"
-            startIcon={<CheckCircleIcon />}
-            loading={completeTask.isPending}
-            loadingPosition="start"
-            disabled={completeTask.isPending || completeTask.isError}
-            onClick={() =>
-              completeTask.mutate({
-                taskId: selectedTask.idForUsers.find(
-                  (idForUser) => idForUser.userId === 33983343
-                ).taskId,
-                userId: 33983343,
-              })
-            }
-            sx={{
-              flex: 1,
-              maxWidth: 140,
-              minWidth: 120,
-              mx: 1,
-            }}
-          >
-            Martyna
-          </Button>
-        </DialogActions>
-      </Dialog>
+
+      {/* Task completion dialog - extracted to a separate component */}
+      <TaskCompletionDialog
+        open={open}
+        onClose={handleClose}
+        selectedTask={selectedTask}
+        onComplete={completeTask.mutate}
+        isLoading={completeTask.isPending}
+        isError={completeTask.isError}
+      />
     </Paper>
   );
 };
 
+// PropTypes validation
 ListOfTasks.propTypes = {
   listOfTasks: PropTypes.array,
   isLoading: PropTypes.bool,
