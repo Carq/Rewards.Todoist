@@ -3,7 +3,6 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { config } from "../../config";
 import {
   Button,
-  Chip,
   LinearProgress,
   List,
   ListItem,
@@ -17,6 +16,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import axios from "axios";
 import confetti from "canvas-confetti";
 import BlurredText from "../../componets/BlurredText";
+import LabelTag from "../../components/LabelTag";
 
 const Rewards = () => {
   const { isPending, error, data } = useQuery({
@@ -117,10 +117,9 @@ const Rewards = () => {
                 <ListItemText
                   primary={<BlurredText>{reward.name}</BlurredText>}
                   secondary={
-                    <Chip
+                    <LabelTag
                       label={`Gold${reward.requiredGold}`}
                       color="gold"
-                      size="small"
                     />
                   }
                 />

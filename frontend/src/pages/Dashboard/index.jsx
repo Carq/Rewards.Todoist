@@ -38,6 +38,14 @@ export default function Dashboard() {
       {error && <>Błąd: {error.message}</>}
       {(data || isPending) && (
         <Grid justifyContent="center" container spacing={3}>
+          <Grid item sx={{ width: 420 }}>
+            <ListOfTasks
+              listOfTasks={dataActiveTask?.tasks}
+              isLoading={isPendingActiveTask}
+              isReloading={isRefetchingActiveTask}
+              refetchTasks={refetchActiveTasks}
+            />
+          </Grid>
           <Grid item sx={{ width: 425 }}>
             <PersonalOverview
               user={dashboardMartyna?.info?.name}
@@ -56,14 +64,6 @@ export default function Dashboard() {
               recentClaimedRewards={dashboardCarq?.recentClaimedRewards}
               experianceOverview={dashboardCarq?.overview}
               isLoading={isPending}
-            />
-          </Grid>
-          <Grid item sx={{ width: 420 }}>
-            <ListOfTasks
-              listOfTasks={dataActiveTask?.tasks}
-              isLoading={isPendingActiveTask}
-              isReloading={isRefetchingActiveTask}
-              refetchTasks={refetchActiveTasks}
             />
           </Grid>
         </Grid>

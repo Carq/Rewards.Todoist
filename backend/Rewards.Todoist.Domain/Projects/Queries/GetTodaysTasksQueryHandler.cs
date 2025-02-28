@@ -1,5 +1,4 @@
-﻿using Flurl.Util;
-using MediatR;
+﻿using MediatR;
 using Rewards.Todoist.Domain.Todoist;
 using Rewards.Todoist.Domain.Todoist.Contract;
 using Rewards.Todoist.Domain.Users.Repository;
@@ -34,7 +33,7 @@ internal class GetTodaysTasksQueryHandler : IRequestHandler<GetTodaysTasksQuery,
 
         foreach (var user in users.All())
         {
-             tasks.AddRange((await _todoistService.GetActiveTasksForToday(user.TodoistAccessToken)).Select(x => x with { UserId = user.Id }));
+            tasks.AddRange((await _todoistService.GetActiveTasksForToday(user.TodoistAccessToken)).Select(x => x with { UserId = user.Id }));
         }
 
         return new GetTodaysTasksQueryResult(
