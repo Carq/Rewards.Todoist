@@ -5,15 +5,12 @@ import {
   Stack,
   Box,
   Fade,
-  Divider,
   LinearProgress,
   Typography,
   Card,
   CardContent,
 } from "@mui/material";
 import { grey, blue } from "@mui/material/colors";
-import styled from "@emotion/styled";
-import { themeColors } from "../../theme";
 
 import ListOfLatestActivities from "./overview-latest-completed-tasks";
 import SummaryOfXP from "./summary-of-xp";

@@ -14,7 +14,7 @@ import {
   Collapse,
   IconButton,
 } from "@mui/material";
-import { grey, blue } from "@mui/material/colors";
+import { grey } from "@mui/material/colors";
 import BlurredText from "../../componets/BlurredText";
 import LabelTag from "../../components/LabelTag";
 import { howLongAgo } from "../../utils/date-utils";

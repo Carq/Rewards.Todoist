@@ -1,20 +1,18 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { 
-  Paper, 
-  Stack, 
-  Box, 
-  Fade, 
-  LinearProgress, 
+import {
+  Paper,
+  Stack,
+  Box,
+  Fade,
+  LinearProgress,
   Typography,
   Card,
-  CardContent 
+  CardContent,
 } from "@mui/material";
 import { grey, blue } from "@mui/material/colors";
-import styled from "@emotion/styled";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
-import { themeColors } from "../../theme";
 
 import { config } from "../../config";
 import ListOfLatestActivities from "./overview-latest-completed-tasks";
@@ -58,13 +56,6 @@ const styles = {
     background: `linear-gradient(to right, ${blue[600]}, ${blue[400]})`,
   },
 };
-
-// Styled component for section wrapper with cleaner approach
-const SectionWrapper = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(2),
-  position: "relative",
-  zIndex: 1,
-}));
 
 /**
  * Main ListOfTasks component

@@ -15,65 +15,8 @@ import LocalFloristIcon from "@mui/icons-material/LocalFlorist";
 import BlurredText from "../../componets/BlurredText";
 import { blue, green, yellow, grey } from "@mui/material/colors";
 import { getMotivationMessage } from "../../utils/getMotivationMessage";
-
-// Style constants for consistent theming
-const styles = {
-  statsPanel: (color, lightColor) => ({
-    p: 1.5,
-    borderRadius: 2,
-    background: `linear-gradient(145deg, ${lightColor}, ${color})`,
-    boxShadow: "0 4px 8px rgba(0,0,0,0.05)",
-    minWidth: 80,
-  }),
-  progressBar: {
-    container: {
-      position: "relative",
-      height: 8,
-      borderRadius: 4,
-      backgroundColor: grey[200],
-      overflow: "hidden",
-      boxShadow: "inset 0 1px 2px rgba(0,0,0,0.1)",
-    },
-    fill: {
-      position: "absolute",
-      height: "100%",
-      background: `linear-gradient(to right, ${blue[600]}, ${blue[400]})`,
-      borderRadius: 4,
-      transition: "width 0.8s cubic-bezier(0.4, 0, 0.2, 1)",
-    },
-  },
-};
-
-/**
- * Calculates the level and experience points based on total experience
- * @param {number} experience - Total experience points
- * @returns {object} Level information including current level, XP needed for next level, etc.
- */
-const calculateLevelInfo = (experience) => {
-  let level = 1;
-  let expForNextLevel = 50;
-  let totalExp = experience;
-  let expAccumulated = 0;
-
-  while (experience >= expForNextLevel) {
-    experience -= expForNextLevel;
-    expAccumulated += expForNextLevel;
-    level++;
-    expForNextLevel = Math.floor(expForNextLevel * 1.05);
-  }
-
-  return {
-    level,
-    expForNextLevel,
-    expLeft: expForNextLevel - experience,
-    currentExp: experience,
-    totalExp,
-    expAccumulated,
-    progressPercentage:
-      ((expForNextLevel - (expForNextLevel - experience)) / expForNextLevel) *
-      100,
-  };
-};
+import { calculateLevelInfo } from "../../utils/levelUtils";
+import { profileStyles } from "../../styles/profileStyles";
 
 /**
  * Avatar section component
@@ -117,7 +60,10 @@ const StatsPanels = ({ level, gold }) => (
     sx={{ mb: 3 }}
   >
     <Tooltip title="Obecny poziom" arrow placement="top">
-      <Stack alignItems="center" sx={styles.statsPanel(blue[100], blue[50])}>
+      <Stack
+        alignItems="center"
+        sx={profileStyles.statsPanel(blue[100], blue[50])}
+      >
         <Typography variant="h5" sx={{ color: blue[700] }}>
           🕹️
         </Typography>
@@ -136,7 +82,7 @@ const StatsPanels = ({ level, gold }) => (
     <Tooltip title="Dostępne złoto" arrow placement="top">
       <Stack
         alignItems="center"
-        sx={styles.statsPanel(yellow[100], yellow[50])}
+        sx={profileStyles.statsPanel(yellow[100], yellow[50])}
       >
         <Typography variant="h5" sx={{ color: yellow[800] }}>
           💛
@@ -197,8 +143,10 @@ const ExperienceProgressBar = ({ levelInfo, progress }) => {
         </Typography>
       </Box>
 
-      <Box sx={styles.progressBar.container}>
-        <Box sx={{ ...styles.progressBar.fill, width: `${progress}%` }} />
+      <Box sx={profileStyles.progressBar.container}>
+        <Box
+          sx={{ ...profileStyles.progressBar.fill, width: `${progress}%` }}
+        />
       </Box>
 
       <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 0.75 }}>
