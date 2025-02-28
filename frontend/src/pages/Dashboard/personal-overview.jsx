@@ -83,9 +83,12 @@ const PersonalOverview = ({
     <Paper elevation={0} sx={styles.container}>
       <Fade in={animateSections} timeout={800}>
         <Stack>
-          {/* User profile section */}
           <SectionWrapper>
             <PersonalProfile user={user} stats={stats} />
+          </SectionWrapper>
+
+          <SectionWrapper>
+            <SummaryOfXP experianceOverview={experianceOverview} />
           </SectionWrapper>
 
           {/* Recent completed tasks section */}
@@ -96,12 +99,6 @@ const PersonalOverview = ({
             />
           </SectionWrapper>
 
-          {/* Experience summary section */}
-          <SectionWrapper>
-            <SummaryOfXP experianceOverview={experianceOverview} />
-          </SectionWrapper>
-
-          {/* Recent rewards section */}
           <SectionWrapper>
             <ListOfLatestActivities
               title={"Ostatnie nagrody"}
