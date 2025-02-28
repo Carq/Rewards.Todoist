@@ -1,1 +1,0 @@
-import{aC as P,aD as S,p as c,aE as u}from"./index-CnoVWgTh.js";function g(e){var s;const{elementType:t,externalSlotProps:p,ownerState:r,skipResolvingSlotProps:n=!1,...a}=e,o=n?{}:P(p,r),{props:l,internalRef:f}=S({...a,externalSlotProps:o}),i=c(f,o==null?void 0:o.ref,(s=e.additionalProps)==null?void 0:s.ref);return u(t,{...l,ref:i},r)}export{g as u};
