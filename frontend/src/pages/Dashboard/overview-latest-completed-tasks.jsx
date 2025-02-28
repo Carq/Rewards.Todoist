@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import {
   Card,
@@ -7,16 +7,19 @@ import {
   List,
   ListItem,
   ListItemButton,
-  ListItemText,
   Avatar,
-  Stack,
+  Divider,
   Box,
   Fade,
+  Collapse,
+  IconButton,
 } from "@mui/material";
 import { grey, blue } from "@mui/material/colors";
 import BlurredText from "../../componets/BlurredText";
 import LabelTag from "../../components/LabelTag";
 import { howLongAgo } from "../../utils/date-utils";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
 // Style constants for consistent theming with personal-profile
 const styles = {
@@ -168,85 +171,197 @@ function getAvatarBgColor(activityArea) {
 }
 
 /**
- * Activity item component
+ * Group activities by their activityArea
  */
-const ActivityItem = ({ activity, onClick, disabled }) => {
-  const handleClick = () => {
-    if (!disabled && onClick) {
-      onClick(activity);
+const groupActivitiesByArea = (activities) => {
+  if (!activities) return [];
+
+  // Create a map of activityArea -> activities
+  const groupedMap = activities.reduce((groups, activity) => {
+    const area = activity.activityArea || "Inne";
+    if (!groups[area]) {
+      groups[area] = [];
     }
+    groups[area].push(activity);
+    return groups;
+  }, {});
+
+  // Convert map to array of groups
+  return Object.entries(groupedMap).map(([area, items]) => ({
+    area,
+    icon: MapProjectNameToIcon(area, ""),
+    activities: items,
+  }));
+};
+
+/**
+ * Activity Group component that displays grouped activities
+ */
+const ActivityGroup = ({ group, onItemClick, disabled }) => {
+  const [expanded, setExpanded] = useState(true);
+
+  const toggleExpanded = (e) => {
+    e.stopPropagation();
+    setExpanded(!expanded);
   };
 
-  const content = (
-    <Box sx={styles.listItemContent}>
-      <Avatar sx={styles.avatar(activity.activityArea)}>
-        {MapProjectNameToIcon(activity.activityArea, activity.name)}
-      </Avatar>
-
-      <Box sx={{ flexGrow: 1, width: "calc(100% - 60px)" }}>
-        <Typography sx={styles.activityName}>
-          <BlurredText>{activity.name}</BlurredText>
-        </Typography>
-
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            width: "100%",
-          }}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: 0.5,
-              maxWidth: activity.occurredOn ? "75%" : "100%",
-            }}
-          >
-            {activity.tags &&
-              activity.tags.map((label) => (
-                <LabelTag
-                  key={label}
-                  label={label}
-                  color={MapTagToColor(label)}
-                  size="small"
-                />
-              ))}
-          </Box>
-
-          {/* Date aligned to right */}
-          {activity.occurredOn && (
-            <Typography variant="caption" sx={styles.dateText}>
-              {howLongAgo(new Date(activity.occurredOn), new Date())}
-            </Typography>
-          )}
-        </Box>
-      </Box>
-    </Box>
-  );
-
-  if (onClick && !disabled) {
-    return (
-      <ListItemButton
-        onClick={handleClick}
-        disableGutters
+  return (
+    <Box sx={{ mb: 2, width: "100%" }}>
+      {/* Group header with avatar */}
+      <Box
         sx={{
-          ...styles.listItemButton(disabled),
-          justifyContent: "flex-start",
+          display: "flex",
+          alignItems: "center",
+          mb: 1,
+          px: 1,
+          py: 0.5,
+          borderRadius: 2,
+          backgroundColor: getAvatarBgColor(group.area),
+          width: "100%",
         }}
       >
-        {content}
-      </ListItemButton>
-    );
-  }
+        <Avatar
+          sx={{
+            bgcolor: "transparent",
+            color: "text.primary",
+            width: 32,
+            height: 32,
+            mr: 1.5,
+            fontSize: "1.2rem",
+          }}
+        >
+          {group.icon}
+        </Avatar>
 
-  return (
-    <ListItem disableGutters sx={{ px: 1, py: 0.5, width: "100%" }}>
-      {content}
-    </ListItem>
+        <Typography
+          sx={{
+            fontWeight: 500,
+            color: grey[800],
+            flexGrow: 1,
+          }}
+        >
+          {group.area}
+        </Typography>
+
+        <IconButton
+          size="small"
+          onClick={toggleExpanded}
+          sx={{ color: grey[600] }}
+        >
+          {expanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+        </IconButton>
+      </Box>
+
+      {/* Group activities */}
+      <Collapse in={expanded} timeout="auto" unmountOnExit>
+        <List
+          dense
+          disablePadding
+          sx={{
+            ml: 2, // Indent to align with avatar
+            borderLeft: `2px solid ${grey[200]}`,
+            pl: 2,
+          }}
+        >
+          {group.activities.map((activity, index) => (
+            <ListItem
+              key={activity.id || index}
+              disablePadding
+              disableGutters
+              sx={{ mb: 0.75 }}
+            >
+              {onItemClick ? (
+                <ListItemButton
+                  onClick={() => !disabled && onItemClick(activity)}
+                  disabled={disabled}
+                  disableGutters
+                  sx={{
+                    py: 0.5,
+                    px: 1,
+                    borderRadius: 1,
+                    opacity: disabled ? 0.7 : 1,
+                    "&:hover": !disabled
+                      ? {
+                          backgroundColor: grey[100],
+                        }
+                      : {},
+                  }}
+                >
+                  <ActivityContent activity={activity} />
+                </ListItemButton>
+              ) : (
+                <Box sx={{ py: 0.5, px: 1, width: "100%" }}>
+                  <ActivityContent activity={activity} />
+                </Box>
+              )}
+            </ListItem>
+          ))}
+        </List>
+      </Collapse>
+    </Box>
   );
 };
+
+/**
+ * Content of an activity item without the avatar
+ */
+const ActivityContent = ({ activity }) => (
+  <Box sx={{ width: "100%" }}>
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "flex-start",
+        width: "100%",
+      }}
+    >
+      <Typography
+        sx={{
+          fontWeight: 500,
+          fontSize: "0.9rem",
+          color: grey[800],
+          mr: 1,
+          flex: 1,
+        }}
+      >
+        <BlurredText>{activity.name}</BlurredText>
+      </Typography>
+
+      {activity.occurredOn && (
+        <Typography
+          variant="caption"
+          sx={{
+            color: grey[500],
+            fontSize: "0.75rem",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {howLongAgo(new Date(activity.occurredOn), new Date())}
+        </Typography>
+      )}
+    </Box>
+
+    {activity.tags && activity.tags.length > 0 && (
+      <Box
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 0.5,
+          mt: 0.5,
+        }}
+      >
+        {activity.tags.map((label) => (
+          <LabelTag
+            key={label}
+            label={label}
+            color={MapTagToColor(label)}
+            size="small"
+          />
+        ))}
+      </Box>
+    )}
+  </Box>
+);
 
 /**
  * Main ListOfLatestActivities component
@@ -260,6 +375,12 @@ const ListOfLatestActivities = ({
   sx = {},
 }) => {
   const [animateIn, setAnimateIn] = useState(false);
+
+  // Group activities by area
+  const groupedActivities = useMemo(
+    () => groupActivitiesByArea(activities),
+    [activities]
+  );
 
   // Animate after initial render
   useState(() => {
@@ -279,18 +400,20 @@ const ListOfLatestActivities = ({
           </Typography>
         )}
 
-        {/* List of activities */}
-        {activities && activities.length > 0 ? (
-          <List sx={styles.list}>
-            {activities.map((activity, index) => (
-              <ActivityItem
-                key={activity.id || index}
-                activity={activity}
-                onClick={onItemClick}
+        {/* List of grouped activities */}
+        {groupedActivities && groupedActivities.length > 0 ? (
+          groupedActivities.map((group, index) => (
+            <React.Fragment key={group.area || index}>
+              <ActivityGroup
+                group={group}
+                onItemClick={onItemClick}
                 disabled={disabled}
               />
-            ))}
-          </List>
+              {index < groupedActivities.length - 1 && (
+                <Divider sx={{ my: 1, opacity: 0.6 }} />
+              )}
+            </React.Fragment>
+          ))
         ) : (
           <Typography variant="body2" sx={styles.noActivities}>
             Brak aktywności do wyświetlenia
@@ -314,15 +437,22 @@ const ListOfLatestActivities = ({
 };
 
 // PropTypes validation
-ActivityItem.propTypes = {
+ActivityContent.propTypes = {
   activity: PropTypes.shape({
     id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     name: PropTypes.string.isRequired,
-    activityArea: PropTypes.string,
     tags: PropTypes.arrayOf(PropTypes.string),
     occurredOn: PropTypes.string,
   }).isRequired,
-  onClick: PropTypes.func,
+};
+
+ActivityGroup.propTypes = {
+  group: PropTypes.shape({
+    area: PropTypes.string.isRequired,
+    icon: PropTypes.string.isRequired,
+    activities: PropTypes.array.isRequired,
+  }).isRequired,
+  onItemClick: PropTypes.func,
   disabled: PropTypes.bool,
 };
 
