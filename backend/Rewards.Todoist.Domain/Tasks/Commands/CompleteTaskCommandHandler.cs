@@ -2,6 +2,7 @@ using MediatR;
 using Rewards.Todoist.Domain.Todoist;
 using Rewards.Todoist.Domain.Users.Repository;
 using Rewards.Todoist.Domain.Utils;
+using System.Diagnostics;
 
 namespace Rewards.Todoist.Domain.Tasks.Commands;
 
@@ -36,6 +37,13 @@ public class CompleteTaskCommandHandler : IRequestHandler<CompleteTaskCommand>
             throw new KeyNotFoundException();
         }
 
-        await _todoistService.CompleteTaskAsync(request.TaskId, user.TodoistAccessToken);
+        if (Debugger.IsAttached)
+        {
+            await Task.Delay(1000);
+        }
+        else
+        {
+            await _todoistService.CompleteTaskAsync(request.TaskId, user.TodoistAccessToken);
+        }
     }
 }
