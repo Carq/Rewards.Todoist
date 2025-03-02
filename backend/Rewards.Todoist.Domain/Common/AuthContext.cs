@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Rewards.Todoist.Domain.Configuration;
 
-namespace Rewards.Todoist.Domain.Utils;
+namespace Rewards.Todoist.Domain.Common;
 
 public class AuthContext
 {

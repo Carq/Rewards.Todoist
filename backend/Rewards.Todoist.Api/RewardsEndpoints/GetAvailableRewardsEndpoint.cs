@@ -1,8 +1,8 @@
 ﻿using Ardalis.ApiEndpoints;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Rewards.Todoist.Domain.Common;
 using Rewards.Todoist.Domain.Storage;
-using Rewards.Todoist.Domain.Utils;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Rewards.Todoist.Api.RewardsEndpoints;

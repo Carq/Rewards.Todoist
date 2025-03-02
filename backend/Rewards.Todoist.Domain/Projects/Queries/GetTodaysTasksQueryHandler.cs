@@ -1,8 +1,8 @@
 ﻿using MediatR;
+using Rewards.Todoist.Domain.Common;
 using Rewards.Todoist.Domain.Todoist;
 using Rewards.Todoist.Domain.Todoist.Contract;
 using Rewards.Todoist.Domain.Users.Repository;
-using Rewards.Todoist.Domain.Utils;
 
 namespace Rewards.Todoist.Domain.Projects.Queries;
 

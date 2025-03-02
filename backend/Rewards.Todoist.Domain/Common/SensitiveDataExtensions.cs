@@ -1,4 +1,4 @@
-﻿namespace Rewards.Todoist.Domain.Utils;
+﻿namespace Rewards.Todoist.Domain.Common;
 
 public static class SensitiveDataExtensions
 {

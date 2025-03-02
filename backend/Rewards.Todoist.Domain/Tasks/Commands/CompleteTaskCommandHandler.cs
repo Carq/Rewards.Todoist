@@ -1,7 +1,8 @@
 using MediatR;
+using Rewards.Todoist.Domain.Common;
+using Rewards.Todoist.Domain.Projects.Commands;
 using Rewards.Todoist.Domain.Todoist;
 using Rewards.Todoist.Domain.Users.Repository;
-using Rewards.Todoist.Domain.Utils;
 using System.Diagnostics;
 
 namespace Rewards.Todoist.Domain.Tasks.Commands;
@@ -14,14 +15,18 @@ public class CompleteTaskCommandHandler : IRequestHandler<CompleteTaskCommand>
 
     private readonly AuthContext _authContext;
 
+    private readonly IMediator _mediator;
+
     public CompleteTaskCommandHandler(
         ITodoistService todoistService,
         IUserRepository userRepository,
-        AuthContext authContext)
+        AuthContext authContext,
+        IMediator mediator)
     {
         _todoistService = todoistService;
         _userRepository = userRepository;
         _authContext = authContext;
+        _mediator = mediator;
     }
 
     public async Task Handle(CompleteTaskCommand request, CancellationToken cancellationToken)
@@ -45,5 +50,7 @@ public class CompleteTaskCommandHandler : IRequestHandler<CompleteTaskCommand>
         {
             await _todoistService.CompleteTaskAsync(request.TaskId, user.TodoistAccessToken);
         }
+
+        await _mediator.Publish(new TaskHasBeenCompletedEvent(request.UserId, request.TaskId));
     }
 }

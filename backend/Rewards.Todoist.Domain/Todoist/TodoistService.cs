@@ -31,9 +31,9 @@ public class TodoistService : ITodoistService
         return response;
     }
 
-    public async Task<GetAllCompeltedResult> GetCompletedTasksAsync(string projectId, int limit, DateTimeOffset since, string userAccessToken)
+    public async Task<GetAllCompeltedResult> GetCompletedTasksAsync(string? projectId, int limit, DateTimeOffset? since, string userAccessToken)
     {
-        string formattedSince = since.ToString("yyyy-MM-ddTHH:mm:ss");
+        var formattedSince = since?.ToString("yyyy-MM-ddTHH:mm:ss");
 
         return await _httpClient
             .Request("sync/v9/completed/get_all")
@@ -52,6 +52,14 @@ public class TodoistService : ITodoistService
             .WithOAuthBearerToken(userAccessToken)
             .SetQueryParam("filter", "date before: tomorrow")
             .GetJsonAsync<TaskDetailsDto[]>();
+    }
+
+    public async Task<TaskDetailsDto> GetActiveTask(string taskId, string userAccessToken)
+    {
+        return await _httpClient
+            .Request($"rest/v2/tasks/{taskId}")
+            .WithOAuthBearerToken(userAccessToken)
+            .GetJsonAsync<TaskDetailsDto>();
     }
 
     public async Task CompleteTaskAsync(string taskId, string userAccessToken)

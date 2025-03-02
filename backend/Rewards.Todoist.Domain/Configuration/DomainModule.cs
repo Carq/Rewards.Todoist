@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Rewards.Todoist.Domain.Common;
 using Rewards.Todoist.Domain.Rewards.Repositories;
 using Rewards.Todoist.Domain.Storage;
 using Rewards.Todoist.Domain.Todoist.Configuration;

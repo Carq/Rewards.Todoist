@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Rewards.Todoist.Domain.Common;
 using Rewards.Todoist.Domain.UserActivity.Entities;
 using Rewards.Todoist.Domain.UserEvents.Entities;
 using Rewards.Todoist.Domain.UserEvents.Repository;

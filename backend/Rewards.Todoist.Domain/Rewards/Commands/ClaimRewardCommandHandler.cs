@@ -1,6 +1,6 @@
 ﻿using MediatR;
+using Rewards.Todoist.Domain.Common;
 using Rewards.Todoist.Domain.Rewards.Repositories;
-using Rewards.Todoist.Domain.Utils;
 
 namespace Rewards.Todoist.Domain.Rewards.Commands;
 

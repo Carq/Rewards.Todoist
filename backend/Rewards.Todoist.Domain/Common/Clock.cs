@@ -1,4 +1,6 @@
-﻿namespace Rewards.Todoist.Domain.Utils;
+﻿using Rewards.Todoist.Domain.Utils;
+
+namespace Rewards.Todoist.Domain.Common;
 
 public class Clock : IClock
 {

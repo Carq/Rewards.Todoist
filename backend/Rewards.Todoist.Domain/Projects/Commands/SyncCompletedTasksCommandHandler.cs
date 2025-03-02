@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Rewards.Todoist.Domain.Projects.Entities;
+using Rewards.Todoist.Domain.Projects.Mappers;
 using Rewards.Todoist.Domain.Storage;
 using Rewards.Todoist.Domain.Todoist;
 using Rewards.Todoist.Domain.Todoist.Contract;
@@ -59,17 +60,8 @@ public class SyncCompletedTasksCommandHandler : IRequestHandler<SyncCompletedTas
     private async Task<CompletedTaskEntity[]> GetCompletedTasksForProject(User user, string projectId, DateTimeOffset since)
     {
         var completedTasks = await _todoistService.GetCompletedTasksAsync(projectId, 100, since, user.TodoistAccessToken);
-        return completedTasks.Items.Select(x => MapToCompleteTask(x, user)).ToArray();
+        return completedTasks.Items.Select(x => TodoistToEntityMapper.MapToCompleteTask(x, user)).ToArray();
     }
 
-    private static CompletedTaskEntity MapToCompleteTask(ItemDto itemDto, User user)
-    {
-        return new CompletedTaskEntity(
-                        long.Parse(itemDto.Id),
-                        itemDto.ItemObject.Content,
-                        string.Join(',', itemDto.ItemObject.Labels),
-                        itemDto.ProjectId,
-                        itemDto.CompletedAt.DateTime,
-                        user);
-    }
+    
 }
