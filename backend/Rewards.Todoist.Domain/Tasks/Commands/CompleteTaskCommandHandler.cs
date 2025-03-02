@@ -1,11 +1,12 @@
 using MediatR;
 using Rewards.Todoist.Domain.Common;
-using Rewards.Todoist.Domain.Projects.Commands;
+using Rewards.Todoist.Domain.Projects.DomainEvents;
+using Rewards.Todoist.Domain.Tasks.Commands;
 using Rewards.Todoist.Domain.Todoist;
 using Rewards.Todoist.Domain.Users.Repository;
 using System.Diagnostics;
 
-namespace Rewards.Todoist.Domain.Tasks.Commands;
+namespace Rewards.Todoist.Domain.Tasks.DomainEvents;
 
 public class CompleteTaskCommandHandler : IRequestHandler<CompleteTaskCommand>
 {

@@ -5,7 +5,12 @@ import { Grid } from "@mui/material";
 import { config } from "../../config";
 
 export default function Dashboard() {
-  const { isPending, error, data } = useQuery({
+  const {
+    isPending,
+    error,
+    data,
+    refetch: refetchDashboard,
+  } = useQuery({
     queryKey: ["dashboard"],
     queryFn: () =>
       fetch(`${config.apiUrl}dashboard`, {
@@ -30,6 +35,11 @@ export default function Dashboard() {
       }).then((res) => res.json()),
   });
 
+  const refetchAll = () => {
+    refetchDashboard();
+    refetchActiveTasks();
+  };
+
   let dashboardCarq = data?.users.find((x) => x.info.id == "9238519");
   let dashboardMartyna = data?.users.find((x) => x.info.id == "33983343");
 
@@ -43,7 +53,7 @@ export default function Dashboard() {
               listOfTasks={dataActiveTask?.tasks}
               isLoading={isPendingActiveTask}
               isReloading={isRefetchingActiveTask}
-              refetchTasks={refetchActiveTasks}
+              refetchTasks={refetchAll}
             />
           </Grid>
           <Grid item sx={{ width: 425 }}>

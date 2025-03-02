@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import {
   Paper,
@@ -65,6 +65,7 @@ const ListOfTasks = ({ listOfTasks, isLoading, isReloading, refetchTasks }) => {
   const [open, setOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   const [animateSections, setAnimateSections] = useState(false);
+  const hasRefetched = useRef(false);
 
   // Dialog handlers
   const handleClickOpen = (task) => {
@@ -87,18 +88,19 @@ const ListOfTasks = ({ listOfTasks, isLoading, isReloading, refetchTasks }) => {
         },
       });
     },
-  });
-
-  // Effects
-  useEffect(() => {
-    // Handle successful completion
-    if (completeTask.isSuccess) {
+    onSuccess: () => {
       handleClose();
-      if (refetchTasks) {
+      // Only refetch if we haven't already refetched for this completion
+      if (refetchTasks && !hasRefetched.current) {
+        hasRefetched.current = true;
         refetchTasks();
       }
-    }
-  }, [completeTask.isSuccess, refetchTasks]);
+    },
+    onSettled: () => {
+      // Reset the ref when the mutation is completed (success or error)
+      hasRefetched.current = false;
+    },
+  });
 
   useEffect(() => {
     // Animate sections with a slight delay after loading
