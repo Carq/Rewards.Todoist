@@ -5,7 +5,7 @@ using Rewards.Todoist.Domain.Storage;
 using Rewards.Todoist.Domain.Todoist;
 using Rewards.Todoist.Domain.Users.Repository;
 
-namespace Rewards.Todoist.Domain.Projects.Commands;
+namespace Rewards.Todoist.Domain.Projects.DomainEvents;
 
 public class TaskHasBeenCompletedEventHandler : INotificationHandler<TaskHasBeenCompletedEvent>
 {
