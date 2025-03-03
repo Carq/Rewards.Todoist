@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Rewards.Todoist.Domain.Projects.Entities;
 using Rewards.Todoist.Domain.Projects.Mappers;
 using Rewards.Todoist.Domain.Storage;
@@ -30,24 +31,20 @@ public class SyncCompletedTasksCommandHandler : IRequestHandler<SyncCompletedTas
 
     public async Task Handle(SyncCompletedTasksCommand request, CancellationToken cancellationToken)
     {
-        var since = _context.CompletedTasks.Max(x => x.CompletedAt).AddMinutes(1);
-        if (since.AddHours(1) > _clock.Now.UtcDateTime)
-        {
-            return;
-        }
-
+        var todayDate = _clock.Now.UtcDateTime.Date;
+        var todaysCompletedTasks = await _context.CompletedTasks.Where(x => x.CompletedAt >= todayDate).Select(x => x.Id).ToListAsync(cancellationToken);
+      
         var users = await _userRepository.GetUsers(cancellationToken);
-
         var completedTasksToSync = new List<CompletedTaskEntity>();
         foreach (var user in users.All())
         {
             foreach (var projectId in UserProjects.GetProjects(user.Id.ToString()))
             {
-                completedTasksToSync.AddRange(await GetCompletedTasksForProject(user, projectId, since));
+                completedTasksToSync.AddRange(await GetCompletedTasksForProject(user, projectId, todayDate));
             }
         }
 
-        completedTasksToSync = completedTasksToSync.Where(x => x.CompletedAt >= since).ToList();
+        completedTasksToSync = completedTasksToSync.ExceptBy(todaysCompletedTasks, x => x.Id).ToList();
         if (completedTasksToSync.Count == 0)
         {
             return;
