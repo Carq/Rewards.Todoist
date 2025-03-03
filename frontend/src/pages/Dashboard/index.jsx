@@ -33,6 +33,10 @@ export default function Dashboard() {
           Authorization: `${localStorage.getItem("AuthToken")}`,
         },
       }).then((res) => res.json()),
+    staleTime: 5 * 60 * 1000,
+    cacheTime: 10 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 
   const refetchAll = () => {
