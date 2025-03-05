@@ -17,7 +17,11 @@ const styles = {
  * Reusable loading skeleton component
  * Shows animated skeleton placeholders while content is loading
  */
-const LoadingSkeleton = ({ itemCount = 1, heightMultipliers = [1] }) => (
+const LoadingSkeleton = ({
+  itemCount = 1,
+  heightMultipliers = [1],
+  height,
+}) => (
   <Fade in={true} timeout={500}>
     <Stack spacing={3} sx={{ p: 2 }}>
       {Array(itemCount)
@@ -28,8 +32,9 @@ const LoadingSkeleton = ({ itemCount = 1, heightMultipliers = [1] }) => (
             variant="rounded"
             width="100%"
             height={
+              height ||
               styles.loadingSkeleton.baseHeight *
-              (heightMultipliers[index % heightMultipliers.length] || 1)
+                (heightMultipliers[index % heightMultipliers.length] || 1)
             }
             sx={{ borderRadius: styles.loadingSkeleton.borderRadius }}
           />
@@ -41,6 +46,7 @@ const LoadingSkeleton = ({ itemCount = 1, heightMultipliers = [1] }) => (
 LoadingSkeleton.propTypes = {
   itemCount: PropTypes.number,
   heightMultipliers: PropTypes.arrayOf(PropTypes.number),
+  height: PropTypes.number,
 };
 
 export default LoadingSkeleton;

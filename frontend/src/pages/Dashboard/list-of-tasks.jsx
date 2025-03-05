@@ -65,7 +65,13 @@ const ListOfTasks = ({ listOfTasks, isLoading, isReloading, refetchTasks }) => {
   const [open, setOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   const [animateSections, setAnimateSections] = useState(false);
+  const [contentHeight, setContentHeight] = useState(() => {
+    // Try to load saved height from localStorage
+    const savedHeight = localStorage.getItem("listOfTasksHeight");
+    return savedHeight ? parseInt(savedHeight, 10) : 250; // Default fallback height
+  });
   const hasRefetched = useRef(false);
+  const contentRef = useRef(null);
 
   // Dialog handlers
   const handleClickOpen = (task) => {
@@ -112,11 +118,24 @@ const ListOfTasks = ({ listOfTasks, isLoading, isReloading, refetchTasks }) => {
     }
   }, [isLoading]);
 
-  // Render loading skeleton
+  useEffect(() => {
+    if (!isLoading && !isReloading && contentRef.current) {
+      const timer = setTimeout(() => {
+        const height = contentRef.current.clientHeight;
+        if (height > 0) {
+          setContentHeight(height);
+          localStorage.setItem("listOfTasksHeight", height.toString());
+        }
+      }, 500);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading, isReloading, listOfTasks]);
+
   if (isLoading) {
     return (
       <Paper elevation={1} sx={styles.container}>
-        <LoadingSkeleton itemCount={1} />
+        <LoadingSkeleton height={contentHeight} />
       </Paper>
     );
   }
@@ -124,7 +143,7 @@ const ListOfTasks = ({ listOfTasks, isLoading, isReloading, refetchTasks }) => {
   return (
     <Paper elevation={1} sx={styles.container}>
       <Card variant="outlined" sx={styles.card}>
-        <CardContent sx={{ p: 3 }}>
+        <CardContent sx={{ p: 3 }} ref={contentRef}>
           <Fade in={animateSections} timeout={800}>
             <Stack>
               {/* Header section with title */}
