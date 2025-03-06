@@ -19,7 +19,7 @@ public class Claimer
 
     public void ClaimReward(RewardEntity reward, DateOnly claimedOn)
     {
-        if (ClaimedRewards.Any(x => x.ClaimedOn == claimedOn))
+        if (ClaimedRewards.Any(x => x.ClaimedOn == claimedOn && x.Name == reward.Name))
         {
             throw new InvalidOperationException("User has already claimed a reward on this date.");
         }

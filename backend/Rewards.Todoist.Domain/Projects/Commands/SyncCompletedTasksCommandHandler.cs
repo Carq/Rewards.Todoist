@@ -4,7 +4,6 @@ using Rewards.Todoist.Domain.Projects.Entities;
 using Rewards.Todoist.Domain.Projects.Mappers;
 using Rewards.Todoist.Domain.Storage;
 using Rewards.Todoist.Domain.Todoist;
-using Rewards.Todoist.Domain.Todoist.Contract;
 using Rewards.Todoist.Domain.Users;
 using Rewards.Todoist.Domain.Users.Repository;
 using Rewards.Todoist.Domain.Utils;
