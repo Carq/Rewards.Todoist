@@ -12,9 +12,11 @@ public interface ITodoistService
 
     Task<TaskDetailsDto[]> GetActiveTasksForToday(string userAccessToken);
 
+    Task<TaskDetailsDto[]> GetActiveTasksForTodayAndTomorrow(string userAccessToken);
+
     Task<TaskDetailsDto> GetActiveTask(string taskId, string userAccessToken);
 
     Task CompleteTaskAsync(string taskId, string userAccessToken);
-    
-    
+
+
 }
