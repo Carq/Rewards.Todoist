@@ -59,7 +59,7 @@ public class TodoistService : ITodoistService
         return await _httpClient
             .Request("rest/v2/tasks")
             .WithOAuthBearerToken(userAccessToken)
-            .SetQueryParam("filter", "date before: tomorrow | date: tomorrow")
+            .SetQueryParam("filter", "date before: +2 days")
             .GetJsonAsync<TaskDetailsDto[]>();
     }
 
