@@ -33,7 +33,7 @@ internal class GetTodaysTasksQueryHandler : IRequestHandler<GetTodaysTasksQuery,
 
         foreach (var user in users.All())
         {
-            tasks.AddRange((await _todoistService.GetActiveTasksForTodayAndTomorrow(user.TodoistAccessToken)).Select(x => x with { UserId = user.Id }));
+            tasks.AddRange((await _todoistService.GetActiveTasksForToday(user.TodoistAccessToken)).Select(x => x with { UserId = user.Id }));
         }
 
         return new GetTodaysTasksQueryResult(

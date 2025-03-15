@@ -16,33 +16,39 @@ public class UserActivityRepository
         _dbContext = dbContext;
     }
 
-    public async Task<UserActivityLog> GetUserActivityLog(long UserId, CancellationToken cancellationToken)
+    public async Task<UserActivityLog> GetUserActivityLog(long UserId, DateTime sinceDate, CancellationToken cancellationToken)
     {
         var user = await _dbContext.Users.FirstAsync(x => x.Id == UserId) ?? throw new ArgumentException($"User with id {UserId} not found");
         var allCompletedTasks = await _dbContext
                                         .CompletedTasks
-                                        .Where(x => x.CompletedBy.Id == UserId)
+                                        .Where(x => x.CompletedBy.Id == UserId && x.CompletedAt >= sinceDate)
                                         .ToArrayAsync(cancellationToken);
-        
+
+        var sinceDateOnly = DateOnly.FromDateTime(sinceDate.Date).AddMonths(1);
         var allRewards = await _dbContext
                                 .ClaimedRewards
-                                .Where(x =>x.ClaimedBy.Id == UserId)
+                                .Where(x =>x.ClaimedBy.Id == UserId && x.ClaimedOn >= sinceDateOnly)
                                 .ToArrayAsync(cancellationToken);
 
         return new UserActivityLog(user, GetActivityLogRecords(user.Id, allCompletedTasks, allRewards));
     }
 
-    public async Task<UserActivityLog[]> GetUserActivityLogs(CancellationToken cancellationToken)
+    public async Task<UserActivityLog[]> GetUserActivityLogs(DateTime sinceDate, CancellationToken cancellationToken)
     {
         var users = await _dbContext.Users.ToListAsync(cancellationToken);
         var allCompletedTasks = 
             await _dbContext
                 .CompletedTasks
                 .Include(x => x.CompletedBy)
-                .Where(x => !string.IsNullOrEmpty(x.Labels))
+                .Where(x => !string.IsNullOrEmpty(x.Labels) && x.CompletedAt >= sinceDate)
                 .ToArrayAsync(cancellationToken);
 
-        var allRewards = await _dbContext.ClaimedRewards.ToArrayAsync(cancellationToken);
+        var sinceDateOnly = DateOnly.FromDateTime(sinceDate.Date).AddMonths(1);
+
+        var allRewards = await _dbContext
+                                    .ClaimedRewards
+                                    .Where(x => x.ClaimedOn >= sinceDateOnly)
+                                    .ToArrayAsync(cancellationToken);
 
         return users
             .Select(y => 

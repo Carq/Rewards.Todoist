@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Rewards.Todoist.Domain.Configuration;
 using Rewards.Todoist.Domain.Rewards.Entities;
 using Rewards.Todoist.Domain.Storage;
 using Rewards.Todoist.Domain.UserEvents.Repository;
@@ -14,7 +15,7 @@ public class RewardsRepository(DomainContext Context, UserActivityRepository Use
 
     public async Task<Claimer> GetClaimer(long userId, CancellationToken cancellationToken)
     {
-        var userActivityLog = await UserActivityRepository.GetUserActivityLog(userId, cancellationToken);
+        var userActivityLog = await UserActivityRepository.GetUserActivityLog(userId, DomainSettings.StartDate, cancellationToken);
         var claimedRewards = await Context.ClaimedRewards.Where(x => x.ClaimedBy.Id == userId).ToArrayAsync(cancellationToken);
         return new Claimer(userActivityLog.User, userActivityLog, claimedRewards);
     }

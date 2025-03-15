@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Rewards.Todoist.Domain.Common;
+using Rewards.Todoist.Domain.Configuration;
 using Rewards.Todoist.Domain.UserActivity.Entities;
 using Rewards.Todoist.Domain.UserEvents.Entities;
 using Rewards.Todoist.Domain.UserEvents.Repository;
@@ -12,7 +13,7 @@ public class GetDashboardDataQueryHandler(UserActivityRepository UserActivityRep
 {
     public async Task<GetDashboardDataResult> Handle(GetDashboardDataQuery request, CancellationToken cancellationToken)
     {
-        var userActivityLogs = await UserActivityRepository.GetUserActivityLogs(cancellationToken);
+        var userActivityLogs = await UserActivityRepository.GetUserActivityLogs(DomainSettings.StartDate, cancellationToken);
         var yesterday = Clock.Now.AddDays(-1).Date;
         return new GetDashboardDataResult(
             userActivityLogs.Select(x =>
