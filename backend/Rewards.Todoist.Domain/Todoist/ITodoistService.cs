@@ -17,6 +17,4 @@ public interface ITodoistService
     Task<TaskDetailsDto> GetActiveTask(string taskId, string userAccessToken);
 
     Task CompleteTaskAsync(string taskId, string userAccessToken);
-
-
 }
