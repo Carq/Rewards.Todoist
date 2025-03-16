@@ -93,6 +93,9 @@ public class TodoistService : ITodoistService
 
     public async Task CompleteTaskAsync(string taskId, string userAccessToken)
     {
+        var cacheKey = $"{CacheKeyPrefix}{userAccessToken}";
+        _cache.Remove(cacheKey);
+
         await _httpClient
             .Request($"rest/v2/tasks/{taskId}/close")
             .WithOAuthBearerToken(userAccessToken)

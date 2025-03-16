@@ -21,4 +21,9 @@ public class MemoryCache : ICache
             return await valueFactory();
         }))!;
     }
+
+    public void Remove(string key)
+    {
+        _cache.Remove(key);
+    }
 }

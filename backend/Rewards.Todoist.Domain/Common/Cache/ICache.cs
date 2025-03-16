@@ -4,5 +4,5 @@ public interface ICache
 {
     Task<T> GetOrAddAsync<T>(string key, Func<Task<T>> valueFactory);
 
-
+    void Remove(string key);
 }
