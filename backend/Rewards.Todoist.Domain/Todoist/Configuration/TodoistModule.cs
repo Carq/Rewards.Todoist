@@ -2,7 +2,6 @@
 using Flurl.Http.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Rewards.Todoist.Domain.Common.Cache;
 using System.Text.Json;
 
 namespace Rewards.Todoist.Domain.Todoist.Configuration;
@@ -44,7 +43,6 @@ public static class TodoistModule
 
         services.AddScoped<ITodoistService, TodoistService>(
             provider => new TodoistService(
-                provider.GetRequiredService<IFlurlClientCache>().Get("TodoistClient"),
-                provider.GetRequiredService<ICache>()));
+                provider.GetRequiredService<IFlurlClientCache>().Get("TodoistClient")));
     }
 }

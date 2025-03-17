@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Rewards.Todoist.Domain.Common;
 using Rewards.Todoist.Domain.Common.Cache;
+using Rewards.Todoist.Domain.Projects.Cache;
 using Rewards.Todoist.Domain.Rewards.Repositories;
 using Rewards.Todoist.Domain.Storage;
 using Rewards.Todoist.Domain.Todoist.Configuration;
@@ -59,6 +60,7 @@ public static class DomainModule
         services.AddHttpContextAccessor();
         services.AddMemoryCache();
         services.AddScoped<ICache, MemoryCache>();
+        services.AddScoped<ActiveTasksCache>();
         services.AddScoped(x => new AuthContext(x.GetRequiredService<IHttpContextAccessor>().HttpContext!, x.GetRequiredService<DomainSettings>()));
         return services;
     }

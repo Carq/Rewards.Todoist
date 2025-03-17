@@ -1,5 +1,4 @@
 ﻿using Flurl.Http;
-using Rewards.Todoist.Domain.Common.Cache;
 using Rewards.Todoist.Domain.Todoist.Contract;
 
 namespace Rewards.Todoist.Domain.Todoist;
@@ -8,14 +7,9 @@ public class TodoistService : ITodoistService
 {
     private readonly IFlurlClient _httpClient;
    
-    private const string CacheKeyPrefix = "Todoist_ActiveTasksForToday_";
-
-    private readonly ICache _cache;
-
-    public TodoistService(IFlurlClient httpClient, ICache cache)
+    public TodoistService(IFlurlClient httpClient)
     {
         _httpClient = httpClient;
-        _cache = cache;
     }
 
     public async Task<ProjectDto[]> GetSharedProjectsAsync()
@@ -53,20 +47,6 @@ public class TodoistService : ITodoistService
 
     public async Task<TaskDetailsDto[]> GetActiveTasksForToday(string userAccessToken)
     {
-        var cacheKey = $"{CacheKeyPrefix}{userAccessToken}";
-
-        if (_cache.GetOrAddAsync(cacheKey, async () =>
-        {
-            return await _httpClient
-                .Request("rest/v2/tasks")
-                .WithOAuthBearerToken(userAccessToken)
-                .SetQueryParam("filter", "date before: tomorrow")
-                .GetJsonAsync<TaskDetailsDto[]>();
-        }) is Task<TaskDetailsDto[]> task)
-        {
-            return await task;
-        }
-
         return await _httpClient
              .Request("rest/v2/tasks")
              .WithOAuthBearerToken(userAccessToken)
@@ -93,9 +73,6 @@ public class TodoistService : ITodoistService
 
     public async Task CompleteTaskAsync(string taskId, string userAccessToken)
     {
-        var cacheKey = $"{CacheKeyPrefix}{userAccessToken}";
-        _cache.Remove(cacheKey);
-
         await _httpClient
             .Request($"rest/v2/tasks/{taskId}/close")
             .WithOAuthBearerToken(userAccessToken)

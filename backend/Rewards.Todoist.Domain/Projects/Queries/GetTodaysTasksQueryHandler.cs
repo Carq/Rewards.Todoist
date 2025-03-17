@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Rewards.Todoist.Domain.Common;
+using Rewards.Todoist.Domain.Projects.Cache;
 using Rewards.Todoist.Domain.Todoist;
 using Rewards.Todoist.Domain.Todoist.Contract;
 using Rewards.Todoist.Domain.Users.Repository;
@@ -10,15 +11,18 @@ internal class GetTodaysTasksQueryHandler : IRequestHandler<GetTodaysTasksQuery,
 {
     private readonly ITodoistService _todoistService;
 
+    private readonly ActiveTasksCache _activeTasksCache;
+
     private readonly IUserRepository _userRepository;
 
     private readonly AuthContext _authContext;
 
-    public GetTodaysTasksQueryHandler(ITodoistService todoistService, IUserRepository userRepository, AuthContext authContext)
+    public GetTodaysTasksQueryHandler(ITodoistService todoistService, IUserRepository userRepository, AuthContext authContext, ActiveTasksCache activeTasksCache)
     {
         _todoistService = todoistService;
         _userRepository = userRepository;
         _authContext = authContext;
+        _activeTasksCache = activeTasksCache;
     }
 
     public async Task<GetTodaysTasksQueryResult> Handle(GetTodaysTasksQuery request, CancellationToken cancellationToken)
@@ -29,12 +33,15 @@ internal class GetTodaysTasksQueryHandler : IRequestHandler<GetTodaysTasksQuery,
         }
 
         var users = await _userRepository.GetUsers(cancellationToken);
-        var tasks = new List<TaskDetailsDto>();
-
-        foreach (var user in users.All())
+        var tasks = await _activeTasksCache.GetActiveTasksForToday(async () =>
         {
-            tasks.AddRange((await _todoistService.GetActiveTasksForToday(user.TodoistAccessToken)).Select(x => x with { UserId = user.Id }));
-        }
+            var tasks = new List<TaskDetailsDto>();
+            foreach (var user in users.All())
+            {
+                tasks.AddRange((await _todoistService.GetActiveTasksForToday(user.TodoistAccessToken)).Select(x => x with { UserId = user.Id }));
+            }
+            return tasks.ToArray();
+        });
 
         return new GetTodaysTasksQueryResult(
             tasks
