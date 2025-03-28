@@ -12,6 +12,8 @@ public interface ITodoistService
 
     Task<TaskDetailsDto[]> GetActiveTasksForToday(string userAccessToken);
 
+    Task<TaskDetailsDto[]> GetActiveTasksByFilter(string userAccessToken, string filter);
+
     Task<TaskDetailsDto[]> GetActiveTasksForTodayAndTomorrow(string userAccessToken);
 
     Task<TaskDetailsDto> GetActiveTask(string taskId, string userAccessToken);

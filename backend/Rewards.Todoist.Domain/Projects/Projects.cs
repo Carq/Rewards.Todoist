@@ -14,6 +14,8 @@ public static class Projects
         { "2268068244", "Życie ♥" },
     };
 
+    public static string GetExtraTasksSectionName() => "/Dodatkowe zadania";
+
     public static string[] GetAllProjectIds() => _projects.Keys.ToArray();
 
     public static string GetProjectName(string projectId)

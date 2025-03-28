@@ -54,6 +54,15 @@ public class TodoistService : ITodoistService
              .GetJsonAsync<TaskDetailsDto[]>();
     }
 
+    public async Task<TaskDetailsDto[]> GetActiveTasksByFilter(string userAccessToken, string filter)
+    {
+        return await _httpClient
+             .Request("rest/v2/tasks")
+             .WithOAuthBearerToken(userAccessToken)
+             .SetQueryParam("filter", filter)
+             .GetJsonAsync<TaskDetailsDto[]>();
+    }
+
     public async Task<TaskDetailsDto[]> GetActiveTasksForTodayAndTomorrow(string userAccessToken)
     {
         return await _httpClient

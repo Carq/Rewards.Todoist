@@ -38,9 +38,28 @@ export default function Dashboard() {
     refetchOnMount: false,
   });
 
+  const {
+    isPending: isPendingExtraTasks,
+    isRefetching: isRefetchingExtraTasks,
+    data: dataExtraTasks,
+    refetch: refetchExtraTasks,
+  } = useQuery({
+    queryKey: ["extra-tasks"],
+    queryFn: () =>
+      fetch(`${config.apiUrl}projects/extra-tasks`, {
+        headers: {
+          Authorization: `${localStorage.getItem("AuthToken")}`,
+        },
+      }).then((res) => res.json()),
+    staleTime: 5 * 60 * 1000,
+    cacheTime: 10 * 60 * 1000,
+    refetchOnMount: false,
+  });
+
   const refetchAll = () => {
     refetchDashboard();
     refetchActiveTasks();
+    refetchExtraTasks();
   };
 
   let dashboardCarq = data?.users.find((x) => x.info.id == "9238519");
@@ -53,9 +72,18 @@ export default function Dashboard() {
         <Grid justifyContent="center" container spacing={3}>
           <Grid item sx={{ width: 420 }}>
             <ListOfTasks
+              title="Zadania aktywne"
               listOfTasks={dataActiveTask?.tasks}
               isLoading={isPendingActiveTask}
               isReloading={isRefetchingActiveTask}
+              refetchTasks={refetchAll}
+            />
+            <div style={{ height: 20 }}></div>
+            <ListOfTasks
+              title="Zadania dodatkowe"
+              listOfTasks={dataExtraTasks?.tasks}
+              isLoading={isPendingExtraTasks}
+              isReloading={isRefetchingExtraTasks}
               refetchTasks={refetchAll}
             />
           </Grid>

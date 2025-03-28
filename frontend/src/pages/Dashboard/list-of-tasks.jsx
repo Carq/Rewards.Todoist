@@ -60,7 +60,13 @@ const styles = {
 /**
  * Main ListOfTasks component
  */
-const ListOfTasks = ({ listOfTasks, isLoading, isReloading, refetchTasks }) => {
+const ListOfTasks = ({
+  listOfTasks,
+  isLoading,
+  isReloading,
+  refetchTasks,
+  title = "Zadania na dziś",
+}) => {
   // State management
   const [open, setOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
@@ -156,7 +162,7 @@ const ListOfTasks = ({ listOfTasks, isLoading, isReloading, refetchTasks }) => {
                     fontSize: "1.1rem",
                   }}
                 >
-                  Zadania na dziś
+                  {title}
                 </Typography>
               </Box>
 
@@ -207,6 +213,7 @@ ListOfTasks.propTypes = {
   isLoading: PropTypes.bool,
   isReloading: PropTypes.bool,
   refetchTasks: PropTypes.func,
+  title: PropTypes.string,
 };
 
 export default ListOfTasks;
