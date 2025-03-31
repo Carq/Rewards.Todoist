@@ -21,16 +21,18 @@ public class UserActivityRepository
         var user = await _dbContext.Users.FirstAsync(x => x.Id == UserId) ?? throw new ArgumentException($"User with id {UserId} not found");
         var allCompletedTasks = await _dbContext
                                         .CompletedTasks
-                                        .Where(x => x.CompletedBy.Id == UserId && x.CompletedAt >= sinceDate)
+                                        .Include(x => x.CompletedBy)
+                                        .Where(x => !string.IsNullOrEmpty(x.Labels) && x.CompletedAt >= sinceDate)
                                         .ToArrayAsync(cancellationToken);
 
+        allCompletedTasks = allCompletedTasks.Where(x => x.CompletedBy.Id == UserId).ToArray();
         var sinceDateOnly = DateOnly.FromDateTime(sinceDate.Date).AddMonths(1);
         var allRewards = await _dbContext
                                 .ClaimedRewards
                                 .Where(x =>x.ClaimedBy.Id == UserId && x.ClaimedOn >= sinceDateOnly)
                                 .ToArrayAsync(cancellationToken);
-
-        return new UserActivityLog(user, GetActivityLogRecords(user.Id, allCompletedTasks, allRewards));
+        
+        return new UserActivityLog(user, GetActivityLogRecords(user.Id, allCompletedTasks.Where(x => x.CompletedBy.Id == UserId).ToArray(), allRewards));
     }
 
     public async Task<UserActivityLog[]> GetUserActivityLogs(DateTime sinceDate, CancellationToken cancellationToken)

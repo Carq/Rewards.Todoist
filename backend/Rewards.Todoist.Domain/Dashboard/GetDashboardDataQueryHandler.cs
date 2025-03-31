@@ -14,7 +14,6 @@ public class GetDashboardDataQueryHandler(UserActivityRepository UserActivityRep
     public async Task<GetDashboardDataResult> Handle(GetDashboardDataQuery request, CancellationToken cancellationToken)
     {
         var userActivityLogs = await UserActivityRepository.GetUserActivityLogs(DomainSettings.StartDate, cancellationToken);
-        var yesterday = Clock.Now.AddDays(-1).Date;
         return new GetDashboardDataResult(
             userActivityLogs.Select(x =>
             new UserDashboardDataDto(
