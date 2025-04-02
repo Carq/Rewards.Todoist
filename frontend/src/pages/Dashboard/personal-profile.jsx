@@ -13,7 +13,7 @@ import {
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import LocalFloristIcon from "@mui/icons-material/LocalFlorist";
 import BlurredText from "../../componets/BlurredText";
-import { blue, green, yellow, grey } from "@mui/material/colors";
+import { blue, brown, yellow, grey, green } from "@mui/material/colors";
 import { getMotivationMessage } from "../../utils/getMotivationMessage";
 import { calculateLevelInfo } from "../../utils/levelUtils";
 import { profileStyles } from "../../styles/profileStyles";
@@ -50,59 +50,109 @@ const UserAvatar = ({ user, avatarColor, avatarIcon }) => (
 );
 
 /**
+ * Level Panel Component
+ */
+const LevelPanel = ({ level }) => (
+  <Tooltip title="Obecny poziom" arrow placement="top">
+    <Stack
+      alignItems="center"
+      sx={profileStyles.statsPanel(blue[100], blue[50])}
+    >
+      <Typography variant="h5" sx={{ color: blue[700] }}>
+        🕹️
+      </Typography>
+      <Typography variant="h5" sx={{ fontWeight: "bold", color: blue[800] }}>
+        {level}
+      </Typography>
+      <Typography
+        variant="caption"
+        sx={{ fontWeight: "medium", color: blue[600] }}
+      >
+        Poziom
+      </Typography>
+    </Stack>
+  </Tooltip>
+);
+
+/**
+ * Gold Panel Component
+ */
+const GoldPanel = ({ gold }) => (
+  <Tooltip title="Twoje obecne złoto" arrow placement="top">
+    <Stack
+      alignItems="center"
+      sx={profileStyles.statsPanel(yellow[100], yellow[50])}
+    >
+      <Typography variant="h5" sx={{ color: yellow[800] }}>
+        💛
+      </Typography>
+      <Typography variant="h5" sx={{ fontWeight: "bold", color: yellow[900] }}>
+        {gold}
+      </Typography>
+      <Typography
+        variant="caption"
+        sx={{ fontWeight: "medium", color: yellow[800] }}
+      >
+        Złoto
+      </Typography>
+    </Stack>
+  </Tooltip>
+);
+
+/**
+ * XP For Next Gold Panel Component
+ */
+const XPForNextGoldPanel = ({ xpForNextGold }) => (
+  <Tooltip
+    title={
+      xpForNextGold === 10
+        ? "Właśnie zdobyłeś nowe złoto!"
+        : `Potrzebujesz ${xpForNextGold} XP do kolejnego złota`
+    }
+    arrow
+    placement="top"
+  >
+    <Stack
+      alignItems="center"
+      sx={profileStyles.statsPanel(brown[100], brown[50])}
+    >
+      <Typography variant="h5" sx={{ color: brown[800] }}>
+        🤎
+      </Typography>
+      <Typography variant="h5" sx={{ fontWeight: "bold", color: brown[900] }}>
+        {xpForNextGold === 10 ? 10 : xpForNextGold}
+      </Typography>
+      <Typography
+        variant="caption"
+        sx={{ fontWeight: "medium", color: brown[800] }}
+      >
+        {xpForNextGold === 10 ? "Komplet XP" : "XP do złota"}
+      </Typography>
+    </Stack>
+  </Tooltip>
+);
+
+/**
  * Stats panels component
  */
-const StatsPanels = ({ level, gold }) => (
-  <Stack
-    direction="row"
-    justifyContent="space-evenly"
-    alignItems="center"
-    sx={{ mb: 3 }}
-  >
-    <Tooltip title="Obecny poziom" arrow placement="top">
-      <Stack
-        alignItems="center"
-        sx={profileStyles.statsPanel(blue[100], blue[50])}
-      >
-        <Typography variant="h5" sx={{ color: blue[700] }}>
-          🕹️
-        </Typography>
-        <Typography variant="h5" sx={{ fontWeight: "bold", color: blue[800] }}>
-          {level}
-        </Typography>
-        <Typography
-          variant="caption"
-          sx={{ fontWeight: "medium", color: blue[600] }}
-        >
-          Poziom
-        </Typography>
-      </Stack>
-    </Tooltip>
+const StatsPanels = ({ level, gold, stats }) => {
+  // Calculate XP needed for next gold (each gold is 10XP)
+  const currentXP = stats.experience;
+  const xpForNextGold = 10 - (currentXP % 10);
 
-    <Tooltip title="Dostępne złoto" arrow placement="top">
-      <Stack
-        alignItems="center"
-        sx={profileStyles.statsPanel(yellow[100], yellow[50])}
-      >
-        <Typography variant="h5" sx={{ color: yellow[800] }}>
-          💛
-        </Typography>
-        <Typography
-          variant="h5"
-          sx={{ fontWeight: "bold", color: yellow[900] }}
-        >
-          {gold}
-        </Typography>
-        <Typography
-          variant="caption"
-          sx={{ fontWeight: "medium", color: yellow[800] }}
-        >
-          Złoto
-        </Typography>
-      </Stack>
-    </Tooltip>
-  </Stack>
-);
+  return (
+    <Stack
+      direction="row"
+      justifyContent="space-evenly"
+      alignItems="center"
+      sx={{ mb: 3 }}
+    >
+      <LevelPanel level={level} />
+      <GoldPanel gold={gold} />
+      <XPForNextGoldPanel xpForNextGold={xpForNextGold} />
+    </Stack>
+  );
+};
 
 /**
  * Experience progress bar component
@@ -257,7 +307,11 @@ const PersonalProfile = ({ user, stats }) => {
       <Fade in={animateStats} timeout={800}>
         <div>
           {/* Wrapper div needed for Fade to work with custom components */}
-          <StatsPanels level={levelInfo.level} gold={stats.gold} />
+          <StatsPanels
+            level={levelInfo.level}
+            gold={stats.gold}
+            stats={stats}
+          />
         </div>
       </Fade>
 
