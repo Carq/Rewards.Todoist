@@ -36,7 +36,7 @@ public class GetExtraTasksQueryHandler : IRequestHandler<GetExtraTasksQuery, Get
         {
             tasks.AddRange(
                 (await _todoistService
-                .GetActiveTasksByFilter(user.TodoistAccessToken, $"{Projects.GetExtraTasksSectionName()} & date before: +4 months"))
+                .GetActiveTasksByFilter(user.TodoistAccessToken, $"{Projects.GetExtraTasksSectionName()} & date before: +3 months"))
                 .Select(x => x with { UserId = user.Id }));
         }
 
