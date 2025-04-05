@@ -84,7 +84,7 @@ const GoldPanel = ({ gold }) => (
       sx={profileStyles.statsPanel(yellow[100], yellow[50])}
     >
       <Typography variant="h5" sx={{ color: yellow[800] }}>
-        💛
+        🪙
       </Typography>
       <Typography variant="h5" sx={{ fontWeight: "bold", color: yellow[900] }}>
         {gold}
