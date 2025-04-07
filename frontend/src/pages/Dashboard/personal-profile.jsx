@@ -242,7 +242,7 @@ const PersonalProfile = ({ user, stats }) => {
   const { progressPercentage } = levelInfo;
 
   // Constants
-  const LEVEL_UP_THRESHOLD = 10;
+  const LEVEL_UP_THRESHOLD = 5;
   const showLevelUpAlert = progressPercentage <= LEVEL_UP_THRESHOLD;
 
   // Effects
