@@ -423,12 +423,10 @@ const ListOfLatestActivities = ({
     </Fade>
   );
 
-  // If we're hiding the title, we're likely using this as a nested component
   if (hideTitle) {
     return <Box sx={{ width: "100%", ...sx }}>{content}</Box>;
   }
 
-  // Default display with Card wrapper
   return (
     <Card variant="outlined" sx={{ ...styles.card, width: "100%", ...sx }}>
       <CardContent sx={{ p: 3, width: "100%" }}>{content}</CardContent>
@@ -436,7 +434,6 @@ const ListOfLatestActivities = ({
   );
 };
 
-// PropTypes validation
 ActivityContent.propTypes = {
   activity: PropTypes.shape({
     id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
