@@ -14,7 +14,7 @@ import {
   Collapse,
   IconButton,
 } from "@mui/material";
-import { grey } from "@mui/material/colors";
+import { grey, deepPurple } from "@mui/material/colors";
 import BlurredText from "../../componets/BlurredText";
 import LabelTag from "../../components/LabelTag";
 import { howLongAgo } from "../../utils/date-utils";
@@ -166,7 +166,7 @@ function getAvatarBgColor(activityArea) {
     case "Reward":
       return "rgba(255, 196, 0, 0.15)";
     default:
-      return grey[100];
+      return deepPurple[100];
   }
 }
 
@@ -192,6 +192,63 @@ const groupActivitiesByArea = (activities) => {
     icon: MapProjectNameToIcon(area, ""),
     activities: items,
   }));
+};
+
+/**
+ * Group activities by their occurrence date (day)
+ */
+const groupActivitiesByDate = (activities) => {
+  if (!activities) return [];
+
+  // Create a map of date -> activities
+  const groupedMap = activities.reduce((groups, activity) => {
+    if (!activity.occurredOn) {
+      const area = "No Date";
+      if (!groups[area]) {
+        groups[area] = [];
+      }
+      groups[area].push(activity);
+      return groups;
+    }
+
+    const date = new Date(activity.occurredOn);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    const activityDate = new Date(date);
+    activityDate.setHours(0, 0, 0, 0);
+
+    let formattedDate;
+    if (activityDate.getTime() === today.getTime()) {
+      formattedDate = "Dziś";
+    } else if (activityDate.getTime() === yesterday.getTime()) {
+      formattedDate = "Wczoraj";
+    } else {
+      formattedDate = "Wcześniej";
+    }
+
+    if (!groups[formattedDate]) {
+      groups[formattedDate] = [];
+    }
+    groups[formattedDate].push(activity);
+    return groups;
+  }, {});
+
+  // Convert map to array of groups, sorting by date descending (newest first)
+  return Object.entries(groupedMap)
+    .map(([dateStr, items]) => ({
+      area: dateStr,
+      icon: "📅", // Calendar icon for date groups
+      activities: items,
+    }))
+    .sort((a, b) => {
+      // Custom sort order: "Dziś", "Wczoraj", "Wcześniej", "No Date"
+      const order = { Dziś: 0, Wczoraj: 1, Wcześniej: 2, "No Date": 3 };
+      return order[a.area] - order[b.area];
+    });
 };
 
 /**
@@ -363,23 +420,24 @@ const ActivityContent = ({ activity }) => (
   </Box>
 );
 
-/**
- * Main ListOfLatestActivities component
- */
 const ListOfLatestActivities = ({
   title,
   activities,
   onItemClick,
   disabled = false,
   hideTitle = false,
+  groupBy = "area", // Add default grouping by area
   sx = {},
 }) => {
   const [animateIn, setAnimateIn] = useState(false);
 
-  // Group activities by area
+  // Group activities by the specified grouping method
   const groupedActivities = useMemo(
-    () => groupActivitiesByArea(activities),
-    [activities]
+    () =>
+      groupBy === "date"
+        ? groupActivitiesByDate(activities)
+        : groupActivitiesByArea(activities),
+    [activities, groupBy]
   );
 
   // Animate after initial render
@@ -467,6 +525,7 @@ ListOfLatestActivities.propTypes = {
   onItemClick: PropTypes.func,
   disabled: PropTypes.bool,
   hideTitle: PropTypes.bool,
+  groupBy: PropTypes.oneOf(["area", "date"]),
   sx: PropTypes.object,
 };
 

@@ -137,6 +137,7 @@ const PersonalOverview = ({
                 <ListOfLatestActivities
                   hideTitle={true}
                   activities={recentCompletedTasks}
+                  groupBy="date"
                 />
               </Box>
 
