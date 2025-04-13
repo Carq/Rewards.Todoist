@@ -171,6 +171,77 @@ function getAvatarBgColor(activityArea) {
 }
 
 /**
+ * Helper function to categorize dates as "Dziś", "Wczoraj", or "Wcześniej"
+ * @param {Date} date - The date to categorize
+ * @returns {string} The date category
+ */
+const categorizeDateRelativeToToday = (date) => {
+  if (!date) return "No Date";
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  const targetDate = new Date(date);
+  targetDate.setHours(0, 0, 0, 0);
+
+  if (targetDate.getTime() === today.getTime()) return "Dziś";
+  if (targetDate.getTime() === yesterday.getTime()) return "Wczoraj";
+  return "Wcześniej";
+};
+
+/**
+ * Get appropriate icon for a date category
+ * @param {string} category - The date category
+ * @returns {string} The emoji icon
+ */
+const getDateCategoryIcon = (category) => {
+  switch (category) {
+    case "Dziś":
+      return "📆";
+    case "Wczoraj":
+      return "📅";
+    case "Wcześniej":
+      return "🗓️";
+    default:
+      return "❓";
+  }
+};
+
+/**
+ * Group activities by their occurrence date (day)
+ */
+const groupActivitiesByDate = (activities) => {
+  if (!activities) return [];
+
+  // Create a map of date category -> activities
+  const groupedMap = activities.reduce((groups, activity) => {
+    const dateCategory = categorizeDateRelativeToToday(activity.occurredOn);
+
+    if (!groups[dateCategory]) {
+      groups[dateCategory] = [];
+    }
+    groups[dateCategory].push(activity);
+    return groups;
+  }, {});
+
+  // Convert map to array of groups, sorting by date category
+  return Object.entries(groupedMap)
+    .map(([category, items]) => ({
+      area: category,
+      icon: getDateCategoryIcon(category),
+      activities: items,
+    }))
+    .sort((a, b) => {
+      // Custom sort order: "Dziś", "Wczoraj", "Wcześniej", "No Date"
+      const order = { Dziś: 0, Wczoraj: 1, Wcześniej: 2, "No Date": 3 };
+      return order[a.area] - order[b.area];
+    });
+};
+
+/**
  * Group activities by their activityArea
  */
 const groupActivitiesByArea = (activities) => {
@@ -195,63 +266,6 @@ const groupActivitiesByArea = (activities) => {
 };
 
 /**
- * Group activities by their occurrence date (day)
- */
-const groupActivitiesByDate = (activities) => {
-  if (!activities) return [];
-
-  // Create a map of date -> activities
-  const groupedMap = activities.reduce((groups, activity) => {
-    if (!activity.occurredOn) {
-      const area = "No Date";
-      if (!groups[area]) {
-        groups[area] = [];
-      }
-      groups[area].push(activity);
-      return groups;
-    }
-
-    const date = new Date(activity.occurredOn);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-
-    const activityDate = new Date(date);
-    activityDate.setHours(0, 0, 0, 0);
-
-    let formattedDate;
-    if (activityDate.getTime() === today.getTime()) {
-      formattedDate = "Dziś";
-    } else if (activityDate.getTime() === yesterday.getTime()) {
-      formattedDate = "Wczoraj";
-    } else {
-      formattedDate = "Wcześniej";
-    }
-
-    if (!groups[formattedDate]) {
-      groups[formattedDate] = [];
-    }
-    groups[formattedDate].push(activity);
-    return groups;
-  }, {});
-
-  // Convert map to array of groups, sorting by date descending (newest first)
-  return Object.entries(groupedMap)
-    .map(([dateStr, items]) => ({
-      area: dateStr,
-      icon: "📅", // Calendar icon for date groups
-      activities: items,
-    }))
-    .sort((a, b) => {
-      // Custom sort order: "Dziś", "Wczoraj", "Wcześniej", "No Date"
-      const order = { Dziś: 0, Wczoraj: 1, Wcześniej: 2, "No Date": 3 };
-      return order[a.area] - order[b.area];
-    });
-};
-
-/**
  * Activity Group component that displays grouped activities
  */
 const ActivityGroup = ({ group, onItemClick, disabled }) => {
@@ -262,102 +276,120 @@ const ActivityGroup = ({ group, onItemClick, disabled }) => {
     setExpanded(!expanded);
   };
 
+  const { area, icon, activities } = group;
+
   return (
     <Box sx={{ mb: 2, width: "100%" }}>
       {/* Group header with avatar */}
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          mb: 1,
-          px: 1,
-          py: 0.5,
-          borderRadius: 2,
-          backgroundColor: getAvatarBgColor(group.area),
-          width: "100%",
-        }}
-      >
-        <Avatar
-          sx={{
-            bgcolor: "transparent",
-            color: "text.primary",
-            width: 32,
-            height: 32,
-            mr: 1.5,
-            fontSize: "1.2rem",
-          }}
-        >
-          {group.icon}
-        </Avatar>
-
-        <Typography
-          sx={{
-            fontWeight: 500,
-            color: grey[800],
-            flexGrow: 1,
-          }}
-        >
-          {group.area}
-        </Typography>
-
-        <IconButton
-          size="small"
-          onClick={toggleExpanded}
-          sx={{ color: grey[600] }}
-        >
-          {expanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-        </IconButton>
-      </Box>
+      <GroupHeader
+        area={area}
+        icon={icon}
+        expanded={expanded}
+        toggleExpanded={toggleExpanded}
+      />
 
       {/* Group activities */}
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <List
-          dense
-          disablePadding
-          sx={{
-            ml: 2, // Indent to align with avatar
-            borderLeft: `2px solid ${grey[200]}`,
-            pl: 2,
-          }}
-        >
-          {group.activities.map((activity, index) => (
-            <ListItem
-              key={activity.id || index}
-              disablePadding
-              disableGutters
-              sx={{ mb: 0.75 }}
-            >
-              {onItemClick ? (
-                <ListItemButton
-                  onClick={() => !disabled && onItemClick(activity)}
-                  disabled={disabled}
-                  disableGutters
-                  sx={{
-                    py: 0.5,
-                    px: 1,
-                    borderRadius: 1,
-                    opacity: disabled ? 0.7 : 1,
-                    "&:hover": !disabled
-                      ? {
-                          backgroundColor: grey[100],
-                        }
-                      : {},
-                  }}
-                >
-                  <ActivityContent activity={activity} />
-                </ListItemButton>
-              ) : (
-                <Box sx={{ py: 0.5, px: 1, width: "100%" }}>
-                  <ActivityContent activity={activity} />
-                </Box>
-              )}
-            </ListItem>
-          ))}
-        </List>
-      </Collapse>
+      <GroupActivities
+        activities={activities}
+        expanded={expanded}
+        onItemClick={onItemClick}
+        disabled={disabled}
+      />
     </Box>
   );
 };
+
+// Helper component for group header
+const GroupHeader = ({ area, icon, expanded, toggleExpanded }) => (
+  <Box
+    sx={{
+      display: "flex",
+      alignItems: "center",
+      mb: 1,
+      px: 1,
+      py: 0.5,
+      borderRadius: 2,
+      backgroundColor: getAvatarBgColor(area),
+      width: "100%",
+    }}
+  >
+    <Avatar
+      sx={{
+        bgcolor: "transparent",
+        color: "text.primary",
+        width: 32,
+        height: 32,
+        mr: 1.5,
+        fontSize: "1.2rem",
+      }}
+    >
+      {icon}
+    </Avatar>
+
+    <Typography
+      sx={{
+        fontWeight: 500,
+        color: grey[800],
+        flexGrow: 1,
+      }}
+    >
+      {area}
+    </Typography>
+
+    <IconButton size="small" onClick={toggleExpanded} sx={{ color: grey[600] }}>
+      {expanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+    </IconButton>
+  </Box>
+);
+
+// Helper component for group activities
+const GroupActivities = ({ activities, expanded, onItemClick, disabled }) => (
+  <Collapse in={expanded} timeout="auto" unmountOnExit>
+    <List
+      dense
+      disablePadding
+      sx={{
+        ml: 2, // Indent to align with avatar
+        borderLeft: `2px solid ${grey[200]}`,
+        pl: 2,
+      }}
+    >
+      {activities.map((activity, index) => (
+        <ListItem
+          key={activity.id || index}
+          disablePadding
+          disableGutters
+          sx={{ mb: 0.75 }}
+        >
+          {onItemClick ? (
+            <ListItemButton
+              onClick={() => !disabled && onItemClick(activity)}
+              disabled={disabled}
+              disableGutters
+              sx={{
+                py: 0.5,
+                px: 1,
+                borderRadius: 1,
+                opacity: disabled ? 0.7 : 1,
+                "&:hover": !disabled
+                  ? {
+                      backgroundColor: grey[100],
+                    }
+                  : {},
+              }}
+            >
+              <ActivityContent activity={activity} />
+            </ListItemButton>
+          ) : (
+            <Box sx={{ py: 0.5, px: 1, width: "100%" }}>
+              <ActivityContent activity={activity} />
+            </Box>
+          )}
+        </ListItem>
+      ))}
+    </List>
+  </Collapse>
+);
 
 /**
  * Content of an activity item without the avatar
@@ -507,6 +539,20 @@ ActivityGroup.propTypes = {
     icon: PropTypes.string.isRequired,
     activities: PropTypes.array.isRequired,
   }).isRequired,
+  onItemClick: PropTypes.func,
+  disabled: PropTypes.bool,
+};
+
+GroupHeader.propTypes = {
+  area: PropTypes.string.isRequired,
+  icon: PropTypes.string.isRequired,
+  expanded: PropTypes.bool.isRequired,
+  toggleExpanded: PropTypes.func.isRequired,
+};
+
+GroupActivities.propTypes = {
+  activities: PropTypes.array.isRequired,
+  expanded: PropTypes.bool.isRequired,
   onItemClick: PropTypes.func,
   disabled: PropTypes.bool,
 };
