@@ -8,7 +8,7 @@ public class DomainSettings
         AuthToken = authToken;
     }
 
-    public static DateTime StartDate { get; set; } = new DateTime(2025, 1, 1);
+    public static DateTime StartDate { get; set; } = new DateTime(2026, 1, 1);
 
     public string DbConnectionString { get; }
 

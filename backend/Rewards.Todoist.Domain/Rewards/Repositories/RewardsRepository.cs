@@ -16,7 +16,7 @@ public class RewardsRepository(DomainContext Context, UserActivityRepository Use
     public async Task<Claimer> GetClaimer(long userId, CancellationToken cancellationToken)
     {
         var userActivityLog = await UserActivityRepository.GetUserActivityLog(userId, DomainSettings.StartDate, cancellationToken);
-        var sinceDay = DateOnly.FromDateTime(DomainSettings.StartDate.Date).AddMonths(1);
+        var sinceDay = DateOnly.FromDateTime(DomainSettings.StartDate.Date);
         var claimedRewards = await Context.ClaimedRewards.Where(x => x.ClaimedBy.Id == userId && x.ClaimedOn >= sinceDay).ToArrayAsync(cancellationToken);
         return new Claimer(userActivityLog.User, userActivityLog, claimedRewards);
     }

@@ -8,7 +8,7 @@ using Rewards.Todoist.Domain.Utils;
 
 namespace Rewards.Todoist.Domain.Dashboard;
 
-public class GetDashboardDataQueryHandler(UserActivityRepository UserActivityRepository, IClock Clock, AuthContext AuthContext) 
+public class GetDashboardDataQueryHandler(UserActivityRepository UserActivityRepository, IClock Clock, AuthContext AuthContext)
     : IRequestHandler<GetDashboardDataQuery, GetDashboardDataResult>
 {
     public async Task<GetDashboardDataResult> Handle(GetDashboardDataQuery request, CancellationToken cancellationToken)
@@ -30,7 +30,7 @@ public class GetDashboardDataQueryHandler(UserActivityRepository UserActivityRep
         return x.Activities
                     .Where(x => x.Type == ActivityType.TaskCompleted)
                     .OrderByDescending(y => y.OccurredOn)
-                    .Take(5)
+                    .Take(7)
                     .Select(y => new UserActivityRecordDto(y.Id, AuthContext.HideSensitiveData(y.Name), y.ActivityArea, y.Tags, y.OccurredOn)).ToArray();
     }
 
@@ -39,7 +39,7 @@ public class GetDashboardDataQueryHandler(UserActivityRepository UserActivityRep
         return x.Activities
                     .Where(x => x.Type == ActivityType.RewardClaimed && x.OccurredOn > Clock.Now.AddMonths(-1))
                     .OrderByDescending(y => y.OccurredOn)
-                    .Take(5)
+                    .Take(7)
                     .Select(y => new UserActivityRecordDto(y.Id, AuthContext.HideSensitiveData(y.Name), y.ActivityArea, AuthContext.HideSensitiveData(y.Tags), y.OccurredOn)).ToArray();
     }
 

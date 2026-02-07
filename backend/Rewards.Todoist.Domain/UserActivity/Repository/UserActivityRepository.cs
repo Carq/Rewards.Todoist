@@ -26,26 +26,26 @@ public class UserActivityRepository
                                         .ToArrayAsync(cancellationToken);
 
         allCompletedTasks = allCompletedTasks.Where(x => x.CompletedBy.Id == UserId).ToArray();
-        var sinceDateOnly = DateOnly.FromDateTime(sinceDate.Date).AddMonths(1);
+        var sinceDateOnly = DateOnly.FromDateTime(sinceDate.Date);
         var allRewards = await _dbContext
                                 .ClaimedRewards
-                                .Where(x =>x.ClaimedBy.Id == UserId && x.ClaimedOn >= sinceDateOnly)
+                                .Where(x => x.ClaimedBy.Id == UserId && x.ClaimedOn >= sinceDateOnly)
                                 .ToArrayAsync(cancellationToken);
-        
+
         return new UserActivityLog(user, GetActivityLogRecords(user.Id, allCompletedTasks.Where(x => x.CompletedBy.Id == UserId).ToArray(), allRewards));
     }
 
     public async Task<UserActivityLog[]> GetUserActivityLogs(DateTime sinceDate, CancellationToken cancellationToken)
     {
         var users = await _dbContext.Users.ToListAsync(cancellationToken);
-        var allCompletedTasks = 
+        var allCompletedTasks =
             await _dbContext
                 .CompletedTasks
                 .Include(x => x.CompletedBy)
                 .Where(x => !string.IsNullOrEmpty(x.Labels) && x.CompletedAt >= sinceDate)
                 .ToArrayAsync(cancellationToken);
 
-        var sinceDateOnly = DateOnly.FromDateTime(sinceDate.Date).AddMonths(1);
+        var sinceDateOnly = DateOnly.FromDateTime(sinceDate.Date);
 
         var allRewards = await _dbContext
                                     .ClaimedRewards
@@ -53,7 +53,7 @@ public class UserActivityRepository
                                     .ToArrayAsync(cancellationToken);
 
         return users
-            .Select(y => 
+            .Select(y =>
                 new UserActivityLog(y, GetActivityLogRecords(y.Id, allCompletedTasks, allRewards)))
             .ToArray();
     }
@@ -63,7 +63,7 @@ public class UserActivityRepository
         var completedTaskRecords = completedTasks
             .Where(x => x.CompletedBy.Id == userId)
             .Select(x => new ActivityLogRecord(x.Id, x.Name, x.GetProjectName(), x.GetExperience(), 0, x.GetLabels(), ActivityType.TaskCompleted, x.CompletedAt)).ToArray();
-        
+
         var claimedRewardRecords = claimedRewards
             .Where(x => x.ClaimedBy.Id == userId)
             .Select(x => new ActivityLogRecord(x.Id, x.Name, "Reward", 0, x.PaidGold, [$"Gold{x.PaidGold}"], ActivityType.RewardClaimed, x.ClaimedOn.ToDateTime(TimeOnly.MinValue))).ToArray();
