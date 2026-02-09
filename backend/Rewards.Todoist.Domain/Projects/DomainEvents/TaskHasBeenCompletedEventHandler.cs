@@ -30,7 +30,7 @@ public class TaskHasBeenCompletedEventHandler : INotificationHandler<TaskHasBeen
             throw new EntityNotFoundException("User", request.UserId);
         }
 
-        var completedTasks = await _todoistService.GetCompletedTasksAsync(null, 5, null, user.TodoistAccessToken);
+        var completedTasks = await _todoistService.GetCompletedTasksAsync(null, 5, DateTimeOffset.UtcNow.AddMinutes(-90), user.TodoistAccessToken);
         var completedTask = completedTasks.Items.SingleOrDefault(x => x.TaskId == request.TaskId);
         if (completedTask == null)
         {

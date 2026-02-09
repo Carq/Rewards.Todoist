@@ -1,6 +1,7 @@
 using MediatR;
 using Rewards.Todoist.Domain.Common;
 using Rewards.Todoist.Domain.Projects.Cache;
+using Rewards.Todoist.Domain.Projects.DomainEvents;
 using Rewards.Todoist.Domain.Tasks.Commands;
 using Rewards.Todoist.Domain.Todoist;
 using Rewards.Todoist.Domain.Users.Repository;
@@ -57,6 +58,6 @@ public class CompleteTaskCommandHandler : IRequestHandler<CompleteTaskCommand>
         }
 
         _activeTasksCache.ClearCache();
-        //await _mediator.Publish(new TaskHasBeenCompletedEvent(request.UserId, request.TaskId));
+        await _mediator.Publish(new TaskHasBeenCompletedEvent(request.UserId, request.TaskId));
     }
 }
