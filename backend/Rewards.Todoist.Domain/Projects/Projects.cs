@@ -4,13 +4,13 @@ public static class Projects
 {
     private static IDictionary<string, string> _projects = new Dictionary<string, string>
     {
-        { "2267098251", "Dzieci 👶" },
+        { "6FQF97Wf63pvv925", "Dzieci 👶" },
         { "2267098250", "Dzieci 👶" },
-        { "2326686968", "Wykończenie domu" },
+        { "6RMV9838jqjhwcGX", "Wykończenie domu" },
         { "2326686976", "Wykończenie domu" },
-        { "2266575265", "Dom 🏡" },
+        { "6CrfmMhm59gPGM7f", "Dom 🏡" },
         { "2234519083", "Dom 🏡" },
-        { "2268068217", "Życie ♥" },
+        { "6FWfVwH3fWPRCjpQ", "Życie ♥" },
         { "2268068244", "Życie ♥" },
     };
 

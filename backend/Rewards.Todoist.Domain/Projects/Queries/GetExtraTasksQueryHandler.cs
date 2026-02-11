@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Rewards.Todoist.Domain.Common;
-using Rewards.Todoist.Domain.Projects.Cache;
 using Rewards.Todoist.Domain.Todoist;
 using Rewards.Todoist.Domain.Todoist.Contract;
 using Rewards.Todoist.Domain.Users.Repository;
@@ -30,14 +29,14 @@ public class GetExtraTasksQueryHandler : IRequestHandler<GetExtraTasksQuery, Get
         }
 
         var users = await _userRepository.GetUsers(cancellationToken);
-      
-            var tasks = new List<TaskDetailsDto>();
-            foreach (var user in users.All())
+
+        var tasks = new List<TaskDetailsDto>();
+        foreach (var user in users.All())
         {
             tasks.AddRange(
                 (await _todoistService
                 .GetActiveTasksByFilter(user.TodoistAccessToken, $"{Projects.GetExtraTasksSectionName()} & date before: +3 months"))
-                .Select(x => x with { UserId = user.Id }));
+                .Select(x => x with { UserId = user.Id.ToString() }));
         }
 
         return new GetExtraTasksQueryResult(
@@ -49,7 +48,7 @@ public class GetExtraTasksQueryHandler : IRequestHandler<GetExtraTasksQuery, Get
                 x.First().Content,
                 Projects.GetProjectName(x.First().ProjectId),
                 x.First().Labels,
-                x.Select(y => new IdForUser(y.UserId!.Value, y.Id)).ToArray()))
+                x.Select(y => new IdForUser(long.Parse(y.UserId!), y.Id)).ToArray()))
             .DistinctBy(x => x.Name)
             .OrderByDescending(x => x.Tags.FirstOrDefault())
             .ToArray());

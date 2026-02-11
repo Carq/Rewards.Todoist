@@ -38,7 +38,7 @@ internal class GetTodaysTasksQueryHandler : IRequestHandler<GetTodaysTasksQuery,
             var tasks = new List<TaskDetailsDto>();
             foreach (var user in users.All())
             {
-                tasks.AddRange((await _todoistService.GetActiveTasksForToday(user.TodoistAccessToken)).Select(x => x with { UserId = user.Id }));
+                tasks.AddRange((await _todoistService.GetActiveTasksForToday(user.TodoistAccessToken)).Select(x => x with { UserId = user.Id.ToString() }));
             }
             return tasks.ToArray();
         });
@@ -52,7 +52,7 @@ internal class GetTodaysTasksQueryHandler : IRequestHandler<GetTodaysTasksQuery,
                 x.First().Content,
                 Projects.GetProjectName(x.First().ProjectId),
                 x.First().Labels,
-                x.Select(y => new IdForUser(y.UserId!.Value, y.Id)).ToArray()))
+                x.Select(y => new IdForUser(long.Parse(y.UserId!), y.Id)).ToArray()))
             .DistinctBy(x => x.Name)
             .OrderByDescending(x => x.Tags.FirstOrDefault())
             .ToArray());

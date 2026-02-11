@@ -6,7 +6,7 @@ namespace Rewards.Todoist.Domain.Todoist;
 public class TodoistService : ITodoistService
 {
     private readonly IFlurlClient _httpClient;
-   
+
     public TodoistService(IFlurlClient httpClient)
     {
         _httpClient = httpClient;
@@ -47,29 +47,35 @@ public class TodoistService : ITodoistService
 
     public async Task<TaskDetailsDto[]> GetActiveTasksForToday(string userAccessToken)
     {
-        return await _httpClient
-             .Request("rest/v2/tasks")
+        var response = await _httpClient
+             .Request("api/v1/tasks/filter")
              .WithOAuthBearerToken(userAccessToken)
-             .SetQueryParam("filter", "date before: tomorrow")
-             .GetJsonAsync<TaskDetailsDto[]>();
+             .SetQueryParam("query", "date before: tomorrow")
+             .GetJsonAsync<TasksFilterResponse>();
+        
+        return response.Results;
     }
 
     public async Task<TaskDetailsDto[]> GetActiveTasksByFilter(string userAccessToken, string filter)
     {
-        return await _httpClient
-             .Request("rest/v2/tasks")
+        var response = await _httpClient
+             .Request("api/v1/tasks/filter")
              .WithOAuthBearerToken(userAccessToken)
-             .SetQueryParam("filter", filter)
-             .GetJsonAsync<TaskDetailsDto[]>();
+             .SetQueryParam("query", filter)
+             .GetJsonAsync<TasksFilterResponse>();
+        
+        return response.Results;
     }
 
     public async Task<TaskDetailsDto[]> GetActiveTasksForTodayAndTomorrow(string userAccessToken)
     {
-        return await _httpClient
-            .Request("rest/v2/tasks")
+        var response = await _httpClient
+            .Request("api/v1/tasks/filter")
             .WithOAuthBearerToken(userAccessToken)
-            .SetQueryParam("filter", "date before: +2 days")
-            .GetJsonAsync<TaskDetailsDto[]>();
+            .SetQueryParam("query", "date before: +2 days")
+            .GetJsonAsync<TasksFilterResponse>();
+        
+        return response.Results;
     }
 
     public async Task<TaskDetailsDto> GetActiveTask(string taskId, string userAccessToken)
