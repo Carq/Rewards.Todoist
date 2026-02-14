@@ -17,6 +17,6 @@ public record UserStatsDto(int Experience, int Gold);
 
 public record UserInfoDto(long Id, string Name);
 
-public record UserActivityRecordDto(long Id, string Name, string ActivityArea, string[] Tags, DateTime OccurredOn);
+public record UserActivityRecordDto(string Id, string Name, string ActivityArea, string[] Tags, DateTime OccurredOn);
 
 public record ExperianceSummary(int TotalExperience, int TotalTasksCompleted);

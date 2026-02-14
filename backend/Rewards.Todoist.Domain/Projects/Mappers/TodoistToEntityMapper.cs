@@ -6,14 +6,14 @@ namespace Rewards.Todoist.Domain.Projects.Mappers;
 
 public class TodoistToEntityMapper
 {
-    public static CompletedTaskEntity MapToCompleteTask(ItemDto itemDto, User user)
+    public static CompletedTaskEntity MapToCompleteTask(string id, TaskDetailsDto taskDto, User user)
     {
         return new CompletedTaskEntity(
-                        long.Parse(itemDto.Id),
-                        itemDto.ItemObject.Content,
-                        string.Join(',', itemDto.ItemObject.Labels),
-                        itemDto.ProjectId,
-                        itemDto.CompletedAt.DateTime,
+                        id,
+                        taskDto.Content,
+                        string.Join(',', taskDto.Labels),
+                        taskDto.ProjectId,
+                        taskDto.UpdatedAt,
                         user);
     }
 }

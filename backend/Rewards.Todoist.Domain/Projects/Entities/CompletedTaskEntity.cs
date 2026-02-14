@@ -4,13 +4,13 @@ namespace Rewards.Todoist.Domain.Projects.Entities;
 
 public class CompletedTaskEntity
 {
-    public CompletedTaskEntity(long id, string name, string labels, string projectId, DateTime completedAt, User completedBy) :
+    public CompletedTaskEntity(string id, string name, string labels, string projectId, DateTime completedAt, User completedBy) :
         this(id, name, labels, projectId, completedAt)
     {
         CompletedBy = completedBy ?? throw new ArgumentNullException(nameof(completedBy));
     }
 
-    private CompletedTaskEntity(long id, string name, string labels, string projectId, DateTime completedAt)
+    private CompletedTaskEntity(string id, string name, string labels, string projectId, DateTime completedAt)
     {
         Id = id;
         Name = name ?? throw new ArgumentNullException(nameof(name));
@@ -20,7 +20,7 @@ public class CompletedTaskEntity
         CompletedBy = null!; // Initialize with a non-null value to satisfy the compiler
     }
 
-    public long Id { get; private set; }
+    public string Id { get; private set; }
 
     public string Name { get; private set; }
 

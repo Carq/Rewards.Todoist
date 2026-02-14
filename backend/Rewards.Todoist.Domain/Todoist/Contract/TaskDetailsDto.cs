@@ -7,6 +7,7 @@ public record TaskDetailsDto(
     [property: JsonPropertyName("content")] string Content,
     [property: JsonPropertyName("labels")] string[] Labels,
     [property: JsonPropertyName("project_id")] string ProjectId,
+    [property: JsonPropertyName("updated_at")] DateTime UpdatedAt,
     [property: JsonPropertyName("user_id")] string? UserId = null);
 
 public record TasksFilterResponse(

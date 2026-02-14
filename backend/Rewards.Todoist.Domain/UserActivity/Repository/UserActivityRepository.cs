@@ -66,7 +66,7 @@ public class UserActivityRepository
 
         var claimedRewardRecords = claimedRewards
             .Where(x => x.ClaimedBy.Id == userId)
-            .Select(x => new ActivityLogRecord(x.Id, x.Name, "Reward", 0, x.PaidGold, [$"Gold{x.PaidGold}"], ActivityType.RewardClaimed, x.ClaimedOn.ToDateTime(TimeOnly.MinValue))).ToArray();
+            .Select(x => new ActivityLogRecord(x.Id.ToString(), x.Name, "Reward", 0, x.PaidGold, [$"Gold{x.PaidGold}"], ActivityType.RewardClaimed, x.ClaimedOn.ToDateTime(TimeOnly.MinValue))).ToArray();
 
         return completedTaskRecords.Concat(claimedRewardRecords).ToArray();
     }

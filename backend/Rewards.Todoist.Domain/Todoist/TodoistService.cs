@@ -21,28 +21,19 @@ public class TodoistService : ITodoistService
         return response.Where(x => x.IsShared).ToArray();
     }
 
-    public async Task<ActivityResponse> GetActivityAsync(string projectId)
-    {
-        var response = await _httpClient
-            .Request("sync/v1/activity/get")
-            .SetQueryParam("parent_project_id", projectId)
-            .GetJsonAsync<ActivityResponse>();
-
-        return response;
-    }
-
-    public async Task<GetAllCompeltedResult> GetCompletedTasksAsync(string? projectId, int limit, DateTimeOffset? since, string userAccessToken)
+    public async Task<GetActivityLogsResponse> GetActivityLogsAsync(string? projectId, string userId, int limit, DateTimeOffset? since, string userAccessToken)
     {
         var formattedSince = since?.ToString("yyyy-MM-ddTHH:mm:ss");
 
         return await _httpClient
-            .Request("sync/v9/completed/get_all")
+            .Request("api/v1/activities?")
             .WithOAuthBearerToken(userAccessToken)
-            .SetQueryParam("project_id", projectId)
-            .SetQueryParam("since", formattedSince)
+            .SetQueryParam("parent_project_id", projectId)
+            .SetQueryParam("initiator_id", userId)
+            .SetQueryParam("date_from", formattedSince)
             .SetQueryParam("limit", limit)
-            .SetQueryParam("annotate_items", true)
-            .GetJsonAsync<GetAllCompeltedResult>();
+            .SetQueryParam("event_type", "completed")
+            .GetJsonAsync<GetActivityLogsResponse>();
     }
 
     public async Task<TaskDetailsDto[]> GetActiveTasksForToday(string userAccessToken)
@@ -52,7 +43,7 @@ public class TodoistService : ITodoistService
              .WithOAuthBearerToken(userAccessToken)
              .SetQueryParam("query", "date before: tomorrow")
              .GetJsonAsync<TasksFilterResponse>();
-        
+
         return response.Results;
     }
 
@@ -63,7 +54,7 @@ public class TodoistService : ITodoistService
              .WithOAuthBearerToken(userAccessToken)
              .SetQueryParam("query", filter)
              .GetJsonAsync<TasksFilterResponse>();
-        
+
         return response.Results;
     }
 
@@ -74,7 +65,7 @@ public class TodoistService : ITodoistService
             .WithOAuthBearerToken(userAccessToken)
             .SetQueryParam("query", "date before: +2 days")
             .GetJsonAsync<TasksFilterResponse>();
-        
+
         return response.Results;
     }
 
@@ -86,10 +77,21 @@ public class TodoistService : ITodoistService
             .GetJsonAsync<TaskDetailsDto>();
     }
 
+    public async Task<TasksFilterResponse> GetTasks(IList<string> taskIds, string userAccessToken)
+    {
+        var ids = string.Join(",", taskIds);
+
+        return await _httpClient
+            .Request("api/v1/tasks")
+            .WithOAuthBearerToken(userAccessToken)
+            .SetQueryParam("ids", string.Join(',', ids))
+            .GetJsonAsync<TasksFilterResponse>();
+    }
+
     public async Task CompleteTaskAsync(string taskId, string userAccessToken)
     {
         await _httpClient
-            .Request($"rest/v2/tasks/{taskId}/close")
+            .Request($"api/v1/tasks/{taskId}/close")
             .WithOAuthBearerToken(userAccessToken)
             .PostAsync();
     }

@@ -6,9 +6,7 @@ public interface ITodoistService
 {
     Task<ProjectDto[]> GetSharedProjectsAsync();
 
-    Task<ActivityResponse> GetActivityAsync(string projectId);
-
-    Task<GetAllCompeltedResult> GetCompletedTasksAsync(string? projectId, int limit, DateTimeOffset? since, string userAccessToken);
+    Task<GetActivityLogsResponse> GetActivityLogsAsync(string? projectId, string userId, int limit, DateTimeOffset? since, string userAccessToken);
 
     Task<TaskDetailsDto[]> GetActiveTasksForToday(string userAccessToken);
 
@@ -17,6 +15,8 @@ public interface ITodoistService
     Task<TaskDetailsDto[]> GetActiveTasksForTodayAndTomorrow(string userAccessToken);
 
     Task<TaskDetailsDto> GetActiveTask(string taskId, string userAccessToken);
+
+    Task<TasksFilterResponse> GetTasks(IList<string> taskIds, string userAccessToken);
 
     Task CompleteTaskAsync(string taskId, string userAccessToken);
 }

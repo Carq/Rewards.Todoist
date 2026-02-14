@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Rewards.Todoist.Domain.Storage;
 
 namespace Rewards.Todoist.Domain.Projects.Entities;
@@ -10,6 +10,7 @@ public class CompletedTaskEntityConfiguration : IEntityTypeConfiguration<Complet
     {
         builder.ToTable("CompletedTasks");
         builder.HasKey(x => x.Id);
+        builder.Property(x => x.Id).HasMaxLength(64).IsRequired();
         builder.Property(x => x.Name).HasMaxLength(StorageConst.ShortNameLength).IsRequired();
         builder.Property(x => x.Labels).HasMaxLength(StorageConst.ShortDescriptionLength).IsRequired();
         builder.Property(x => x.ProjectId).IsRequired();

@@ -30,14 +30,14 @@ public class TaskHasBeenCompletedEventHandler : INotificationHandler<TaskHasBeen
             throw new EntityNotFoundException("User", request.UserId);
         }
 
-        var completedTasks = await _todoistService.GetCompletedTasksAsync(null, 5, DateTimeOffset.UtcNow.AddMinutes(-90), user.TodoistAccessToken);
-        var completedTask = completedTasks.Items.SingleOrDefault(x => x.TaskId == request.TaskId);
-        if (completedTask == null)
+        var completedTasks = await _todoistService.GetTasks([request.TaskId], user.TodoistAccessToken);
+        if (completedTasks == null || completedTasks.Results.Length == 0)
         {
             return;
         }
 
-        await _context.CompletedTasks.AddAsync(TodoistToEntityMapper.MapToCompleteTask(completedTask, user));
+        return;
+        await _context.CompletedTasks.AddAsync(TodoistToEntityMapper.MapToCompleteTask(completedTasks.Results[0].Id, completedTasks.Results[0], user));
         await _context.SaveChangesAsync(cancellationToken);
     }
 }

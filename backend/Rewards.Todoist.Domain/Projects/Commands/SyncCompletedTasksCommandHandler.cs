@@ -32,15 +32,12 @@ public class SyncCompletedTasksCommandHandler : IRequestHandler<SyncCompletedTas
     {
         var todayDate = _clock.Now.UtcDateTime.Date;
         var todaysCompletedTasks = await _context.CompletedTasks.Where(x => x.CompletedAt >= todayDate).Select(x => x.Id).ToListAsync(cancellationToken);
-      
+
         var users = await _userRepository.GetUsers(cancellationToken);
         var completedTasksToSync = new List<CompletedTaskEntity>();
         foreach (var user in users.All())
         {
-            foreach (var projectId in UserProjects.GetProjects(user.Id.ToString()))
-            {
-                completedTasksToSync.AddRange(await GetCompletedTasksForProject(user, projectId, todayDate));
-            }
+            completedTasksToSync.AddRange(await GetCompletedTasksForProject(user, Projects.GetMainProjectId(), todayDate));
         }
 
         completedTasksToSync = completedTasksToSync.ExceptBy(todaysCompletedTasks, x => x.Id).ToList();
@@ -55,9 +52,13 @@ public class SyncCompletedTasksCommandHandler : IRequestHandler<SyncCompletedTas
 
     private async Task<CompletedTaskEntity[]> GetCompletedTasksForProject(User user, string projectId, DateTimeOffset since)
     {
-        var completedTasks = await _todoistService.GetCompletedTasksAsync(projectId, 100, since, user.TodoistAccessToken);
-        return completedTasks.Items.Select(x => TodoistToEntityMapper.MapToCompleteTask(x, user)).ToArray();
-    }
+        var activityLogs = await _todoistService.GetActivityLogsAsync(projectId, user.Id.ToString(), 100, since, user.TodoistAccessToken);
+        if (activityLogs.Results.Length == 0)
+        {
+            return Array.Empty<CompletedTaskEntity>();
+        }
 
-    
+        var tasks = await _todoistService.GetTasks(activityLogs.Results.Select(x => x.ObjectId).ToList(), user.TodoistAccessToken);
+        return tasks.Results.Select(x => TodoistToEntityMapper.MapToCompleteTask(activityLogs.Results.First(y => y.ObjectId == x.Id).Id, x, user)).ToArray();
+    }
 }
